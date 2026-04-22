@@ -8,6 +8,7 @@ struct GardenGenieApp: App {
     var body: some Scene {
         WindowGroup {
             MainTabView(gardenVM: gardenVM, taskVM: taskVM)
+                .preferredColorScheme(.dark)
         }
     }
 }

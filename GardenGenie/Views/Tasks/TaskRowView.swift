@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A single task row with a completion toggle.
+/// A single task row with a completion toggle — blue/pink accent palette.
 struct TaskRowView: View {
     let task: GardenTask
     let onToggle: () -> Void
@@ -10,39 +10,41 @@ struct TaskRowView: View {
             Button(action: onToggle) {
                 Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 24))
-                    .foregroundStyle(task.isCompleted ? AppTheme.Colors.primaryGreen : .secondary)
+                    .foregroundStyle(task.isCompleted ? AppTheme.Colors.accentBlue : AppTheme.Colors.textTertiary)
             }
             .buttonStyle(.plain)
 
             Image(systemName: task.iconName)
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(AppTheme.Colors.primaryGreen)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(AppTheme.Colors.accentBlue)
                 .frame(width: 28, height: 28)
-                .background(AppTheme.Colors.primaryGreen.opacity(0.12), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .background(AppTheme.Colors.accentBlue.opacity(0.18), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(task.name)
                     .font(.body)
-                    .strikethrough(task.isCompleted, color: .secondary)
-                    .foregroundStyle(task.isCompleted ? .secondary : .primary)
+                    .strikethrough(task.isCompleted, color: AppTheme.Colors.textTertiary)
+                    .foregroundStyle(task.isCompleted ? AppTheme.Colors.textSecondary : AppTheme.Colors.textPrimary)
                 Text(task.dueDate, style: .relative)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
             }
 
             Spacer()
 
             Text(task.plantName)
-                .pillTag(color: AppTheme.Colors.secondaryGreen)
+                .pillTag(color: AppTheme.Colors.accentPink)
         }
         .contentShape(Rectangle())
-        .padding(.vertical, AppTheme.Spacing.xs)
     }
 }
 
 #Preview {
-    List {
+    VStack {
         TaskRowView(task: MockData.tasks[0]) {}
         TaskRowView(task: MockData.tasks[1]) {}
     }
+    .padding()
+    .background(AppTheme.Colors.cardBackground)
+    .preferredColorScheme(.dark)
 }

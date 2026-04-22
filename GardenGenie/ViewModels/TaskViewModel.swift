@@ -16,6 +16,9 @@ final class TaskViewModel {
         tasks.filter(\.isCompleted)
     }
 
+    /// Count of completed tasks — used in Settings profile card.
+    var completedCount: Int { completedTasks.count }
+
     init(tasks: [GardenTask] = MockData.tasks) {
         self.tasks = tasks
     }
@@ -24,5 +27,12 @@ final class TaskViewModel {
     func toggleCompletion(for taskID: UUID) {
         guard let index = tasks.firstIndex(where: { $0.id == taskID }) else { return }
         tasks[index].isCompleted.toggle()
+    }
+
+    /// Add a new task (e.g. from a care plan "Others" item).
+    func addTask(_ task: GardenTask) {
+        // Avoid duplicates by name + plant
+        guard !tasks.contains(where: { $0.name == task.name && $0.plantID == task.plantID && !$0.isCompleted }) else { return }
+        tasks.append(task)
     }
 }

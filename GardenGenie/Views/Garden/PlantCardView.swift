@@ -1,38 +1,42 @@
 import SwiftUI
 
-/// A single plant card used in the garden grid.
+/// Compact horizontal plant card used in the "Needs Care" carousel.
+/// Icon square left, text stack right, dark card fill.
 struct PlantCardView: View {
     let plant: Plant
 
     var body: some View {
-        VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
+        HStack(spacing: AppTheme.Spacing.md) {
             // Icon in a rounded tinted square
             ZStack {
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(AppTheme.Colors.primaryGreen.opacity(0.12))
+                    .fill(plant.accentColor.opacity(0.18))
                     .frame(width: 56, height: 56)
                 Image(systemName: plant.iconName)
-                    .font(.system(size: 28, weight: .semibold))
-                    .foregroundStyle(AppTheme.Colors.primaryGreen)
+                    .font(.system(size: 24, weight: .semibold))
+                    .foregroundStyle(plant.accentColor)
             }
 
-            Spacer(minLength: 0)
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.xs) {
+                Text(plant.name)
+                    .font(.headline)
+                    .foregroundStyle(AppTheme.Colors.textPrimary)
+                    .lineLimit(1)
 
-            Text(plant.name)
-                .font(.headline)
-                .foregroundStyle(.primary)
-                .lineLimit(1)
+                if let type = plant.type {
+                    Text(type.capitalized)
+                        .font(.caption2)
+                        .foregroundStyle(AppTheme.Colors.textSecondary)
+                        .lineLimit(1)
+                }
 
-            Text(plant.botanicalName)
-                .font(.caption2)
-                .italic()
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-
-            Text(plant.statusTag)
-                .pillTag(color: AppTheme.Colors.statusColor(for: plant.statusTag))
+                if let seasonality = plant.seasonality {
+                    Text(seasonality)
+                        .pillTag(color: plant.accentColor)
+                }
+            }
         }
-        .frame(maxWidth: .infinity, minHeight: 180, alignment: .leading)
+        .frame(width: 220, alignment: .leading)
         .gardenCard()
     }
 }
@@ -40,4 +44,6 @@ struct PlantCardView: View {
 #Preview {
     PlantCardView(plant: MockData.plants[0])
         .padding()
+        .background(Color.black)
+        .preferredColorScheme(.dark)
 }

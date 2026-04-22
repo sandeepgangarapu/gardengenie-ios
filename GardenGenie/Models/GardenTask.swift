@@ -11,4 +11,19 @@ struct GardenTask: Identifiable, Hashable {
     var isCompleted: Bool
     /// SF Symbol name for the task's icon.
     var iconName: String
+
+    // MARK: - Factory from CareItem
+
+    /// Create a task from a care plan item, due tomorrow by default.
+    static func from(careItem: CareItem, plant: Plant) -> GardenTask {
+        GardenTask(
+            id: UUID(),
+            name: careItem.title,
+            dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date(),
+            plantID: plant.id,
+            plantName: plant.name,
+            isCompleted: false,
+            iconName: careItem.iconName ?? "leaf.fill"
+        )
+    }
 }

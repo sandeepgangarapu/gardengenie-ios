@@ -10,10 +10,14 @@
 		1F14AC2A7D778CD47854C820 /* PlantDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C306C747EA4663BC55286DB /* PlantDetailView.swift */; };
 		2653D8DF67CD932D826ED570 /* TaskRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77390E3BF3D2C9E933A273EF /* TaskRowView.swift */; };
 		30CD919F9A4F29FA13F6DBA8 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22065A20214CB5429F429C1D /* MockData.swift */; };
+		36DC89D5C9F30C773C028C93 /* CareDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1040F505A9D748C2711B1B6 /* CareDetailView.swift */; };
 		3BD29E6B1E5E79D9C85B0375 /* GardenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BDC1D51C1CBBDD27DE251E7 /* GardenViewModel.swift */; };
 		3C226B5711ECE9766262CC54 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 99EBE558FB4EB0C47DE0B191 /* Assets.xcassets */; };
+		3CD004476E8279EE92D28224 /* PlantingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891D4191639B677064F177D6 /* PlantingDetailView.swift */; };
 		4BA88A46BADAB4DC6F16D38D /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B905F84493EB9EB95DA4BD19 /* MainTabView.swift */; };
 		50B86E705DD0DC4E04BCA441 /* GardenGenieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78BC3BEE8C7E6322988001A /* GardenGenieApp.swift */; };
+		58523245AB374F599BEE422A /* PlantingCompactCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D79379145143BA2DE3375BFB /* PlantingCompactCard.swift */; };
+		7977CC21A1B5E032D9F996E1 /* SearchSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0A8C6E74F3AD055B2FBD13 /* SearchSheet.swift */; };
 		82DDDFD5C8169F1AB88034B2 /* QuickAddSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03EE3D674CE449E2431DB4E /* QuickAddSheet.swift */; };
 		851A9D13DADDB9486B63BD3B /* GardenTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025BDB10BC0ACAB532966CEB /* GardenTask.swift */; };
 		90943BE8F1F18461279466CD /* TaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B98515D74BC8A81A012B6DB /* TaskViewModel.swift */; };
@@ -23,6 +27,8 @@
 		A201E116C0A3E277D7B0172F /* PlantCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C5B6B5E0AB5E6E0B9329370 /* PlantCardView.swift */; };
 		B51192DD1DE2C112030CB045 /* TasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B15379EEF655F7021EC19 /* TasksView.swift */; };
 		CF88C73D2874A4292F095620 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = D417A902A6ADFF22B0A6F1EC /* AppTheme.swift */; };
+		EB6EA988E0D4B4CEEC1ED39C /* HeroPlantCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94B35CCBAA1ED4504B5D88A /* HeroPlantCard.swift */; };
+		F45ED16A97B276335282DC23 /* Plant+JSONB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98BF44D05EFC6E88D6CE1790 /* Plant+JSONB.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,15 +40,21 @@
 		4C5B6B5E0AB5E6E0B9329370 /* PlantCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantCardView.swift; sourceTree = "<group>"; };
 		77390E3BF3D2C9E933A273EF /* TaskRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRowView.swift; sourceTree = "<group>"; };
 		8704852BAD4B65B983767220 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		891D4191639B677064F177D6 /* PlantingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantingDetailView.swift; sourceTree = "<group>"; };
+		98BF44D05EFC6E88D6CE1790 /* Plant+JSONB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Plant+JSONB.swift"; sourceTree = "<group>"; };
 		99EBE558FB4EB0C47DE0B191 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9C0A46C8FD1EE5CBEE159F74 /* MyGardenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyGardenView.swift; sourceTree = "<group>"; };
 		ACE290D3BA454BBFA7164165 /* GardenGenie.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GardenGenie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B03EE3D674CE449E2431DB4E /* QuickAddSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddSheet.swift; sourceTree = "<group>"; };
 		B905F84493EB9EB95DA4BD19 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		C1040F505A9D748C2711B1B6 /* CareDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CareDetailView.swift; sourceTree = "<group>"; };
 		C1B452E7A30B9D1847482194 /* Plant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plant.swift; sourceTree = "<group>"; };
 		D417A902A6ADFF22B0A6F1EC /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		D79379145143BA2DE3375BFB /* PlantingCompactCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantingCompactCard.swift; sourceTree = "<group>"; };
+		E94B35CCBAA1ED4504B5D88A /* HeroPlantCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroPlantCard.swift; sourceTree = "<group>"; };
 		F78BC3BEE8C7E6322988001A /* GardenGenieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenGenieApp.swift; sourceTree = "<group>"; };
 		FA6B15379EEF655F7021EC19 /* TasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksView.swift; sourceTree = "<group>"; };
+		FE0A8C6E74F3AD055B2FBD13 /* SearchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -69,9 +81,13 @@
 		1F7D2D16F648FDB1FC80A529 /* Garden */ = {
 			isa = PBXGroup;
 			children = (
+				C1040F505A9D748C2711B1B6 /* CareDetailView.swift */,
+				E94B35CCBAA1ED4504B5D88A /* HeroPlantCard.swift */,
 				9C0A46C8FD1EE5CBEE159F74 /* MyGardenView.swift */,
 				4C5B6B5E0AB5E6E0B9329370 /* PlantCardView.swift */,
 				3C306C747EA4663BC55286DB /* PlantDetailView.swift */,
+				D79379145143BA2DE3375BFB /* PlantingCompactCard.swift */,
+				891D4191639B677064F177D6 /* PlantingDetailView.swift */,
 			);
 			path = Garden;
 			sourceTree = "<group>";
@@ -128,6 +144,7 @@
 			children = (
 				025BDB10BC0ACAB532966CEB /* GardenTask.swift */,
 				C1B452E7A30B9D1847482194 /* Plant.swift */,
+				98BF44D05EFC6E88D6CE1790 /* Plant+JSONB.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -153,6 +170,7 @@
 			isa = PBXGroup;
 			children = (
 				B03EE3D674CE449E2431DB4E /* QuickAddSheet.swift */,
+				FE0A8C6E74F3AD055B2FBD13 /* SearchSheet.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -233,16 +251,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				CF88C73D2874A4292F095620 /* AppTheme.swift in Sources */,
+				36DC89D5C9F30C773C028C93 /* CareDetailView.swift in Sources */,
 				50B86E705DD0DC4E04BCA441 /* GardenGenieApp.swift in Sources */,
 				851A9D13DADDB9486B63BD3B /* GardenTask.swift in Sources */,
 				3BD29E6B1E5E79D9C85B0375 /* GardenViewModel.swift in Sources */,
+				EB6EA988E0D4B4CEEC1ED39C /* HeroPlantCard.swift in Sources */,
 				4BA88A46BADAB4DC6F16D38D /* MainTabView.swift in Sources */,
 				30CD919F9A4F29FA13F6DBA8 /* MockData.swift in Sources */,
 				A07FC85BBFFCF1E0BB80A61A /* MyGardenView.swift in Sources */,
+				F45ED16A97B276335282DC23 /* Plant+JSONB.swift in Sources */,
 				A18854385606D3BF5E66EEC0 /* Plant.swift in Sources */,
 				A201E116C0A3E277D7B0172F /* PlantCardView.swift in Sources */,
 				1F14AC2A7D778CD47854C820 /* PlantDetailView.swift in Sources */,
+				58523245AB374F599BEE422A /* PlantingCompactCard.swift in Sources */,
+				3CD004476E8279EE92D28224 /* PlantingDetailView.swift in Sources */,
 				82DDDFD5C8169F1AB88034B2 /* QuickAddSheet.swift in Sources */,
+				7977CC21A1B5E032D9F996E1 /* SearchSheet.swift in Sources */,
 				9481512F0D0A9BBC831E168E /* SettingsView.swift in Sources */,
 				2653D8DF67CD932D826ED570 /* TaskRowView.swift in Sources */,
 				90943BE8F1F18461279466CD /* TaskViewModel.swift in Sources */,

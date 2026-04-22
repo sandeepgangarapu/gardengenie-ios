@@ -1,13 +1,13 @@
 import SwiftUI
 
-/// Root tab navigator. Two main tabs plus a floating liquid-glass "Quick Add" button
-/// anchored above the tab bar via `tabViewBottomAccessory` (iOS 26+).
+/// Root tab navigator. Two main tabs plus a native search tab (iOS 26+).
+/// The search tab uses `role: .search` which SwiftUI renders as a floating
+/// magnifying-glass button at the bottom-right of the tab bar.
 struct MainTabView: View {
     @Bindable var gardenVM: GardenViewModel
     @Bindable var taskVM: TaskViewModel
 
     @State private var selectedTab: AppTab = .myGarden
-    @State private var showQuickAdd = false
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -15,33 +15,13 @@ struct MainTabView: View {
                 TasksView(taskVM: taskVM)
             }
             Tab("My Garden", systemImage: "leaf.fill", value: AppTab.myGarden) {
-                MyGardenView(gardenVM: gardenVM)
+                MyGardenView(gardenVM: gardenVM, taskVM: taskVM)
+            }
+            Tab("Search", systemImage: "magnifyingglass", value: AppTab.search, role: .search) {
+                SearchSheet(gardenVM: gardenVM, taskVM: taskVM)
             }
         }
-        .tint(AppTheme.Colors.primaryGreen)
-        .tabViewBottomAccessory {
-            quickAddButton
-        }
-        .sheet(isPresented: $showQuickAdd) {
-            QuickAddSheet()
-        }
-    }
-
-    // MARK: - Floating Glass Button
-
-    private var quickAddButton: some View {
-        Button {
-            showQuickAdd = true
-        } label: {
-            Image(systemName: "plus")
-                .font(.title2.weight(.semibold))
-                .foregroundStyle(AppTheme.Colors.primaryGreen)
-                .frame(width: 56, height: 56)
-                .contentShape(Circle())
-        }
-        .buttonStyle(.glass)
-        .clipShape(Circle())
-        .accessibilityLabel("Quick Add")
+        .tint(AppTheme.Colors.accentPink)
     }
 }
 
@@ -49,8 +29,10 @@ struct MainTabView: View {
 enum AppTab: Hashable {
     case tasks
     case myGarden
+    case search
 }
 
 #Preview {
     MainTabView(gardenVM: GardenViewModel(), taskVM: TaskViewModel())
+        .preferredColorScheme(.dark)
 }
