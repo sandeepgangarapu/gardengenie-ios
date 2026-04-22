@@ -34,7 +34,7 @@ struct PlantingCompactCard: View {
                 .foregroundStyle(AppTheme.Colors.textSecondary)
 
             // Hero month text
-            Text(month ?? "See details")
+            Text(month.map(Self.abbreviate) ?? "See details")
                 .font(.title3.bold())
                 .foregroundStyle(AppTheme.Colors.textPrimary)
                 .lineLimit(2)
@@ -50,6 +50,24 @@ struct PlantingCompactCard: View {
             RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous)
                 .strokeBorder(accentColor.opacity(0.12), lineWidth: 1)
         )
+    }
+
+    private static let monthAbbreviations: [String: String] = [
+        "january": "Jan", "february": "Feb", "march": "Mar", "april": "Apr",
+        "may": "May", "june": "Jun", "july": "Jul", "august": "Aug",
+        "september": "Sep", "october": "Oct", "november": "Nov", "december": "Dec"
+    ]
+
+    /// Abbreviates full month names in a range string (e.g. "February–March" → "Feb–Mar").
+    static func abbreviate(_ input: String) -> String {
+        var result = input
+        for (full, short) in monthAbbreviations {
+            let range = NSRange(result.startIndex..., in: result)
+            if let regex = try? NSRegularExpression(pattern: "\\b\(full)\\b", options: .caseInsensitive) {
+                result = regex.stringByReplacingMatches(in: result, range: range, withTemplate: short)
+            }
+        }
+        return result
     }
 }
 

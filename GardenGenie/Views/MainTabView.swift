@@ -12,7 +12,7 @@ struct MainTabView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             Tab("Tasks", systemImage: "checklist", value: AppTab.tasks) {
-                TasksView(taskVM: taskVM)
+                TasksView(taskVM: taskVM, gardenVM: gardenVM)
             }
             Tab("My Garden", systemImage: "leaf.fill", value: AppTab.myGarden) {
                 MyGardenView(gardenVM: gardenVM, taskVM: taskVM)

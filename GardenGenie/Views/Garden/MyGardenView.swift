@@ -45,16 +45,6 @@ struct MyGardenView: View {
                     .foregroundStyle(AppTheme.Colors.textPrimary)
             }
             Spacer()
-            Button {
-                withAnimation(.snappy) {
-                    featuredOrder.shuffle()
-                }
-            } label: {
-                Image(systemName: "shuffle")
-                    .circularIconButton()
-            }
-            .buttonStyle(.plain)
-
             Button { showSettings = true } label: {
                 Image(systemName: "gearshape")
                     .circularIconButton()

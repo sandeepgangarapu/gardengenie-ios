@@ -4,6 +4,7 @@ struct CareDetailView: View {
     let plant: Plant
     @Bindable var taskVM: TaskViewModel
     @State private var selectedTab: CareTab = .mustDo
+    @State private var pendingAdd: CareItem?
     @Environment(\.dismiss) private var dismiss
 
     enum CareTab {
@@ -16,7 +17,7 @@ struct CareDetailView: View {
             VStack(spacing: AppTheme.Spacing.lg) {
                 Picker("Care Type", selection: $selectedTab) {
                     Text("Must Do").tag(CareTab.mustDo)
-                    Text("Others").tag(CareTab.others)
+                    Text("Good to do").tag(CareTab.others)
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal, AppTheme.Spacing.md)
@@ -29,56 +30,40 @@ struct CareDetailView: View {
         .background(AppTheme.Colors.background.ignoresSafeArea())
         .navigationTitle("Care Guide")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(item: $pendingAdd) { item in
+            AddTaskSheet(
+                taskVM: taskVM,
+                gardenVM: GardenViewModel(plants: [plant]),
+                prefilledName: item.title,
+                prefilledIcon: item.iconName ?? "checkmark.circle.fill",
+                prefilledPlant: plant,
+                prefilledKind: .care
+            )
+        }
     }
 
     private var careItems: some View {
-        Group {
-            if selectedTab == .mustDo {
-                if let mustDo = plant.carePlan?.mustDo, !mustDo.isEmpty {
-                    VStack(alignment: .leading, spacing: AppTheme.Spacing.md) {
-                        ForEach(mustDo) { item in
-                            careItemCard(item)
-                        }
+        let items: [CareItem]? = selectedTab == .mustDo
+            ? plant.carePlan?.mustDo
+            : plant.carePlan?.others
+        let emptyMessage = selectedTab == .mustDo
+            ? "No critical care items"
+            : "No additional care items"
+
+        return Group {
+            if let items, !items.isEmpty {
+                VStack(alignment: .leading, spacing: AppTheme.Spacing.md) {
+                    ForEach(items) { item in
+                        careItemCard(item)
                     }
-                    .padding(.horizontal, AppTheme.Spacing.md)
-                } else {
-                    Text("No critical care items")
-                        .font(.body)
-                        .foregroundStyle(AppTheme.Colors.textSecondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(AppTheme.Spacing.lg)
                 }
+                .padding(.horizontal, AppTheme.Spacing.md)
             } else {
-                if let others = plant.carePlan?.others, !others.isEmpty {
-                    VStack(alignment: .leading, spacing: AppTheme.Spacing.md) {
-                        ForEach(others) { item in
-                            VStack {
-                                careItemCard(item)
-                                Button {
-                                    addToTasks(item)
-                                } label: {
-                                    HStack(spacing: AppTheme.Spacing.sm) {
-                                        Image(systemName: "plus.circle")
-                                        Text("Add to Tasks")
-                                    }
-                                    .font(.callout.weight(.semibold))
-                                    .frame(maxWidth: .infinity)
-                                    .padding(AppTheme.Spacing.md)
-                                    .foregroundStyle(AppTheme.Colors.accentPink)
-                                    .background(AppTheme.Colors.accentPink.opacity(0.1), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                    }
-                    .padding(.horizontal, AppTheme.Spacing.md)
-                } else {
-                    Text("No additional care items")
-                        .font(.body)
-                        .foregroundStyle(AppTheme.Colors.textSecondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(AppTheme.Spacing.lg)
-                }
+                Text(emptyMessage)
+                    .font(.body)
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+                    .frame(maxWidth: .infinity)
+                    .padding(AppTheme.Spacing.lg)
             }
         }
     }
@@ -108,6 +93,18 @@ struct CareDetailView: View {
                 }
 
                 Spacer()
+
+                Button {
+                    addToTasks(item)
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(AppTheme.Colors.accentPink)
+                        .padding(AppTheme.Spacing.xs)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Add to Tasks")
             }
 
             if let description = item.description {
@@ -123,16 +120,7 @@ struct CareDetailView: View {
     }
 
     private func addToTasks(_ item: CareItem) {
-        let newTask = GardenTask(
-            id: UUID(),
-            name: item.title,
-            dueDate: Date(),
-            plantID: plant.id,
-            plantName: plant.name,
-            isCompleted: false,
-            iconName: item.iconName ?? "checkmark.circle.fill"
-        )
-        taskVM.addTask(newTask)
+        pendingAdd = item
     }
 }
 

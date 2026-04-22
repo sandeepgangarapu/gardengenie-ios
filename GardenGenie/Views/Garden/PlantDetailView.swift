@@ -29,7 +29,6 @@ struct PlantDetailView: View {
                 statsRow
                 typeAndZoneSection
                 plantingCardsRow
-                careSection
 
                 Spacer(minLength: 40)
             }
@@ -179,10 +178,6 @@ struct PlantDetailView: View {
     private var descriptionBlock: some View {
         if let description = plant.description {
             VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-                Text("About")
-                    .font(.title3.bold())
-                    .foregroundStyle(AppTheme.Colors.textPrimary)
-
                 Text(description)
                     .font(.body)
                     .foregroundStyle(AppTheme.Colors.textSecondary)
@@ -317,6 +312,8 @@ struct PlantDetailView: View {
                             seedStarting: plant.seedStarting,
                             planting: plant.planting,
                             plantName: plant.name,
+                            plant: plant,
+                            taskVM: taskVM,
                             initialTab: .seedStarting
                         )
                     } label: {
@@ -336,6 +333,8 @@ struct PlantDetailView: View {
                             seedStarting: plant.seedStarting,
                             planting: plant.planting,
                             plantName: plant.name,
+                            plant: plant,
+                            taskVM: taskVM,
                             initialTab: .planting
                         )
                     } label: {
@@ -350,34 +349,6 @@ struct PlantDetailView: View {
                 }
             }
             .padding(.horizontal, AppTheme.Spacing.md)
-        }
-    }
-
-    // MARK: - Care Section
-
-    private var careSection: some View {
-        Group {
-            if plant.carePlan != nil {
-                NavigationLink {
-                    CareDetailView(plant: plant, taskVM: taskVM)
-                } label: {
-                    HStack(spacing: AppTheme.Spacing.xs) {
-                        Text("View Full Care Guide")
-                            .font(.title3.bold())
-                            .foregroundStyle(AppTheme.Colors.textPrimary)
-                        Image(systemName: "chevron.right")
-                            .font(.caption.weight(.bold))
-                            .foregroundStyle(AppTheme.Colors.textTertiary)
-                    }
-                    .padding(.horizontal, AppTheme.Spacing.md)
-                    .padding(.vertical, AppTheme.Spacing.md)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(AppTheme.Colors.cardBackground)
-                    .cornerRadius(AppTheme.CornerRadius.card)
-                }
-                .buttonStyle(.plain)
-                .padding(.horizontal, AppTheme.Spacing.md)
-            }
         }
     }
 

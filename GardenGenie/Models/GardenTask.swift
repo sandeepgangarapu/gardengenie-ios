@@ -1,6 +1,6 @@
 import Foundation
 
-/// A garden task such as watering, pruning, or pest-checking.
+/// A garden task such as watering, pruning, pest-checking, planting, or seed starting.
 struct GardenTask: Identifiable, Hashable {
     let id: UUID
     var name: String
@@ -11,19 +11,68 @@ struct GardenTask: Identifiable, Hashable {
     var isCompleted: Bool
     /// SF Symbol name for the task's icon.
     var iconName: String
+    var kind: TaskKind
+    var recurrence: TaskRecurrence
 
-    // MARK: - Factory from CareItem
+    init(id: UUID = UUID(),
+         name: String,
+         dueDate: Date,
+         plantID: UUID,
+         plantName: String,
+         isCompleted: Bool = false,
+         iconName: String,
+         kind: TaskKind = .care,
+         recurrence: TaskRecurrence = .none) {
+        self.id = id
+        self.name = name
+        self.dueDate = dueDate
+        self.plantID = plantID
+        self.plantName = plantName
+        self.isCompleted = isCompleted
+        self.iconName = iconName
+        self.kind = kind
+        self.recurrence = recurrence
+    }
 
-    /// Create a task from a care plan item, due tomorrow by default.
-    static func from(careItem: CareItem, plant: Plant) -> GardenTask {
+    // MARK: - Factories
+
+    /// Create a care task from a care plan item.
+    static func from(careItem: CareItem,
+                     plant: Plant,
+                     dueDate: Date = Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date(),
+                     recurrence: TaskRecurrence = .none) -> GardenTask {
         GardenTask(
-            id: UUID(),
             name: careItem.title,
-            dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date(),
+            dueDate: dueDate,
             plantID: plant.id,
             plantName: plant.name,
-            isCompleted: false,
-            iconName: careItem.iconName ?? "leaf.fill"
+            iconName: careItem.iconName ?? "leaf.fill",
+            kind: .care,
+            recurrence: recurrence
+        )
+    }
+
+    static func seedStarting(for plant: Plant, on date: Date) -> GardenTask {
+        GardenTask(
+            name: "Start \(plant.name) seeds indoors",
+            dueDate: date,
+            plantID: plant.id,
+            plantName: plant.name,
+            iconName: "sparkles",
+            kind: .seedStarting,
+            recurrence: .none
+        )
+    }
+
+    static func planting(for plant: Plant, on date: Date) -> GardenTask {
+        GardenTask(
+            name: "Plant \(plant.name) outdoors",
+            dueDate: date,
+            plantID: plant.id,
+            plantName: plant.name,
+            iconName: "leaf.fill",
+            kind: .planting,
+            recurrence: .none
         )
     }
 }

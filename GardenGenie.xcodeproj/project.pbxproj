@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA0001000000000000000001 /* TaskKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000001 /* TaskKind.swift */; };
+		AA0001000000000000000002 /* TaskRecurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000002 /* TaskRecurrence.swift */; };
+		AA0001000000000000000003 /* TaskDateLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000003 /* TaskDateLabel.swift */; };
+		AA0001000000000000000004 /* WeekStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000004 /* WeekStripView.swift */; };
+		AA0001000000000000000005 /* AgendaDayHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000005 /* AgendaDayHeader.swift */; };
+		AA0001000000000000000006 /* OverdueSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000006 /* OverdueSectionView.swift */; };
+		AA0001000000000000000007 /* TaskDestinationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000007 /* TaskDestinationView.swift */; };
+		AA0001000000000000000008 /* AddTaskSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000008 /* AddTaskSheet.swift */; };
+		AA0001000000000000000009 /* MonthDateParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000009 /* MonthDateParser.swift */; };
 		1F14AC2A7D778CD47854C820 /* PlantDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C306C747EA4663BC55286DB /* PlantDetailView.swift */; };
 		2653D8DF67CD932D826ED570 /* TaskRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77390E3BF3D2C9E933A273EF /* TaskRowView.swift */; };
 		30CD919F9A4F29FA13F6DBA8 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22065A20214CB5429F429C1D /* MockData.swift */; };
@@ -32,6 +41,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AB0001000000000000000001 /* TaskKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskKind.swift; sourceTree = "<group>"; };
+		AB0001000000000000000002 /* TaskRecurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRecurrence.swift; sourceTree = "<group>"; };
+		AB0001000000000000000003 /* TaskDateLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDateLabel.swift; sourceTree = "<group>"; };
+		AB0001000000000000000004 /* WeekStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekStripView.swift; sourceTree = "<group>"; };
+		AB0001000000000000000005 /* AgendaDayHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaDayHeader.swift; sourceTree = "<group>"; };
+		AB0001000000000000000006 /* OverdueSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverdueSectionView.swift; sourceTree = "<group>"; };
+		AB0001000000000000000007 /* TaskDestinationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDestinationView.swift; sourceTree = "<group>"; };
+		AB0001000000000000000008 /* AddTaskSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskSheet.swift; sourceTree = "<group>"; };
+		AB0001000000000000000009 /* MonthDateParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthDateParser.swift; sourceTree = "<group>"; };
 		025BDB10BC0ACAB532966CEB /* GardenTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenTask.swift; sourceTree = "<group>"; };
 		0B98515D74BC8A81A012B6DB /* TaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskViewModel.swift; sourceTree = "<group>"; };
 		0BDC1D51C1CBBDD27DE251E7 /* GardenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenViewModel.swift; sourceTree = "<group>"; };
@@ -88,8 +106,17 @@
 				3C306C747EA4663BC55286DB /* PlantDetailView.swift */,
 				D79379145143BA2DE3375BFB /* PlantingCompactCard.swift */,
 				891D4191639B677064F177D6 /* PlantingDetailView.swift */,
+				AC0001000000000000000001 /* Helpers */,
 			);
 			path = Garden;
+			sourceTree = "<group>";
+		};
+		AC0001000000000000000001 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				AB0001000000000000000009 /* MonthDateParser.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		3393CBF326B23C549644F544 /* GardenGenie */ = {
@@ -143,6 +170,8 @@
 			isa = PBXGroup;
 			children = (
 				025BDB10BC0ACAB532966CEB /* GardenTask.swift */,
+				AB0001000000000000000001 /* TaskKind.swift */,
+				AB0001000000000000000002 /* TaskRecurrence.swift */,
 				C1B452E7A30B9D1847482194 /* Plant.swift */,
 				98BF44D05EFC6E88D6CE1790 /* Plant+JSONB.swift */,
 			);
@@ -154,6 +183,12 @@
 			children = (
 				77390E3BF3D2C9E933A273EF /* TaskRowView.swift */,
 				FA6B15379EEF655F7021EC19 /* TasksView.swift */,
+				AB0001000000000000000003 /* TaskDateLabel.swift */,
+				AB0001000000000000000004 /* WeekStripView.swift */,
+				AB0001000000000000000005 /* AgendaDayHeader.swift */,
+				AB0001000000000000000006 /* OverdueSectionView.swift */,
+				AB0001000000000000000007 /* TaskDestinationView.swift */,
+				AB0001000000000000000008 /* AddTaskSheet.swift */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -250,6 +285,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA0001000000000000000001 /* TaskKind.swift in Sources */,
+				AA0001000000000000000002 /* TaskRecurrence.swift in Sources */,
+				AA0001000000000000000003 /* TaskDateLabel.swift in Sources */,
+				AA0001000000000000000004 /* WeekStripView.swift in Sources */,
+				AA0001000000000000000005 /* AgendaDayHeader.swift in Sources */,
+				AA0001000000000000000006 /* OverdueSectionView.swift in Sources */,
+				AA0001000000000000000007 /* TaskDestinationView.swift in Sources */,
+				AA0001000000000000000008 /* AddTaskSheet.swift in Sources */,
+				AA0001000000000000000009 /* MonthDateParser.swift in Sources */,
 				CF88C73D2874A4292F095620 /* AppTheme.swift in Sources */,
 				36DC89D5C9F30C773C028C93 /* CareDetailView.swift in Sources */,
 				50B86E705DD0DC4E04BCA441 /* GardenGenieApp.swift in Sources */,

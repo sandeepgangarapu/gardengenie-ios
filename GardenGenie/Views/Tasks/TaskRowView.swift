@@ -1,9 +1,14 @@
 import SwiftUI
 
-/// A single task row with a completion toggle — blue/pink accent palette.
+/// A single task row with a completion toggle. Tapping the body navigates to the
+/// appropriate detail view; the checkbox toggles completion without navigating.
 struct TaskRowView: View {
     let task: GardenTask
     let onToggle: () -> Void
+
+    private var isOverdue: Bool {
+        !task.isCompleted && task.dueDate < Calendar.current.startOfDay(for: .now)
+    }
 
     var body: some View {
         HStack(spacing: AppTheme.Spacing.md) {
@@ -21,13 +26,18 @@ struct TaskRowView: View {
                 .background(AppTheme.Colors.accentBlue.opacity(0.18), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(task.name)
-                    .font(.body)
-                    .strikethrough(task.isCompleted, color: AppTheme.Colors.textTertiary)
-                    .foregroundStyle(task.isCompleted ? AppTheme.Colors.textSecondary : AppTheme.Colors.textPrimary)
-                Text(task.dueDate, style: .relative)
-                    .font(.caption)
-                    .foregroundStyle(AppTheme.Colors.textSecondary)
+                HStack(spacing: 6) {
+                    Text(task.name)
+                        .font(.body)
+                        .strikethrough(task.isCompleted, color: AppTheme.Colors.textTertiary)
+                        .foregroundStyle(task.isCompleted ? AppTheme.Colors.textSecondary : AppTheme.Colors.textPrimary)
+                    if task.recurrence.isRecurring {
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(AppTheme.Colors.textTertiary)
+                    }
+                }
+                TaskDateLabel(dueDate: task.dueDate, isOverdue: isOverdue)
             }
 
             Spacer()
@@ -41,8 +51,23 @@ struct TaskRowView: View {
 
 #Preview {
     VStack {
-        TaskRowView(task: MockData.tasks[0]) {}
-        TaskRowView(task: MockData.tasks[1]) {}
+        TaskRowView(task: GardenTask(
+            name: "Water tomato plants",
+            dueDate: Date(),
+            plantID: MockData.tomatoID,
+            plantName: "Tomato",
+            iconName: "drop.fill",
+            kind: .care,
+            recurrence: .weekly
+        )) {}
+        TaskRowView(task: GardenTask(
+            name: "Check for pests",
+            dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date(),
+            plantID: MockData.potatoID,
+            plantName: "Potato",
+            isCompleted: true,
+            iconName: "ladybug.fill"
+        )) {}
     }
     .padding()
     .background(AppTheme.Colors.cardBackground)

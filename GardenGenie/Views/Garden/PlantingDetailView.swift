@@ -6,6 +6,8 @@ struct PlantingDetailView: View {
     let seedStarting: SeedStartingInfo?
     let planting: PlantingInfo?
     let plantName: String
+    let plant: Plant
+    @Bindable var taskVM: TaskViewModel
 
     enum Tab: String, CaseIterable {
         case seedStarting = "Seed Starting"
@@ -13,6 +15,11 @@ struct PlantingDetailView: View {
     }
 
     @State private var selectedTab: Tab
+    @State private var pendingKind: TaskKind?
+
+    private var currentKind: TaskKind {
+        selectedTab == .seedStarting ? .seedStarting : .planting
+    }
 
     // Which tabs are available
     private var availableTabs: [Tab] {
@@ -24,10 +31,17 @@ struct PlantingDetailView: View {
 
     private var showPicker: Bool { availableTabs.count > 1 }
 
-    init(seedStarting: SeedStartingInfo?, planting: PlantingInfo?, plantName: String, initialTab: Tab? = nil) {
+    init(seedStarting: SeedStartingInfo?,
+         planting: PlantingInfo?,
+         plantName: String,
+         plant: Plant,
+         taskVM: TaskViewModel,
+         initialTab: Tab? = nil) {
         self.seedStarting = seedStarting
         self.planting = planting
         self.plantName = plantName
+        self.plant = plant
+        self.taskVM = taskVM
         if let initial = initialTab {
             _selectedTab = State(initialValue: initial)
         } else if seedStarting != nil {
@@ -62,6 +76,27 @@ struct PlantingDetailView: View {
         .background(AppTheme.Colors.background.ignoresSafeArea())
         .navigationTitle(showPicker ? "Growing Guide" : selectedTab.rawValue)
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(item: $pendingKind) { kind in
+            let monthString: String? = kind == .seedStarting
+                ? seedStarting?.month
+                : planting?.month
+            ScheduleTaskSheet(
+                plant: plant,
+                kind: kind,
+                defaultDate: MonthDateParser.defaultDate(from: monthString),
+                taskVM: taskVM
+            )
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    pendingKind = currentKind
+                } label: {
+                    Image(systemName: "calendar.badge.plus")
+                }
+                .accessibilityLabel("Schedule \(selectedTab.rawValue)")
+            }
+        }
     }
 
     // MARK: - Seed Starting Content
@@ -236,12 +271,73 @@ struct PlantingDetailView: View {
     }
 }
 
+extension TaskKind: Identifiable {
+    var id: String { rawValue }
+}
+
+private struct ScheduleTaskSheet: View {
+    let plant: Plant
+    let kind: TaskKind
+    let defaultDate: Date
+    @Bindable var taskVM: TaskViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var date: Date
+
+    init(plant: Plant, kind: TaskKind, defaultDate: Date, taskVM: TaskViewModel) {
+        self.plant = plant
+        self.kind = kind
+        self.defaultDate = defaultDate
+        self.taskVM = taskVM
+        _date = State(initialValue: defaultDate)
+    }
+
+    private var title: String {
+        kind == .seedStarting ? "Schedule Seed Starting" : "Schedule Planting"
+    }
+
+    var body: some View {
+        NavigationStack {
+            VStack {
+                DatePicker(
+                    "Date",
+                    selection: $date,
+                    in: Calendar.current.startOfDay(for: .now)...,
+                    displayedComponents: .date
+                )
+                .datePickerStyle(.graphical)
+                .padding()
+                Spacer()
+            }
+            .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Add to Tasks") {
+                        let task: GardenTask =
+                            kind == .seedStarting
+                                ? .seedStarting(for: plant, on: date)
+                                : .planting(for: plant, on: date)
+                        taskVM.addTask(task)
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+}
+
 #Preview("Both Sections") {
     NavigationStack {
         PlantingDetailView(
             seedStarting: MockData.plants[0].seedStarting,
             planting: MockData.plants[0].planting,
-            plantName: "Tomato"
+            plantName: "Tomato",
+            plant: MockData.plants[0],
+            taskVM: TaskViewModel()
         )
     }
     .preferredColorScheme(.dark)
@@ -252,7 +348,9 @@ struct PlantingDetailView: View {
         PlantingDetailView(
             seedStarting: nil,
             planting: MockData.plants[1].planting,
-            plantName: "Potato"
+            plantName: "Potato",
+            plant: MockData.plants[1],
+            taskVM: TaskViewModel()
         )
     }
     .preferredColorScheme(.dark)
