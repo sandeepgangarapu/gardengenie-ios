@@ -8,8 +8,8 @@ struct SettingsView: View {
 
     // Persisted toggles
     @AppStorage("haptics_enabled") private var hapticsEnabled = true
-    @AppStorage("metric_units") private var metricUnits = false
     @AppStorage("task_notifications") private var taskNotifications = true
+    @AppStorage("zip_code") private var zipCode = ""
     @AppStorage("water_reminders") private var waterReminders = true
     @AppStorage("parallax_effects") private var parallaxEffects = true
 
@@ -144,14 +144,6 @@ struct SettingsView: View {
 
                 dividerRow
 
-                settingsRow(icon: "ruler", iconColor: AppTheme.Colors.accentBlue, title: "Metric Units") {
-                    Toggle("", isOn: $metricUnits)
-                        .tint(AppTheme.Colors.accentBlue)
-                        .labelsHidden()
-                }
-
-                dividerRow
-
                 settingsRow(icon: "bell.badge", iconColor: AppTheme.Colors.accentBlue, title: "Task Notifications") {
                     Toggle("", isOn: $taskNotifications)
                         .tint(AppTheme.Colors.accentBlue)
@@ -189,18 +181,13 @@ struct SettingsView: View {
 
                 dividerRow
 
-                settingsRow(icon: "drop.fill", iconColor: AppTheme.Colors.skyBlue, title: "Water Reminders") {
-                    Toggle("", isOn: $waterReminders)
-                        .tint(AppTheme.Colors.accentBlue)
-                        .labelsHidden()
-                }
-
-                dividerRow
-
-                settingsRow(icon: "rectangle.stack", iconColor: AppTheme.Colors.accentPink, title: "Parallax Effects") {
-                    Toggle("", isOn: $parallaxEffects)
-                        .tint(AppTheme.Colors.accentBlue)
-                        .labelsHidden()
+                settingsRow(icon: "location.fill", iconColor: AppTheme.Colors.accentBlue, title: "Zip Code") {
+                    TextField("Enter zip", text: $zipCode)
+                        .font(.subheadline)
+                        .foregroundStyle(AppTheme.Colors.textSecondary)
+                        .multilineTextAlignment(.trailing)
+                        .keyboardType(.numberPad)
+                        .frame(width: 80)
                 }
             }
             .background(

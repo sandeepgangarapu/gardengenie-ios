@@ -275,61 +275,6 @@ extension TaskKind: Identifiable {
     var id: String { rawValue }
 }
 
-private struct ScheduleTaskSheet: View {
-    let plant: Plant
-    let kind: TaskKind
-    let defaultDate: Date
-    @Bindable var taskVM: TaskViewModel
-    @Environment(\.dismiss) private var dismiss
-
-    @State private var date: Date
-
-    init(plant: Plant, kind: TaskKind, defaultDate: Date, taskVM: TaskViewModel) {
-        self.plant = plant
-        self.kind = kind
-        self.defaultDate = defaultDate
-        self.taskVM = taskVM
-        _date = State(initialValue: defaultDate)
-    }
-
-    private var title: String {
-        kind == .seedStarting ? "Schedule Seed Starting" : "Schedule Planting"
-    }
-
-    var body: some View {
-        NavigationStack {
-            VStack {
-                DatePicker(
-                    "Date",
-                    selection: $date,
-                    in: Calendar.current.startOfDay(for: .now)...,
-                    displayedComponents: .date
-                )
-                .datePickerStyle(.graphical)
-                .padding()
-                Spacer()
-            }
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Add to Tasks") {
-                        let task: GardenTask =
-                            kind == .seedStarting
-                                ? .seedStarting(for: plant, on: date)
-                                : .planting(for: plant, on: date)
-                        taskVM.addTask(task)
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-}
-
 #Preview("Both Sections") {
     NavigationStack {
         PlantingDetailView(

@@ -1,20 +1,32 @@
 import SwiftUI
 
-/// The "My Garden" tab: two horizontal carousels — Featured + Needs Care —
-/// with a dark top bar matching the card-based aesthetic.
+/// The "My Garden" tab: horizontal carousels for all plants and attribute-based categories.
 struct MyGardenView: View {
     @Bindable var gardenVM: GardenViewModel
     @Bindable var taskVM: TaskViewModel
     @State private var showSettings = false
-    @State private var featuredOrder: [Plant] = []
 
     var body: some View {
         NavigationStack {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: AppTheme.Spacing.lg) {
                     topBar
-                    featuredSection
-                    needsCareSection
+                    allPlantsSection
+                    ForEach(plantsByType, id: \.0) { groupName, plants in
+                        carouselSection(title: groupName, subtitle: "By type", plants: plants)
+                    }
+                    ForEach(plantsByLocation, id: \.0) { groupName, plants in
+                        carouselSection(title: groupName, subtitle: "By location", plants: plants)
+                    }
+                    ForEach(plantsBySun, id: \.0) { groupName, plants in
+                        carouselSection(title: groupName, subtitle: "By sunlight", plants: plants)
+                    }
+                    ForEach(plantsByWater, id: \.0) { groupName, plants in
+                        carouselSection(title: groupName, subtitle: "By water needs", plants: plants)
+                    }
+                    ForEach(plantsBySeason, id: \.0) { groupName, plants in
+                        carouselSection(title: groupName, subtitle: "By season", plants: plants)
+                    }
                     Spacer(minLength: 80)
                 }
                 .padding(.top, AppTheme.Spacing.md)
@@ -26,11 +38,6 @@ struct MyGardenView: View {
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView(gardenVM: gardenVM, taskVM: taskVM)
-            }
-            .onAppear {
-                if featuredOrder.isEmpty {
-                    featuredOrder = gardenVM.plants
-                }
             }
         }
     }
@@ -54,15 +61,15 @@ struct MyGardenView: View {
         .padding(.horizontal, AppTheme.Spacing.md)
     }
 
-    // MARK: - Featured Section
+    // MARK: - All Plants Section
 
-    private var featuredSection: some View {
+    private var allPlantsSection: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            SectionHeader(title: "Featured", subtitle: "Plants you're growing this season")
+            SectionHeader(title: "All Plants", subtitle: "\(gardenVM.plants.count) plants in your garden")
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: AppTheme.Spacing.md) {
-                    ForEach(featuredOrder) { plant in
+                    ForEach(gardenVM.plants) { plant in
                         NavigationLink(value: plant) {
                             HeroPlantCard(plant: plant)
                         }
@@ -74,15 +81,15 @@ struct MyGardenView: View {
         }
     }
 
-    // MARK: - Needs Care Section
+    // MARK: - Carousel Section
 
-    private var needsCareSection: some View {
+    private func carouselSection(title: String, subtitle: String, plants: [Plant]) -> some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            SectionHeader(title: "Needs Care", subtitle: "Plants due for water or attention")
+            SectionHeader(title: title, subtitle: subtitle)
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: AppTheme.Spacing.md) {
-                    ForEach(plantsNeedingCare) { plant in
+                    ForEach(plants) { plant in
                         NavigationLink(value: plant) {
                             PlantCardView(plant: plant)
                         }
@@ -94,17 +101,32 @@ struct MyGardenView: View {
         }
     }
 
-    /// Plants with pending tasks due within the next 3 days.
-    private var plantsNeedingCare: [Plant] {
-        let threeDays = Calendar.current.date(byAdding: .day, value: 3, to: Date()) ?? Date()
-        let urgentPlantIDs = Set(
-            taskVM.pendingTasks
-                .filter { $0.dueDate <= threeDays }
-                .map(\.plantID)
-        )
-        let result = gardenVM.plants.filter { urgentPlantIDs.contains($0.id) }
-        // Fallback: if no urgent tasks, show all plants so the section isn't empty
-        return result.isEmpty ? gardenVM.plants : result
+    // MARK: - Grouping Computed Properties
+
+    private var plantsByType: [(String, [Plant])] {
+        groupPlants(by: { $0.type?.capitalized ?? "Other" })
+    }
+
+    private var plantsByLocation: [(String, [Plant])] {
+        groupPlants(by: { $0.indoorOutdoor?.capitalized ?? "Unspecified" })
+    }
+
+    private var plantsBySun: [(String, [Plant])] {
+        groupPlants(by: { $0.sunRequirements ?? "Unspecified" })
+    }
+
+    private var plantsByWater: [(String, [Plant])] {
+        groupPlants(by: { $0.requirements?.water ?? "Unspecified" })
+    }
+
+    private var plantsBySeason: [(String, [Plant])] {
+        groupPlants(by: { $0.seasonality ?? "Year-round" })
+    }
+
+    private func groupPlants(by keyPath: (Plant) -> String) -> [(String, [Plant])] {
+        Dictionary(grouping: gardenVM.plants, by: keyPath)
+            .sorted { $0.key < $1.key }
+            .filter { !$0.value.isEmpty }
     }
 }
 

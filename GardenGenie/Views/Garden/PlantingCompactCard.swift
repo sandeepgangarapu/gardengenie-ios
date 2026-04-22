@@ -82,7 +82,7 @@ struct PlantingCompactCard: View {
         PlantingCompactCard(
             title: "Planting",
             month: "April-May",
-            iconName: "shovel.fill",
+            iconName: "leaf.circle.fill",
             accentColor: AppTheme.Colors.secondaryGreen
         )
     }

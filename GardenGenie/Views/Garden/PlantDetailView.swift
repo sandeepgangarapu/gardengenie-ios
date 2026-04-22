@@ -11,27 +11,34 @@ struct PlantDetailView: View {
     @State private var showRemoveConfirmation = false
 
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: AppTheme.Spacing.lg) {
-                // Blurred backdrop + top bar + poster card
-                ZStack(alignment: .top) {
-                    backdropBlur
-                    VStack(spacing: AppTheme.Spacing.md) {
-                        topBar
-                        posterCard
+        ZStack(alignment: .top) {
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: AppTheme.Spacing.lg) {
+                    // Blurred backdrop + poster card
+                    ZStack(alignment: .top) {
+                        backdropBlur
+                        VStack(spacing: AppTheme.Spacing.md) {
+                            Spacer().frame(height: 36) // space for sticky top bar
+                            posterCard
+                        }
+                        .padding(.top, 56) // status bar clearance
                     }
-                    .padding(.top, 56) // status bar clearance
+
+                    titleBlock
+                    ctaButtons
+                    descriptionBlock
+                    statsRow
+                    typeAndZoneSection
+                    viewCareButton
+                    plantingCardsRow
+
+                    Spacer(minLength: 40)
                 }
-
-                titleBlock
-                ctaButtons
-                descriptionBlock
-                statsRow
-                typeAndZoneSection
-                plantingCardsRow
-
-                Spacer(minLength: 40)
             }
+
+            // Sticky top bar
+            topBar
+                .padding(.top, 56) // status bar clearance
         }
         .background(AppTheme.Colors.background.ignoresSafeArea())
         .navigationBarHidden(true)
@@ -159,15 +166,13 @@ struct PlantDetailView: View {
                 .buttonStyle(.plain)
             }
 
-            if plant.carePlan != nil {
-                NavigationLink {
-                    CareDetailView(plant: plant, taskVM: taskVM)
-                } label: {
-                    Label("View Care", systemImage: "eye")
-                        .pillButton(style: .secondary)
-                }
-                .buttonStyle(.plain)
+            Button {
+                withAnimation(.snappy) { gardenVM.toggleBookmark(plant) }
+            } label: {
+                Label(gardenVM.isBookmarked(plant) ? "Saved" : "Save for Later", systemImage: gardenVM.isBookmarked(plant) ? "bookmark.fill" : "bookmark")
+                    .pillButton(style: .secondary)
             }
+            .buttonStyle(.plain)
         }
         .padding(.horizontal, AppTheme.Spacing.md)
     }
@@ -279,22 +284,24 @@ struct PlantDetailView: View {
                 Spacer()
             }
 
-            if let zoneSuitability = plant.zoneSuitability {
-                VStack(alignment: .leading, spacing: AppTheme.Spacing.xs) {
-                    Text("Zone Suitability")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppTheme.Colors.textSecondary)
-                    Text(zoneSuitability)
-                        .font(.body)
-                        .foregroundStyle(AppTheme.Colors.textPrimary)
-                }
-                .padding(AppTheme.Spacing.md)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(AppTheme.Colors.cardBackground)
-                .cornerRadius(AppTheme.CornerRadius.card)
-            }
         }
         .padding(.horizontal, AppTheme.Spacing.md)
+    }
+
+    // MARK: - View Care Button
+
+    @ViewBuilder
+    private var viewCareButton: some View {
+        if plant.carePlan != nil {
+            NavigationLink {
+                CareDetailView(plant: plant, taskVM: taskVM)
+            } label: {
+                Label("View Care", systemImage: "eye")
+                    .pillButton(style: .secondary)
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, AppTheme.Spacing.md)
+        }
     }
 
     // MARK: - Planting Cards Row (Seed Starting + Planting)
@@ -341,7 +348,7 @@ struct PlantDetailView: View {
                         PlantingCompactCard(
                             title: "Planting",
                             month: plant.planting?.month,
-                            iconName: "shovel.fill",
+                            iconName: "leaf.circle.fill",
                             accentColor: AppTheme.Colors.secondaryGreen
                         )
                     }

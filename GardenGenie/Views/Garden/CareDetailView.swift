@@ -31,13 +31,13 @@ struct CareDetailView: View {
         .navigationTitle("Care Guide")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $pendingAdd) { item in
-            AddTaskSheet(
+            ScheduleTaskSheet(
+                plant: plant,
+                kind: .care,
+                defaultDate: Date(),
                 taskVM: taskVM,
-                gardenVM: GardenViewModel(plants: [plant]),
                 prefilledName: item.title,
-                prefilledIcon: item.iconName ?? "checkmark.circle.fill",
-                prefilledPlant: plant,
-                prefilledKind: .care
+                prefilledIcon: item.iconName ?? "checkmark.circle.fill"
             )
         }
     }
@@ -97,7 +97,7 @@ struct CareDetailView: View {
                 Button {
                     addToTasks(item)
                 } label: {
-                    Image(systemName: "plus.circle.fill")
+                    Image(systemName: "calendar.badge.plus")
                         .font(.title2)
                         .foregroundStyle(AppTheme.Colors.accentPink)
                         .padding(AppTheme.Spacing.xs)

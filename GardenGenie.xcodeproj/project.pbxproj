@@ -16,6 +16,7 @@
 		AA0001000000000000000007 /* TaskDestinationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000007 /* TaskDestinationView.swift */; };
 		AA0001000000000000000008 /* AddTaskSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000008 /* AddTaskSheet.swift */; };
 		AA0001000000000000000009 /* MonthDateParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000009 /* MonthDateParser.swift */; };
+		AA0001000000000000000010 /* ScheduleTaskSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000010 /* ScheduleTaskSheet.swift */; };
 		1F14AC2A7D778CD47854C820 /* PlantDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C306C747EA4663BC55286DB /* PlantDetailView.swift */; };
 		2653D8DF67CD932D826ED570 /* TaskRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77390E3BF3D2C9E933A273EF /* TaskRowView.swift */; };
 		30CD919F9A4F29FA13F6DBA8 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22065A20214CB5429F429C1D /* MockData.swift */; };
@@ -50,6 +51,7 @@
 		AB0001000000000000000007 /* TaskDestinationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDestinationView.swift; sourceTree = "<group>"; };
 		AB0001000000000000000008 /* AddTaskSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskSheet.swift; sourceTree = "<group>"; };
 		AB0001000000000000000009 /* MonthDateParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthDateParser.swift; sourceTree = "<group>"; };
+		AB0001000000000000000010 /* ScheduleTaskSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTaskSheet.swift; sourceTree = "<group>"; };
 		025BDB10BC0ACAB532966CEB /* GardenTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenTask.swift; sourceTree = "<group>"; };
 		0B98515D74BC8A81A012B6DB /* TaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskViewModel.swift; sourceTree = "<group>"; };
 		0BDC1D51C1CBBDD27DE251E7 /* GardenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenViewModel.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 				AB0001000000000000000006 /* OverdueSectionView.swift */,
 				AB0001000000000000000007 /* TaskDestinationView.swift */,
 				AB0001000000000000000008 /* AddTaskSheet.swift */,
+				AB0001000000000000000010 /* ScheduleTaskSheet.swift */,
 			);
 			path = Tasks;
 			sourceTree = "<group>";
@@ -294,6 +297,7 @@
 				AA0001000000000000000007 /* TaskDestinationView.swift in Sources */,
 				AA0001000000000000000008 /* AddTaskSheet.swift in Sources */,
 				AA0001000000000000000009 /* MonthDateParser.swift in Sources */,
+				AA0001000000000000000010 /* ScheduleTaskSheet.swift in Sources */,
 				CF88C73D2874A4292F095620 /* AppTheme.swift in Sources */,
 				36DC89D5C9F30C773C028C93 /* CareDetailView.swift in Sources */,
 				50B86E705DD0DC4E04BCA441 /* GardenGenieApp.swift in Sources */,
