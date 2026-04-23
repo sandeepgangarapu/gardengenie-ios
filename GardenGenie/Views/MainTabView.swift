@@ -15,7 +15,10 @@ struct MainTabView: View {
                 TasksView(taskVM: taskVM, gardenVM: gardenVM)
             }
             Tab("My Garden", systemImage: "leaf.fill", value: AppTab.myGarden) {
-                MyGardenView(gardenVM: gardenVM, taskVM: taskVM)
+                MyGardenView(gardenVM: gardenVM, taskVM: taskVM, selectedTab: $selectedTab)
+            }
+            Tab("Explore", systemImage: "binoculars.fill", value: AppTab.explore) {
+                ExploreView(gardenVM: gardenVM, taskVM: taskVM)
             }
             Tab("Search", systemImage: "magnifyingglass", value: AppTab.search, role: .search) {
                 SearchSheet(gardenVM: gardenVM, taskVM: taskVM)
@@ -29,6 +32,7 @@ struct MainTabView: View {
 enum AppTab: Hashable {
     case tasks
     case myGarden
+    case explore
     case search
 }
 

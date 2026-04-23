@@ -17,6 +17,14 @@
 		AA0001000000000000000008 /* AddTaskSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000008 /* AddTaskSheet.swift */; };
 		AA0001000000000000000009 /* MonthDateParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000009 /* MonthDateParser.swift */; };
 		AA0001000000000000000010 /* ScheduleTaskSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000010 /* ScheduleTaskSheet.swift */; };
+		AA0002000000000000000001 /* USDAZoneLookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0002000000000000000001 /* USDAZoneLookup.swift */; };
+		AA0002000000000000000002 /* USDAZones.json in Resources */ = {isa = PBXBuildFile; fileRef = AB0002000000000000000002 /* USDAZones.json */; };
+		AA0002000000000000000003 /* OnboardingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0002000000000000000003 /* OnboardingCoordinator.swift */; };
+		AA0002000000000000000004 /* OnboardingWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0002000000000000000004 /* OnboardingWelcomeView.swift */; };
+		AA0002000000000000000005 /* OnboardingFeaturesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0002000000000000000005 /* OnboardingFeaturesView.swift */; };
+		AA0002000000000000000006 /* OnboardingZipCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0002000000000000000006 /* OnboardingZipCodeView.swift */; };
+		AA0002000000000000000007 /* OnboardingZoneResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0002000000000000000007 /* OnboardingZoneResultView.swift */; };
+		AA0002000000000000000008 /* OnboardingPageIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0002000000000000000008 /* OnboardingPageIndicator.swift */; };
 		1F14AC2A7D778CD47854C820 /* PlantDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C306C747EA4663BC55286DB /* PlantDetailView.swift */; };
 		2653D8DF67CD932D826ED570 /* TaskRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77390E3BF3D2C9E933A273EF /* TaskRowView.swift */; };
 		30CD919F9A4F29FA13F6DBA8 /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22065A20214CB5429F429C1D /* MockData.swift */; };
@@ -39,6 +47,7 @@
 		CF88C73D2874A4292F095620 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = D417A902A6ADFF22B0A6F1EC /* AppTheme.swift */; };
 		EB6EA988E0D4B4CEEC1ED39C /* HeroPlantCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94B35CCBAA1ED4504B5D88A /* HeroPlantCard.swift */; };
 		F45ED16A97B276335282DC23 /* Plant+JSONB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98BF44D05EFC6E88D6CE1790 /* Plant+JSONB.swift */; };
+		EE0001000000000000000001 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF0001000000000000000001 /* ExploreView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +61,14 @@
 		AB0001000000000000000008 /* AddTaskSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskSheet.swift; sourceTree = "<group>"; };
 		AB0001000000000000000009 /* MonthDateParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthDateParser.swift; sourceTree = "<group>"; };
 		AB0001000000000000000010 /* ScheduleTaskSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTaskSheet.swift; sourceTree = "<group>"; };
+		AB0002000000000000000001 /* USDAZoneLookup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDAZoneLookup.swift; sourceTree = "<group>"; };
+		AB0002000000000000000002 /* USDAZones.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = USDAZones.json; sourceTree = "<group>"; };
+		AB0002000000000000000003 /* OnboardingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCoordinator.swift; sourceTree = "<group>"; };
+		AB0002000000000000000004 /* OnboardingWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.swift; sourceTree = "<group>"; };
+		AB0002000000000000000005 /* OnboardingFeaturesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFeaturesView.swift; sourceTree = "<group>"; };
+		AB0002000000000000000006 /* OnboardingZipCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingZipCodeView.swift; sourceTree = "<group>"; };
+		AB0002000000000000000007 /* OnboardingZoneResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingZoneResultView.swift; sourceTree = "<group>"; };
+		AB0002000000000000000008 /* OnboardingPageIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageIndicator.swift; sourceTree = "<group>"; };
 		025BDB10BC0ACAB532966CEB /* GardenTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenTask.swift; sourceTree = "<group>"; };
 		0B98515D74BC8A81A012B6DB /* TaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskViewModel.swift; sourceTree = "<group>"; };
 		0BDC1D51C1CBBDD27DE251E7 /* GardenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenViewModel.swift; sourceTree = "<group>"; };
@@ -75,6 +92,7 @@
 		F78BC3BEE8C7E6322988001A /* GardenGenieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenGenieApp.swift; sourceTree = "<group>"; };
 		FA6B15379EEF655F7021EC19 /* TasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksView.swift; sourceTree = "<group>"; };
 		FE0A8C6E74F3AD055B2FBD13 /* SearchSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSheet.swift; sourceTree = "<group>"; };
+		EF0001000000000000000001 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -83,11 +101,42 @@
 			children = (
 				B905F84493EB9EB95DA4BD19 /* MainTabView.swift */,
 				D8BD7424A04CC20A40C975DF /* Components */,
+				ED0001000000000000000001 /* Explore */,
 				1F7D2D16F648FDB1FC80A529 /* Garden */,
+				AC0002000000000000000001 /* Onboarding */,
 				68450BF9A17764B529678F5A /* Settings */,
 				BDFE2E3DAD087DB836E798AE /* Tasks */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		AC0002000000000000000001 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				AB0002000000000000000003 /* OnboardingCoordinator.swift */,
+				AB0002000000000000000004 /* OnboardingWelcomeView.swift */,
+				AB0002000000000000000005 /* OnboardingFeaturesView.swift */,
+				AB0002000000000000000006 /* OnboardingZipCodeView.swift */,
+				AB0002000000000000000007 /* OnboardingZoneResultView.swift */,
+				AC0002000000000000000002 /* Components */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		AC0002000000000000000002 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				AB0002000000000000000008 /* OnboardingPageIndicator.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		ED0001000000000000000001 /* Explore */ = {
+			isa = PBXGroup;
+			children = (
+				EF0001000000000000000001 /* ExploreView.swift */,
+			);
+			path = Explore;
 			sourceTree = "<group>";
 		};
 		1F69939F958AB44AB2A3FBE9 = {
@@ -164,6 +213,8 @@
 			isa = PBXGroup;
 			children = (
 				22065A20214CB5429F429C1D /* MockData.swift */,
+				AB0002000000000000000001 /* USDAZoneLookup.swift */,
+				AB0002000000000000000002 /* USDAZones.json */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -278,6 +329,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C226B5711ECE9766262CC54 /* Assets.xcassets in Resources */,
+				AA0002000000000000000002 /* USDAZones.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,6 +371,14 @@
 				2653D8DF67CD932D826ED570 /* TaskRowView.swift in Sources */,
 				90943BE8F1F18461279466CD /* TaskViewModel.swift in Sources */,
 				B51192DD1DE2C112030CB045 /* TasksView.swift in Sources */,
+				EE0001000000000000000001 /* ExploreView.swift in Sources */,
+				AA0002000000000000000001 /* USDAZoneLookup.swift in Sources */,
+				AA0002000000000000000003 /* OnboardingCoordinator.swift in Sources */,
+				AA0002000000000000000004 /* OnboardingWelcomeView.swift in Sources */,
+				AA0002000000000000000005 /* OnboardingFeaturesView.swift in Sources */,
+				AA0002000000000000000006 /* OnboardingZipCodeView.swift in Sources */,
+				AA0002000000000000000007 /* OnboardingZoneResultView.swift in Sources */,
+				AA0002000000000000000008 /* OnboardingPageIndicator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

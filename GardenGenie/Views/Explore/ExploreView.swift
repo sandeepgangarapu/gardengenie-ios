@@ -1,37 +1,30 @@
 import SwiftUI
 
-/// The "My Garden" tab: horizontal carousels for all plants and attribute-based categories.
-struct MyGardenView: View {
+/// The "Explore" tab: browse the full plant database with horizontal carousels.
+struct ExploreView: View {
     @Bindable var gardenVM: GardenViewModel
     @Bindable var taskVM: TaskViewModel
-    @Binding var selectedTab: AppTab
-    @State private var showSettings = false
 
     var body: some View {
         NavigationStack {
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: AppTheme.Spacing.lg) {
                     topBar
-
-                    if gardenVM.plants.isEmpty {
-                        emptyStateView
-                    } else {
-                        allPlantsSection
-                        ForEach(plantsByType, id: \.0) { groupName, plants in
-                            carouselSection(title: groupName, subtitle: "By type", plants: plants)
-                        }
-                        ForEach(plantsByLocation, id: \.0) { groupName, plants in
-                            carouselSection(title: groupName, subtitle: "By location", plants: plants)
-                        }
-                        ForEach(plantsBySun, id: \.0) { groupName, plants in
-                            carouselSection(title: groupName, subtitle: "By sunlight", plants: plants)
-                        }
-                        ForEach(plantsByWater, id: \.0) { groupName, plants in
-                            carouselSection(title: groupName, subtitle: "By water needs", plants: plants)
-                        }
-                        ForEach(plantsBySeason, id: \.0) { groupName, plants in
-                            carouselSection(title: groupName, subtitle: "By season", plants: plants)
-                        }
+                    allPlantsSection
+                    ForEach(plantsByType, id: \.0) { groupName, plants in
+                        carouselSection(title: groupName, subtitle: "By type", plants: plants)
+                    }
+                    ForEach(plantsByLocation, id: \.0) { groupName, plants in
+                        carouselSection(title: groupName, subtitle: "By location", plants: plants)
+                    }
+                    ForEach(plantsBySun, id: \.0) { groupName, plants in
+                        carouselSection(title: groupName, subtitle: "By sunlight", plants: plants)
+                    }
+                    ForEach(plantsByWater, id: \.0) { groupName, plants in
+                        carouselSection(title: groupName, subtitle: "By water needs", plants: plants)
+                    }
+                    ForEach(plantsBySeason, id: \.0) { groupName, plants in
+                        carouselSection(title: groupName, subtitle: "By season", plants: plants)
                     }
                     Spacer(minLength: 80)
                 }
@@ -42,9 +35,6 @@ struct MyGardenView: View {
             .navigationDestination(for: Plant.self) { plant in
                 PlantDetailView(plant: plant, gardenVM: gardenVM, taskVM: taskVM)
             }
-            .sheet(isPresented: $showSettings) {
-                SettingsView(gardenVM: gardenVM, taskVM: taskVM)
-            }
         }
     }
 
@@ -53,61 +43,24 @@ struct MyGardenView: View {
     private var topBar: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text("My Garden")
+                Text("Explore")
                     .font(.largeTitle.bold())
                     .foregroundStyle(AppTheme.Colors.textPrimary)
             }
             Spacer()
-            Button { showSettings = true } label: {
-                Image(systemName: "gearshape")
-                    .circularIconButton()
-            }
-            .buttonStyle(.plain)
         }
         .padding(.horizontal, AppTheme.Spacing.md)
-    }
-
-    // MARK: - Empty State
-
-    private var emptyStateView: some View {
-        Button {
-            selectedTab = .search
-        } label: {
-            VStack(spacing: AppTheme.Spacing.md) {
-                Image(systemName: "leaf.circle")
-                    .font(.system(size: 56, weight: .thin))
-                    .foregroundStyle(AppTheme.Colors.accentPink.opacity(0.6))
-
-                Text("Your garden is empty")
-                    .font(.title3.bold())
-                    .foregroundStyle(AppTheme.Colors.textPrimary)
-
-                Text("Tap here to search and add your first plant")
-                    .font(.callout)
-                    .foregroundStyle(AppTheme.Colors.textSecondary)
-                    .multilineTextAlignment(.center)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, AppTheme.Spacing.xl)
-            .padding(.horizontal, AppTheme.Spacing.md)
-            .background(
-                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous)
-                    .fill(AppTheme.Colors.cardBackground)
-            )
-            .padding(.horizontal, AppTheme.Spacing.md)
-        }
-        .buttonStyle(.plain)
     }
 
     // MARK: - All Plants Section
 
     private var allPlantsSection: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            SectionHeader(title: "All Plants", subtitle: "\(gardenVM.plants.count) plants in your garden")
+            ExploreSectionHeader(title: "All Plants", subtitle: "\(gardenVM.allPlants.count) plants to discover")
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: AppTheme.Spacing.md) {
-                    ForEach(gardenVM.plants) { plant in
+                    ForEach(gardenVM.allPlants) { plant in
                         NavigationLink(value: plant) {
                             HeroPlantCard(plant: plant)
                         }
@@ -123,7 +76,7 @@ struct MyGardenView: View {
 
     private func carouselSection(title: String, subtitle: String, plants: [Plant]) -> some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            SectionHeader(title: title, subtitle: subtitle)
+            ExploreSectionHeader(title: title, subtitle: subtitle)
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: AppTheme.Spacing.md) {
@@ -162,7 +115,7 @@ struct MyGardenView: View {
     }
 
     private func groupPlants(by keyPath: (Plant) -> String) -> [(String, [Plant])] {
-        Dictionary(grouping: gardenVM.plants, by: keyPath)
+        Dictionary(grouping: gardenVM.allPlants, by: keyPath)
             .sorted { $0.key < $1.key }
             .filter { !$0.value.isEmpty }
     }
@@ -170,7 +123,7 @@ struct MyGardenView: View {
 
 // MARK: - Section Header
 
-private struct SectionHeader: View {
+private struct ExploreSectionHeader: View {
     let title: String
     let subtitle: String
 
@@ -193,11 +146,6 @@ private struct SectionHeader: View {
 }
 
 #Preview {
-    @Previewable @State var selectedTab: AppTab = .myGarden
-    MyGardenView(
-        gardenVM: GardenViewModel(),
-        taskVM: TaskViewModel(),
-        selectedTab: $selectedTab
-    )
-    .preferredColorScheme(.dark)
+    ExploreView(gardenVM: GardenViewModel(), taskVM: TaskViewModel())
+        .preferredColorScheme(.dark)
 }

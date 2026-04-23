@@ -12,6 +12,9 @@ enum MockData {
     static let sunflowerID  = UUID(uuidString: "66666666-6666-6666-6666-666666666666")!
     static let strawberryID = UUID(uuidString: "77777777-7777-7777-7777-777777777777")!
     static let lavenderID   = UUID(uuidString: "88888888-8888-8888-8888-888888888888")!
+    static let snakePlantID = UUID(uuidString: "99999999-9999-9999-9999-999999999999")!
+    static let pothosID     = UUID(uuidString: "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA")!
+    static let peaceLilyID  = UUID(uuidString: "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB")!
 
     static let plants: [Plant] = [
         Plant(
@@ -414,6 +417,139 @@ enum MockData {
                 companionPlants: ["Rosemary", "Sage", "Thyme"],
                 yield: "Continuous bloom June–September",
                 varieties: ["English", "Spanish", "French"]
+            )
+        ),
+        Plant(
+            id: snakePlantID,
+            name: "Snake Plant",
+            description: "One of the most forgiving houseplants, snake plants tolerate low light and irregular watering. Their upright, sword-like leaves purify air and add architectural interest.",
+            type: "houseplant",
+            zone: "9–11",
+            sunRequirements: "Low to Bright Indirect Light",
+            zoneSuitability: "Indoor; outdoors only in zones 9–11",
+            seasonality: "Year-round",
+            indoorOutdoor: "indoor",
+            requirements: PlantRequirements(
+                soil: "Well-draining potting mix with sand or perlite",
+                water: "Every 2–6 weeks; allow soil to dry completely",
+                temperature: "60–85°F",
+                humidity: "30–50% (low humidity preferred)",
+                fertilizer: "Balanced, diluted, once monthly in growing season"
+            ),
+            seedStarting: nil,
+            planting: PlantingInfo(
+                month: "Year-round (indoors)",
+                instructions: ["Use a pot with drainage holes", "Plant in well-draining cactus or succulent mix", "Do not bury the crown", "Repot only when severely root-bound"],
+                spacing: "N/A (container plant)",
+                depth: "Same depth as nursery pot",
+                method: "Division or leaf cuttings",
+                notes: "Prefers to be slightly root-bound; repot every 2–3 years"
+            ),
+            carePlan: CarePlan(
+                mustDo: [
+                    CareItem(title: "Avoid Overwatering", description: "Root rot is the main killer. Let soil dry completely between waterings. In winter, water only once a month.", frequency: "Every 2–6 weeks", iconName: "drop.fill"),
+                    CareItem(title: "Good Drainage", description: "Use pots with drainage holes and well-draining soil. Never let plant sit in standing water.", frequency: "Ongoing", iconName: "square.stack.fill")
+                ],
+                others: [
+                    CareItem(title: "Dust Leaves", description: "Wipe leaves with a damp cloth to remove dust and improve photosynthesis.", frequency: "Monthly", iconName: "sparkles"),
+                    CareItem(title: "Fertilizing", description: "Feed monthly during spring and summer with diluted balanced fertilizer.", frequency: "Monthly (growing season)", iconName: "leaf.fill"),
+                    CareItem(title: "Rotate Plant", description: "Rotate pot quarterly for even growth.", frequency: "Every 3 months", iconName: "arrow.circlepath")
+                ]
+            ),
+            typeSpecific: TypeSpecificInfo(
+                daysToHarvest: nil,
+                companionPlants: ["ZZ Plant", "Pothos", "Aloe"],
+                yield: nil,
+                varieties: ["Laurentii", "Moonshine", "Cylindrica"]
+            )
+        ),
+        Plant(
+            id: pothosID,
+            name: "Pothos",
+            description: "A trailing vine that thrives on neglect. Pothos tolerates low light and purifies indoor air. Its heart-shaped leaves cascade beautifully from shelves or hanging baskets.",
+            type: "houseplant",
+            zone: "10–12",
+            sunRequirements: "Low to Bright Indirect Light",
+            zoneSuitability: "Indoor; outdoors only in tropical zones 10–12",
+            seasonality: "Year-round",
+            indoorOutdoor: "indoor",
+            requirements: PlantRequirements(
+                soil: "Standard potting mix with good drainage",
+                water: "Every 1–2 weeks; allow top inch to dry",
+                temperature: "65–85°F",
+                humidity: "40–60% (tolerates low humidity)",
+                fertilizer: "Balanced liquid fertilizer monthly in growing season"
+            ),
+            seedStarting: nil,
+            planting: PlantingInfo(
+                month: "Year-round (indoors)",
+                instructions: ["Use a pot with drainage holes", "Standard potting mix works well", "Can also root in water indefinitely", "Prune to encourage bushier growth"],
+                spacing: "N/A (container plant)",
+                depth: "Same depth as nursery pot",
+                method: "Stem cuttings (root easily in water or soil)",
+                notes: "One of the easiest plants to propagate; cuttings root in 1–2 weeks"
+            ),
+            carePlan: CarePlan(
+                mustDo: [
+                    CareItem(title: "Watering", description: "Water when top inch of soil is dry. Droopy leaves indicate it needs water; yellowing leaves mean overwatering.", frequency: "Every 1–2 weeks", iconName: "drop.fill"),
+                    CareItem(title: "Light Requirements", description: "Tolerates low light but grows faster and keeps variegation in bright indirect light.", frequency: "Ongoing", iconName: "sun.max.fill")
+                ],
+                others: [
+                    CareItem(title: "Pruning", description: "Trim vines to maintain desired length and encourage fuller growth.", frequency: "As needed", iconName: "scissors"),
+                    CareItem(title: "Fertilizing", description: "Feed monthly during spring and summer with balanced liquid fertilizer.", frequency: "Monthly (growing season)", iconName: "leaf.fill"),
+                    CareItem(title: "Clean Leaves", description: "Wipe leaves occasionally to remove dust.", frequency: "Monthly", iconName: "sparkles")
+                ]
+            ),
+            typeSpecific: TypeSpecificInfo(
+                daysToHarvest: nil,
+                companionPlants: ["Philodendron", "Snake Plant", "Spider Plant"],
+                yield: nil,
+                varieties: ["Golden", "Marble Queen", "Neon"]
+            )
+        ),
+        Plant(
+            id: peaceLilyID,
+            name: "Peace Lily",
+            description: "Elegant white blooms and glossy leaves make the peace lily a favorite for low-light spaces. It dramatically droops when thirsty, making care foolproof.",
+            type: "houseplant",
+            zone: "10–12",
+            sunRequirements: "Low to Medium Indirect Light",
+            zoneSuitability: "Indoor; outdoors only in tropical zones 10–12",
+            seasonality: "Year-round",
+            indoorOutdoor: "indoor",
+            requirements: PlantRequirements(
+                soil: "Rich, well-draining potting mix",
+                water: "Every 1–2 weeks; keep soil lightly moist",
+                temperature: "65–80°F",
+                humidity: "50–70% (appreciates higher humidity)",
+                fertilizer: "Balanced, diluted, every 6 weeks in growing season"
+            ),
+            seedStarting: nil,
+            planting: PlantingInfo(
+                month: "Year-round (indoors)",
+                instructions: ["Use a pot with drainage holes", "Rich potting mix with perlite", "Keep away from cold drafts and direct sun", "Repot when roots emerge from drainage holes"],
+                spacing: "N/A (container plant)",
+                depth: "Same depth as nursery pot",
+                method: "Division when repotting",
+                notes: "Flowers best when slightly root-bound; repot every 1–2 years"
+            ),
+            carePlan: CarePlan(
+                mustDo: [
+                    CareItem(title: "Consistent Moisture", description: "Keep soil lightly moist but not soggy. The plant will droop dramatically when thirsty—water immediately.", frequency: "Every 1–2 weeks", iconName: "drop.fill"),
+                    CareItem(title: "Avoid Direct Sun", description: "Direct sunlight scorches leaves. Place in low to medium indirect light.", frequency: "Ongoing", iconName: "sun.max.fill")
+                ],
+                others: [
+                    CareItem(title: "Humidity", description: "Mist leaves regularly or use a pebble tray to increase humidity, especially in winter.", frequency: "Weekly", iconName: "humidity.fill"),
+                    CareItem(title: "Remove Spent Blooms", description: "Cut flower stalks at the base once blooms fade to encourage new flowers.", frequency: "As flowers fade", iconName: "scissors"),
+                    CareItem(title: "Fertilizing", description: "Feed every 6 weeks during spring and summer with diluted balanced fertilizer.", frequency: "Every 6 weeks (growing season)", iconName: "leaf.fill"),
+                    CareItem(title: "Dust Leaves", description: "Wipe glossy leaves with a damp cloth to keep them shiny and healthy.", frequency: "Monthly", iconName: "sparkles")
+                ]
+            ),
+            typeSpecific: TypeSpecificInfo(
+                daysToHarvest: nil,
+                companionPlants: ["Fern", "Calathea", "Philodendron"],
+                yield: "Blooms 1–2 times per year with proper care",
+                varieties: ["Sensation", "Domino", "Mauna Loa"]
             )
         )
     ]

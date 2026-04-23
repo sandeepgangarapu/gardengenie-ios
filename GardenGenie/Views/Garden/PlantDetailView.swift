@@ -28,7 +28,6 @@ struct PlantDetailView: View {
                     ctaButtons
                     descriptionBlock
                     statsRow
-                    typeAndZoneSection
                     viewCareButton
                     plantingCardsRow
 
@@ -121,7 +120,7 @@ struct PlantDetailView: View {
             Text(plant.name)
                 .font(.title.bold())
                 .foregroundStyle(AppTheme.Colors.textPrimary)
-            let subtitle = [plant.type?.capitalized, plant.seasonality]
+            let subtitle = [plant.type?.capitalized, plant.indoorOutdoor?.capitalized]
                 .compactMap { $0 }
                 .joined(separator: " — ")
             if !subtitle.isEmpty {
@@ -248,44 +247,6 @@ struct PlantDetailView: View {
             return String(first)
         }
         return value
-    }
-
-    // MARK: - Type & Zone Info
-
-    private var typeAndZoneSection: some View {
-        VStack(alignment: .leading, spacing: AppTheme.Spacing.md) {
-            HStack(spacing: AppTheme.Spacing.md) {
-                if let type = plant.type {
-                    HStack(spacing: AppTheme.Spacing.xs) {
-                        Image(systemName: plant.iconName)
-                            .font(.caption)
-                        Text(type.capitalized)
-                            .font(.callout.weight(.medium))
-                    }
-                    .padding(.horizontal, AppTheme.Spacing.md)
-                    .padding(.vertical, AppTheme.Spacing.sm)
-                    .background(plant.accentColor.opacity(0.18), in: Capsule())
-                    .foregroundStyle(plant.accentColor)
-                }
-
-                if let indoorOutdoor = plant.indoorOutdoor {
-                    HStack(spacing: AppTheme.Spacing.xs) {
-                        Image(systemName: indoorOutdoor.lowercased() == "indoor" ? "house.fill" : "tree.fill")
-                            .font(.caption)
-                        Text(indoorOutdoor.capitalized)
-                            .font(.callout.weight(.medium))
-                    }
-                    .padding(.horizontal, AppTheme.Spacing.md)
-                    .padding(.vertical, AppTheme.Spacing.sm)
-                    .background(AppTheme.Colors.secondaryGreen.opacity(0.18), in: Capsule())
-                    .foregroundStyle(AppTheme.Colors.secondaryGreen)
-                }
-
-                Spacer()
-            }
-
-        }
-        .padding(.horizontal, AppTheme.Spacing.md)
     }
 
     // MARK: - View Care Button

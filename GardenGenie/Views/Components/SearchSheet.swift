@@ -6,6 +6,7 @@ import SwiftUI
 struct SearchSheet: View {
     @Bindable var gardenVM: GardenViewModel
     @Bindable var taskVM: TaskViewModel
+    @FocusState private var isSearchFocused: Bool
 
     var body: some View {
         NavigationStack {
@@ -16,6 +17,7 @@ struct SearchSheet: View {
                         .foregroundStyle(AppTheme.Colors.textSecondary)
 
                     TextField("Search plants…", text: $gardenVM.searchText)
+                        .focused($isSearchFocused)
                         .foregroundStyle(AppTheme.Colors.textPrimary)
 
                     if !gardenVM.searchText.isEmpty {
@@ -84,6 +86,11 @@ struct SearchSheet: View {
             .navigationBarHidden(true)
             .navigationDestination(for: Plant.self) { plant in
                 PlantDetailView(plant: plant, gardenVM: gardenVM, taskVM: taskVM)
+            }
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                isSearchFocused = true
             }
         }
         .onDisappear {
