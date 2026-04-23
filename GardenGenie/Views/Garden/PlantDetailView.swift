@@ -202,51 +202,64 @@ struct PlantDetailView: View {
 
     // MARK: - Stats Row
 
-    private var statsRow: some View {
-        HStack(spacing: 0) {
-            statItem(icon: "sun.max.fill", label: "Sunlight", value: shortValue(plant.sunRequirements ?? "N/A"), color: AppTheme.Colors.sunYellow)
-            statItem(icon: "drop.fill", label: "Water", value: shortValue(plant.requirements?.water ?? "N/A"), color: AppTheme.Colors.skyBlue)
-            statItem(icon: "calendar", label: "Season", value: shortValue(plant.seasonality ?? "N/A"), color: AppTheme.Colors.secondaryGreen)
-            statItem(icon: "mountain.2.fill", label: "Soil", value: shortValue(plant.requirements?.soil ?? "N/A"), color: AppTheme.Colors.earthBrown)
-        }
-        .padding(.vertical, AppTheme.Spacing.md)
-        .background(
-            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous)
-                .fill(AppTheme.Colors.cardBackground)
-        )
-        .padding(.horizontal, AppTheme.Spacing.md)
+    private struct StatEntry: Identifiable {
+        let id = UUID()
+        let icon: String
+        let label: String
+        let value: String
+        let color: Color
     }
 
-    private func statItem(icon: String, label: String, value: String, color: Color) -> some View {
-        VStack(spacing: AppTheme.Spacing.xs) {
-            HStack(spacing: 4) {
-                Image(systemName: icon)
-                    .font(.caption2)
-                    .foregroundStyle(color)
-                Text(label)
-                    .font(.caption2)
-                    .foregroundStyle(color)
+    private var statEntries: [StatEntry] {
+        var out: [StatEntry] = []
+        func add(_ icon: String, _ label: String, _ value: String?, _ color: Color) {
+            let trimmed = value?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            guard !trimmed.isEmpty else { return }
+            out.append(.init(icon: icon, label: label, value: trimmed, color: color))
+        }
+        add("sun.max.fill", "Sunlight", plant.sunRequirements, AppTheme.Colors.sunYellow)
+        add("drop.fill", "Water", plant.requirements?.water, AppTheme.Colors.skyBlue)
+        add("calendar", "Season", plant.seasonality, AppTheme.Colors.secondaryGreen)
+        add("mountain.2.fill", "Soil", plant.requirements?.soil, AppTheme.Colors.earthBrown)
+        add("thermometer.medium", "Temperature", plant.requirements?.temperature, AppTheme.Colors.accentPink)
+        add("humidity.fill", "Humidity", plant.requirements?.humidity, AppTheme.Colors.skyBlue)
+        add("leaf.fill", "Fertilizer", plant.requirements?.fertilizer, AppTheme.Colors.secondaryGreen)
+        add("clock.fill", "Days to Harvest", plant.typeSpecific?.daysToHarvest, AppTheme.Colors.accentPink)
+        add("basket.fill", "Yield", plant.typeSpecific?.yield, AppTheme.Colors.secondaryGreen)
+        return out
+    }
+
+    @ViewBuilder
+    private var statsRow: some View {
+        let entries = statEntries
+        if !entries.isEmpty {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: AppTheme.Spacing.md) {
+                    ForEach(entries) { entry in
+                        statItem(entry)
+                    }
+                }
+                .padding(.horizontal, AppTheme.Spacing.md)
             }
-            Text(value)
-                .font(.headline)
+        }
+    }
+
+    private func statItem(_ entry: StatEntry) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 4) {
+                Image(systemName: entry.icon)
+                    .font(.caption2)
+                    .foregroundStyle(entry.color)
+                Text(entry.label)
+                    .font(.caption2)
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+            }
+            Text(entry.value)
+                .font(.subheadline.weight(.semibold))
                 .foregroundStyle(AppTheme.Colors.textPrimary)
                 .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .fixedSize(horizontal: true, vertical: false)
         }
-        .frame(maxWidth: .infinity)
-    }
-
-    /// Extracts first word / short form from a long care string.
-    private func shortValue(_ value: String) -> String {
-        // Try to return the first meaningful word
-        let cleaned = value
-            .replacingOccurrences(of: "(", with: "")
-            .replacingOccurrences(of: ")", with: "")
-        let words = cleaned.split(separator: " ")
-        if let first = words.first {
-            return String(first)
-        }
-        return value
     }
 
     // MARK: - View Care Button
