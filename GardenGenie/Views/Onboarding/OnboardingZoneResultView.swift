@@ -6,13 +6,13 @@ struct OnboardingZoneResultView: View {
 
     @State private var showContent = false
     @State private var showZone = false
+    @State private var showFacts = false
 
     var body: some View {
         VStack(spacing: AppTheme.Spacing.lg) {
             Spacer()
 
             ZStack {
-                // Animated expanding rings
                 ForEach(0..<3, id: \.self) { index in
                     Circle()
                         .strokeBorder(
@@ -50,12 +50,8 @@ struct OnboardingZoneResultView: View {
                     .font(.largeTitle.bold())
                     .foregroundStyle(AppTheme.Colors.textPrimary)
 
-                if let info = zoneInfo {
-                    Text("Your garden is in USDA Hardiness Zone \(info.zone)")
-                        .font(.headline)
-                        .foregroundStyle(AppTheme.Colors.textPrimary)
-
-                    Text(info.description)
+                if let description = zoneInfo?.growingSeasonDescription {
+                    Text(description)
                         .font(.subheadline)
                         .foregroundStyle(AppTheme.Colors.textSecondary)
                         .multilineTextAlignment(.center)
@@ -65,20 +61,11 @@ struct OnboardingZoneResultView: View {
             .opacity(showContent ? 1.0 : 0.0)
             .offset(y: showContent ? 0 : 20)
 
-            // Temperature range card
             if let info = zoneInfo {
-                HStack {
-                    factItem(icon: "thermometer.low", label: "Min Temp", value: info.minTemp)
-                    Spacer()
-                    factItem(icon: "thermometer.high", label: "Max Temp", value: info.maxTemp)
-                }
-                .padding(AppTheme.Spacing.md)
-                .background(
-                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous)
-                        .fill(AppTheme.Colors.cardBackground)
-                )
-                .padding(.horizontal, AppTheme.Spacing.lg)
-                .opacity(showContent ? 1.0 : 0.0)
+                growingSeasonCard(info: info)
+                    .padding(.horizontal, AppTheme.Spacing.lg)
+                    .opacity(showFacts ? 1.0 : 0.0)
+                    .offset(y: showFacts ? 0 : 12)
             }
 
             Spacer()
@@ -95,21 +82,84 @@ struct OnboardingZoneResultView: View {
         }
         .onAppear {
             withAnimation(.easeOut(duration: 0.5)) { showZone = true }
-            withAnimation(.easeOut(duration: 0.6).delay(0.3)) { showContent = true }
+            withAnimation(.easeOut(duration: 0.6).delay(0.4)) { showContent = true }
+            withAnimation(.easeOut(duration: 0.5).delay(0.9)) { showFacts = true }
         }
     }
 
-    private func factItem(icon: String, label: String, value: String) -> some View {
-        VStack(spacing: 4) {
-            Image(systemName: icon)
-                .foregroundStyle(AppTheme.Colors.accentBlue)
-            Text(label)
-                .font(.caption)
-                .foregroundStyle(AppTheme.Colors.textSecondary)
-            Text(value)
-                .font(.headline.bold())
-                .foregroundStyle(AppTheme.Colors.textPrimary)
+    private func growingSeasonCard(info: USDAZoneLookup.ZoneInfo) -> some View {
+        let startIdx = monthIndex(from: info.lastFrostDate)
+        let endIdx = monthIndex(from: info.firstFrostDate)
+        let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+        return VStack(spacing: AppTheme.Spacing.sm) {
+            HStack(alignment: .firstTextBaseline) {
+                Label("Growing Season", systemImage: "leaf.fill")
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+                    .labelStyle(.titleAndIcon)
+                Spacer()
+                if let days = info.growingSeasonDays {
+                    Text("\(days) days")
+                        .font(.headline.bold())
+                        .foregroundStyle(AppTheme.Colors.textPrimary)
+                }
+            }
+
+            GeometryReader { geo in
+                let count = months.count
+                let segmentWidth = geo.size.width / CGFloat(count)
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(AppTheme.Colors.textTertiary.opacity(0.15))
+
+                    if let s = startIdx, let e = endIdx {
+                        Capsule()
+                            .fill(AppTheme.Colors.secondaryGreen)
+                            .frame(
+                                width: segmentWidth * CGFloat(e - s + 1),
+                                height: 10
+                            )
+                            .offset(x: segmentWidth * CGFloat(s))
+                    }
+                }
+                .frame(height: 10)
+            }
+            .frame(height: 10)
+
+            HStack(spacing: 0) {
+                ForEach(months.indices, id: \.self) { i in
+                    let inSeason: Bool = {
+                        guard let s = startIdx, let e = endIdx else { return false }
+                        return i >= s && i <= e
+                    }()
+                    Text(months[i])
+                        .font(.caption2)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .foregroundStyle(
+                            inSeason
+                                ? AppTheme.Colors.textPrimary
+                                : AppTheme.Colors.textTertiary
+                        )
+                        .frame(maxWidth: .infinity)
+                }
+            }
         }
+        .padding(AppTheme.Spacing.md)
+        .background(
+            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous)
+                .fill(AppTheme.Colors.cardBackground)
+        )
+    }
+
+    private func monthIndex(from dateString: String?) -> Int? {
+        guard let dateString, let firstWord = dateString.split(separator: " ").first else {
+            return nil
+        }
+        let key = String(firstWord.prefix(3)).lowercased()
+        let names = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
+        return names.firstIndex(of: key)
     }
 }
 
@@ -118,10 +168,12 @@ struct OnboardingZoneResultView: View {
         AppTheme.Colors.background.ignoresSafeArea()
         OnboardingZoneResultView(
             zoneInfo: USDAZoneLookup.ZoneInfo(
-                zone: "7b",
-                minTemp: "5°F",
-                maxTemp: "10°F",
-                description: "Mild winters with occasional freezes. Great for gardenias, camellias, and citrus with protection."
+                zone: "6a",
+                temperatureRange: "-10 to -5",
+                firstFrostDate: "October 17-31",
+                lastFrostDate: "April 1-21",
+                growingSeasonDays: 179,
+                growingSeasonDescription: "Moderate growing season - good for most vegetables and annual flowers"
             ),
             onGetStarted: {}
         )

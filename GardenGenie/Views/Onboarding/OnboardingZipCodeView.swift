@@ -2,13 +2,20 @@ import SwiftUI
 
 struct OnboardingZipCodeView: View {
     @Binding var zipCode: String
+    var isLookingUp: Bool = false
+    var lookupError: String? = nil
     let onContinue: () -> Void
 
     @FocusState private var isFieldFocused: Bool
-    @State private var showError = false
+    @State private var showValidationError = false
 
     private var isValidZip: Bool {
         zipCode.count == 5 && zipCode.allSatisfy { $0.isNumber }
+    }
+
+    private var errorMessage: String? {
+        if showValidationError { return "Please enter a valid 5-digit US zip code" }
+        return lookupError
     }
 
     var body: some View {
@@ -25,11 +32,9 @@ struct OnboardingZipCodeView: View {
                     .font(.largeTitle.bold())
                     .foregroundStyle(AppTheme.Colors.textPrimary)
 
-                Text("Enter your zip code so we can determine your USDA hardiness zone and provide tailored recommendations.")
+                Text("We'll tailor plant care to your growing zone.")
                     .font(.subheadline)
                     .foregroundStyle(AppTheme.Colors.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, AppTheme.Spacing.lg)
             }
 
             VStack(spacing: AppTheme.Spacing.sm) {
@@ -47,12 +52,11 @@ struct OnboardingZipCodeView: View {
                             if newValue.count > 5 {
                                 zipCode = String(newValue.prefix(5))
                             }
-                            // Filter non-numeric characters
                             let filtered = newValue.filter { $0.isNumber }
                             if filtered != newValue {
                                 zipCode = String(filtered.prefix(5))
                             }
-                            showError = false
+                            showValidationError = false
                         }
 
                     Image(systemName: isValidZip ? "checkmark.circle.fill" : "circle")
@@ -72,10 +76,12 @@ struct OnboardingZipCodeView: View {
                 )
                 .padding(.horizontal, AppTheme.Spacing.lg)
 
-                if showError {
-                    Text("Please enter a valid 5-digit US zip code")
+                if let errorMessage {
+                    Text(errorMessage)
                         .font(.caption)
                         .foregroundStyle(AppTheme.Colors.accentPink)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, AppTheme.Spacing.lg)
                 }
             }
 
@@ -85,13 +91,24 @@ struct OnboardingZipCodeView: View {
                 if isValidZip {
                     onContinue()
                 } else {
-                    withAnimation(.snappy) { showError = true }
+                    withAnimation(.snappy) { showValidationError = true }
                 }
             }) {
-                Text("Find My Zone")
-                    .pillButton(style: isValidZip ? .primary : .secondary)
+                Group {
+                    if isLookingUp {
+                        HStack(spacing: AppTheme.Spacing.sm) {
+                            Image(systemName: "location.magnifyingglass")
+                                .symbolEffect(.variableColor.iterative.reversing, options: .repeating)
+                            Text("Locating your growing zone…")
+                        }
+                    } else {
+                        Text("Find My Zone")
+                    }
+                }
+                .pillButton(style: isValidZip ? .primary : .secondary)
             }
             .buttonStyle(.plain)
+            .disabled(isLookingUp)
             .padding(.horizontal, AppTheme.Spacing.lg)
 
             Spacer().frame(height: AppTheme.Spacing.xl)
@@ -108,6 +125,6 @@ struct OnboardingZipCodeView: View {
     @Previewable @State var zip = ""
     ZStack {
         AppTheme.Colors.background.ignoresSafeArea()
-        OnboardingZipCodeView(zipCode: $zip, onContinue: {})
+        OnboardingZipCodeView(zipCode: $zip, isLookingUp: false, lookupError: nil, onContinue: {})
     }
 }

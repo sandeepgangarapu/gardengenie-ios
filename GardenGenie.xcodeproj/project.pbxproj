@@ -18,7 +18,8 @@
 		AA0001000000000000000009 /* MonthDateParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000009 /* MonthDateParser.swift */; };
 		AA0001000000000000000010 /* ScheduleTaskSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0001000000000000000010 /* ScheduleTaskSheet.swift */; };
 		AA0002000000000000000001 /* USDAZoneLookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0002000000000000000001 /* USDAZoneLookup.swift */; };
-		AA0002000000000000000002 /* USDAZones.json in Resources */ = {isa = PBXBuildFile; fileRef = AB0002000000000000000002 /* USDAZones.json */; };
+		AA0003000000000000000001 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0003000000000000000001 /* SupabaseClient.swift */; };
+		SB0000000000000000000002 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = SB0000000000000000000004 /* Supabase */; };
 		AA0002000000000000000003 /* OnboardingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0002000000000000000003 /* OnboardingCoordinator.swift */; };
 		AA0002000000000000000004 /* OnboardingWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0002000000000000000004 /* OnboardingWelcomeView.swift */; };
 		AA0002000000000000000005 /* OnboardingFeaturesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0002000000000000000005 /* OnboardingFeaturesView.swift */; };
@@ -62,7 +63,7 @@
 		AB0001000000000000000009 /* MonthDateParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthDateParser.swift; sourceTree = "<group>"; };
 		AB0001000000000000000010 /* ScheduleTaskSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTaskSheet.swift; sourceTree = "<group>"; };
 		AB0002000000000000000001 /* USDAZoneLookup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDAZoneLookup.swift; sourceTree = "<group>"; };
-		AB0002000000000000000002 /* USDAZones.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = USDAZones.json; sourceTree = "<group>"; };
+		AB0003000000000000000001 /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
 		AB0002000000000000000003 /* OnboardingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCoordinator.swift; sourceTree = "<group>"; };
 		AB0002000000000000000004 /* OnboardingWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.swift; sourceTree = "<group>"; };
 		AB0002000000000000000005 /* OnboardingFeaturesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFeaturesView.swift; sourceTree = "<group>"; };
@@ -213,8 +214,8 @@
 			isa = PBXGroup;
 			children = (
 				22065A20214CB5429F429C1D /* MockData.swift */,
+				AB0003000000000000000001 /* SupabaseClient.swift */,
 				AB0002000000000000000001 /* USDAZoneLookup.swift */,
-				AB0002000000000000000002 /* USDAZones.json */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -279,6 +280,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 599F9B81234026136B22935E /* Build configuration list for PBXNativeTarget "GardenGenie" */;
 			buildPhases = (
+				SB0000000000000000000001 /* Frameworks */,
 				A19D9F31D28FB204B782171C /* Sources */,
 				9FFA1056C7F02E2B50CAEF4C /* Resources */,
 			);
@@ -288,6 +290,7 @@
 			);
 			name = GardenGenie;
 			packageProductDependencies = (
+				SB0000000000000000000004 /* Supabase */,
 			);
 			productName = GardenGenie;
 			productReference = ACE290D3BA454BBFA7164165 /* GardenGenie.app */;
@@ -317,6 +320,9 @@
 			productRefGroup = 8A6F2FE6AFBBB77CC58C8411 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
+			packageReferences = (
+				SB0000000000000000000003 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			targets = (
 				BA1B0520A50EFE17B1FB33A6 /* GardenGenie */,
 			);
@@ -329,11 +335,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C226B5711ECE9766262CC54 /* Assets.xcassets in Resources */,
-				AA0002000000000000000002 /* USDAZones.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		SB0000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				SB0000000000000000000002 /* Supabase in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A19D9F31D28FB204B782171C /* Sources */ = {
@@ -373,6 +389,7 @@
 				B51192DD1DE2C112030CB045 /* TasksView.swift in Sources */,
 				EE0001000000000000000001 /* ExploreView.swift in Sources */,
 				AA0002000000000000000001 /* USDAZoneLookup.swift in Sources */,
+				AA0003000000000000000001 /* SupabaseClient.swift in Sources */,
 				AA0002000000000000000003 /* OnboardingCoordinator.swift in Sources */,
 				AA0002000000000000000004 /* OnboardingWelcomeView.swift in Sources */,
 				AA0002000000000000000005 /* OnboardingFeaturesView.swift in Sources */,
@@ -580,6 +597,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		SB0000000000000000000003 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		SB0000000000000000000004 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = SB0000000000000000000003 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3E5A86EF8BD6F028C71DC094 /* Project object */;
 }
