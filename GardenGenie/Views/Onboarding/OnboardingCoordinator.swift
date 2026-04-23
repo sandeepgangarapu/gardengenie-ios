@@ -15,6 +15,8 @@ struct OnboardingCoordinator: View {
     @State private var currentStep: OnboardingStep = .welcome
     @State private var enteredZipCode = ""
     @State private var lookupResult: USDAZoneLookup.ZoneInfo?
+    @State private var isLookingUp = false
+    @State private var lookupError: String?
 
     var body: some View {
         ZStack {
@@ -37,6 +39,8 @@ struct OnboardingCoordinator: View {
 
                     OnboardingZipCodeView(
                         zipCode: $enteredZipCode,
+                        isLookingUp: isLookingUp,
+                        lookupError: lookupError,
                         onContinue: lookupZoneAndAdvance
                     )
                     .tag(OnboardingStep.zipCode)
@@ -62,12 +66,22 @@ struct OnboardingCoordinator: View {
     }
 
     private func lookupZoneAndAdvance() {
-        lookupResult = USDAZoneLookup.shared.zone(for: enteredZipCode)
-        zipCode = enteredZipCode
-        if let result = lookupResult {
-            usdaZone = result.zone
+        lookupError = nil
+        isLookingUp = true
+        Task {
+            defer { isLookingUp = false }
+            do {
+                let result = try await USDAZoneLookup.zone(for: enteredZipCode)
+                lookupResult = result
+                zipCode = enteredZipCode
+                usdaZone = result.zone
+                withAnimation(.snappy) { currentStep = .zoneResult }
+            } catch USDAZoneLookupError.notFound {
+                lookupError = "We couldn't find that zip code. Double-check and try again."
+            } catch {
+                lookupError = "Check your connection and try again."
+            }
         }
-        withAnimation(.snappy) { currentStep = .zoneResult }
     }
 
     private func completeOnboarding() {
