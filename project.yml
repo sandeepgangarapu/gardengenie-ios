@@ -18,6 +18,11 @@ settings:
     INFOPLIST_KEY_UILaunchScreen_Generation: YES
     INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
 
+packages:
+  Supabase:
+    url: https://github.com/supabase/supabase-swift
+    majorVersion: 2.0.0
+
 targets:
   GardenGenie:
     type: application
@@ -26,6 +31,9 @@ targets:
       - path: GardenGenie
         excludes:
           - "**/.DS_Store"
+    dependencies:
+      - package: Supabase
+        product: Supabase
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.gardengenie.app

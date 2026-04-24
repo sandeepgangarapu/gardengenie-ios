@@ -42,6 +42,9 @@ struct MyGardenView: View {
             .navigationDestination(for: Plant.self) { plant in
                 PlantDetailView(plant: plant, gardenVM: gardenVM, taskVM: taskVM)
             }
+            .navigationDestination(for: PlantGridDestination.self) { destination in
+                PlantGridView(destination: destination)
+            }
             .sheet(isPresented: $showSettings) {
                 SettingsView(gardenVM: gardenVM, taskVM: taskVM)
             }
@@ -103,7 +106,15 @@ struct MyGardenView: View {
 
     private var allPlantsSection: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            SectionHeader(title: "All Plants", subtitle: "\(gardenVM.plants.count) plants in your garden")
+            SectionHeader(
+                title: "All Plants",
+                subtitle: "\(gardenVM.plants.count) plants in your garden",
+                destination: PlantGridDestination(
+                    title: "All Plants",
+                    subtitle: "\(gardenVM.plants.count) plants in your garden",
+                    plants: gardenVM.plants
+                )
+            )
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: AppTheme.Spacing.md) {
@@ -123,7 +134,11 @@ struct MyGardenView: View {
 
     private func carouselSection(title: String, subtitle: String, plants: [Plant]) -> some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            SectionHeader(title: title, subtitle: subtitle)
+            SectionHeader(
+                title: title,
+                subtitle: subtitle,
+                destination: PlantGridDestination(title: title, subtitle: subtitle, plants: plants)
+            )
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: AppTheme.Spacing.md) {
@@ -173,8 +188,20 @@ struct MyGardenView: View {
 private struct SectionHeader: View {
     let title: String
     let subtitle: String
+    var destination: PlantGridDestination? = nil
 
     var body: some View {
+        if let destination {
+            NavigationLink(value: destination) {
+                headerContent
+            }
+            .buttonStyle(.plain)
+        } else {
+            headerContent
+        }
+    }
+
+    private var headerContent: some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(spacing: AppTheme.Spacing.xs) {
                 Text(title)
@@ -188,6 +215,8 @@ private struct SectionHeader: View {
                 .font(.caption)
                 .foregroundStyle(AppTheme.Colors.textSecondary)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
         .padding(.horizontal, AppTheme.Spacing.md)
     }
 }

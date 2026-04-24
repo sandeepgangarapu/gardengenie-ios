@@ -120,11 +120,8 @@ struct PlantDetailView: View {
             Text(plant.name)
                 .font(.title.bold())
                 .foregroundStyle(AppTheme.Colors.textPrimary)
-            let subtitle = [plant.type?.capitalized, plant.indoorOutdoor?.capitalized]
-                .compactMap { $0 }
-                .joined(separator: " — ")
-            if !subtitle.isEmpty {
-                Text(subtitle)
+            if let type = plant.type?.capitalized, !type.isEmpty {
+                Text(type)
                     .font(.subheadline)
                     .foregroundStyle(AppTheme.Colors.textSecondary)
                     .multilineTextAlignment(.center)
@@ -217,6 +214,7 @@ struct PlantDetailView: View {
             guard !trimmed.isEmpty else { return }
             out.append(.init(icon: icon, label: label, value: trimmed, color: color))
         }
+        add("house.fill", "Setting", plant.indoorOutdoor?.capitalized, AppTheme.Colors.secondaryGreen)
         add("sun.max.fill", "Sunlight", plant.sunRequirements, AppTheme.Colors.sunYellow)
         add("drop.fill", "Water", plant.requirements?.water, AppTheme.Colors.skyBlue)
         add("calendar", "Season", plant.seasonality, AppTheme.Colors.secondaryGreen)

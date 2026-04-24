@@ -35,6 +35,9 @@ struct ExploreView: View {
             .navigationDestination(for: Plant.self) { plant in
                 PlantDetailView(plant: plant, gardenVM: gardenVM, taskVM: taskVM)
             }
+            .navigationDestination(for: PlantGridDestination.self) { destination in
+                PlantGridView(destination: destination)
+            }
         }
     }
 
@@ -56,7 +59,15 @@ struct ExploreView: View {
 
     private var allPlantsSection: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            ExploreSectionHeader(title: "All Plants", subtitle: "\(gardenVM.allPlants.count) plants to discover")
+            ExploreSectionHeader(
+                title: "All Plants",
+                subtitle: "\(gardenVM.allPlants.count) plants to discover",
+                destination: PlantGridDestination(
+                    title: "All Plants",
+                    subtitle: "\(gardenVM.allPlants.count) plants to discover",
+                    plants: gardenVM.allPlants
+                )
+            )
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: AppTheme.Spacing.md) {
@@ -76,7 +87,11 @@ struct ExploreView: View {
 
     private func carouselSection(title: String, subtitle: String, plants: [Plant]) -> some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            ExploreSectionHeader(title: title, subtitle: subtitle)
+            ExploreSectionHeader(
+                title: title,
+                subtitle: subtitle,
+                destination: PlantGridDestination(title: title, subtitle: subtitle, plants: plants)
+            )
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: AppTheme.Spacing.md) {
@@ -126,8 +141,20 @@ struct ExploreView: View {
 private struct ExploreSectionHeader: View {
     let title: String
     let subtitle: String
+    var destination: PlantGridDestination? = nil
 
     var body: some View {
+        if let destination {
+            NavigationLink(value: destination) {
+                headerContent
+            }
+            .buttonStyle(.plain)
+        } else {
+            headerContent
+        }
+    }
+
+    private var headerContent: some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(spacing: AppTheme.Spacing.xs) {
                 Text(title)
@@ -141,6 +168,8 @@ private struct ExploreSectionHeader: View {
                 .font(.caption)
                 .foregroundStyle(AppTheme.Colors.textSecondary)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
         .padding(.horizontal, AppTheme.Spacing.md)
     }
 }

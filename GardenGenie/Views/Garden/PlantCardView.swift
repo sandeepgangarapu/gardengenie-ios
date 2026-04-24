@@ -25,13 +25,6 @@ struct PlantCardView: View {
 
                 if let type = plant.type {
                     Text(type.capitalized)
-                        .font(.caption2)
-                        .foregroundStyle(AppTheme.Colors.textSecondary)
-                        .lineLimit(1)
-                }
-
-                if let seasonality = plant.seasonality {
-                    Text(seasonality)
                         .pillTag(color: plant.accentColor)
                 }
             }

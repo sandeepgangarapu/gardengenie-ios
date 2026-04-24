@@ -25,19 +25,14 @@ struct TaskRowView: View {
                 .frame(width: 28, height: 28)
                 .background(AppTheme.Colors.accentBlue.opacity(0.18), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
 
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: 6) {
-                    Text(task.name)
-                        .font(.body)
-                        .strikethrough(task.isCompleted, color: AppTheme.Colors.textTertiary)
-                        .foregroundStyle(task.isCompleted ? AppTheme.Colors.textSecondary : AppTheme.Colors.textPrimary)
-                    if task.recurrence.isRecurring {
-                        Image(systemName: "arrow.triangle.2.circlepath")
-                            .font(.caption2.weight(.semibold))
-                            .foregroundStyle(AppTheme.Colors.textTertiary)
-                    }
+            VStack(alignment: .leading, spacing: 4) {
+                Text(task.name)
+                    .font(.body)
+                    .strikethrough(task.isCompleted, color: AppTheme.Colors.textTertiary)
+                    .foregroundStyle(task.isCompleted ? AppTheme.Colors.textSecondary : AppTheme.Colors.textPrimary)
+                if task.recurrence.isRecurring {
+                    RecurrenceBadge(recurrence: task.recurrence)
                 }
-                TaskDateLabel(dueDate: task.dueDate, isOverdue: isOverdue)
             }
 
             Spacer()
@@ -46,6 +41,20 @@ struct TaskRowView: View {
                 .pillTag(color: AppTheme.Colors.accentPink)
         }
         .contentShape(Rectangle())
+    }
+}
+
+/// Compact pill showing a recurring task's cadence (e.g., "Weekly", "Every 3 days").
+struct RecurrenceBadge: View {
+    let recurrence: TaskRecurrence
+
+    var body: some View {
+        HStack(spacing: 3) {
+            Image(systemName: "arrow.triangle.2.circlepath")
+                .font(.caption2.weight(.bold))
+            Text(recurrence.displayName)
+        }
+        .pillTag(color: AppTheme.Colors.accentBlue)
     }
 }
 
