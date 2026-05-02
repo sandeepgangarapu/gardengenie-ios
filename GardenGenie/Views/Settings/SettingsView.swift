@@ -10,6 +10,8 @@ struct SettingsView: View {
     @AppStorage("haptics_enabled") private var hapticsEnabled = true
     @AppStorage("task_notifications") private var taskNotifications = true
     @AppStorage("zip_code") private var zipCode = ""
+    @AppStorage("usda_zone") private var usdaZone = ""
+    @AppStorage("state_code") private var stateCode = ""
     @AppStorage("water_reminders") private var waterReminders = true
     @AppStorage("parallax_effects") private var parallaxEffects = true
 
@@ -160,6 +162,13 @@ struct SettingsView: View {
 
     // MARK: - Garden Preferences Section
 
+    /// "9b · CA" when both are set, just the zone if state is missing,
+    /// or "—" when onboarding hasn't populated the zone yet.
+    private var plantingZoneDisplay: String {
+        guard !usdaZone.isEmpty else { return "—" }
+        return stateCode.isEmpty ? usdaZone : "\(usdaZone) · \(stateCode)"
+    }
+
     private var gardenPreferencesSection: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
             Text("Garden Preferences")
@@ -169,26 +178,35 @@ struct SettingsView: View {
 
             VStack(spacing: 0) {
                 settingsRow(icon: "map", iconColor: AppTheme.Colors.secondaryGreen, title: "Planting Zone") {
-                    HStack(spacing: AppTheme.Spacing.xs) {
-                        Text("7b")
-                            .font(.subheadline)
-                            .foregroundStyle(AppTheme.Colors.textSecondary)
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
-                            .foregroundStyle(AppTheme.Colors.textTertiary)
-                    }
+                    Text(plantingZoneDisplay)
+                        .font(.subheadline)
+                        .foregroundStyle(AppTheme.Colors.textSecondary)
                 }
 
                 dividerRow
 
                 settingsRow(icon: "location.fill", iconColor: AppTheme.Colors.accentBlue, title: "Zip Code") {
-                    TextField("Enter zip", text: $zipCode)
+                    Text(zipCode.isEmpty ? "—" : zipCode)
                         .font(.subheadline)
                         .foregroundStyle(AppTheme.Colors.textSecondary)
-                        .multilineTextAlignment(.trailing)
-                        .keyboardType(.numberPad)
-                        .frame(width: 80)
                 }
+
+                dividerRow
+
+                NavigationLink {
+                    IconDebugView()
+                } label: {
+                    settingsRow(
+                        icon: "ladybug",
+                        iconColor: AppTheme.Colors.accentPink,
+                        title: "Icon Debug"
+                    ) {
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(AppTheme.Colors.textTertiary)
+                    }
+                }
+                .buttonStyle(.plain)
             }
             .background(
                 RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous)
