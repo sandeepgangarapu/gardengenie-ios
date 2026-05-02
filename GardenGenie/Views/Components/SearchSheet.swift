@@ -12,6 +12,7 @@ struct SearchSheet: View {
     @AppStorage("zip_code") private var zipCode = ""
 
     @State private var query: String = ""
+    @State private var debounceTask: Task<Void, Never>?
     @FocusState private var isSearchFocused: Bool
 
     var body: some View {
@@ -19,6 +20,7 @@ struct SearchSheet: View {
             VStack(spacing: 0) {
                 searchBar
                 content
+                    .animation(.snappy, value: gardenVM.isSearching)
             }
             .background(AppTheme.Colors.background.ignoresSafeArea())
             .navigationBarHidden(true)
@@ -55,10 +57,14 @@ struct SearchSheet: View {
                 .foregroundStyle(AppTheme.Colors.textPrimary)
                 .submitLabel(.search)
                 .onSubmit { runSearch() }
+                .onChange(of: query) { _, newValue in
+                    debounceSuggestions(for: newValue)
+                }
 
             if !query.isEmpty {
                 Button {
                     query = ""
+                    gardenVM.clearSuggestions()
                     isSearchFocused = true
                 } label: {
                     Image(systemName: "xmark.circle.fill")
@@ -85,10 +91,12 @@ struct SearchSheet: View {
             loadingState
         } else if let err = gardenVM.lastSearchError {
             errorState(err)
-        } else if gardenVM.searchResults.isEmpty {
-            hintState
-        } else {
+        } else if !gardenVM.searchResults.isEmpty {
             resultsList
+        } else if !gardenVM.suggestions.isEmpty {
+            suggestionsList
+        } else {
+            hintState
         }
     }
 
@@ -113,20 +121,7 @@ struct SearchSheet: View {
     }
 
     private var loadingState: some View {
-        VStack(spacing: AppTheme.Spacing.md) {
-            Spacer().frame(height: 60)
-            ProgressView()
-                .progressViewStyle(.circular)
-                .tint(AppTheme.Colors.accentPink)
-                .scaleEffect(1.4)
-            Text("Generating your plant guide…")
-                .font(.callout)
-                .foregroundStyle(AppTheme.Colors.textSecondary)
-            Text("Cache hits are instant — first lookup of a plant takes ~5–10 s.")
-                .font(.caption2)
-                .foregroundStyle(AppTheme.Colors.textTertiary)
-            Spacer()
-        }
+        PlantSearchLoadingView(query: query)
     }
 
     private func errorState(_ err: PlantCatalogServiceError) -> some View {
@@ -193,9 +188,9 @@ struct SearchSheet: View {
                 Text(plant.commonName)
                     .font(.headline)
                     .foregroundStyle(AppTheme.Colors.textPrimary)
-                if let scientific = plant.scientificName {
-                    Text(scientific)
-                        .font(.caption.italic())
+                if let typeLabel = displayType(plant.type) {
+                    Text(typeLabel)
+                        .font(.caption)
                         .foregroundStyle(AppTheme.Colors.textSecondary)
                 }
             }
@@ -208,13 +203,93 @@ struct SearchSheet: View {
         }
     }
 
+    // MARK: - Suggestions list
+
+    private var suggestionsList: some View {
+        List {
+            Section {
+                ForEach(gardenVM.suggestions) { suggestion in
+                    Button {
+                        query = suggestion.commonName
+                        gardenVM.clearSuggestions()
+                        runSearch()
+                    } label: {
+                        suggestionRow(suggestion)
+                    }
+                    .listRowBackground(AppTheme.Colors.cardBackground)
+                }
+            } header: {
+                Text("Plants in catalog")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(AppTheme.Colors.textTertiary)
+                    .textCase(nil)
+            }
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+    }
+
+    private func suggestionRow(_ s: PlantCatalogService.SearchSuggestion) -> some View {
+        HStack(spacing: AppTheme.Spacing.md) {
+            let icon = s.iconName ?? Plant.icon(for: s.type)
+            let color = Color(hex: Plant.accentHex(for: s.type))
+            Image(systemName: icon)
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundStyle(color)
+                .frame(width: 48, height: 48)
+                .background(
+                    color.opacity(0.18),
+                    in: RoundedRectangle(cornerRadius: 14, style: .continuous)
+                )
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(s.commonName)
+                    .font(.headline)
+                    .foregroundStyle(AppTheme.Colors.textPrimary)
+                if let typeLabel = displayType(s.type) {
+                    Text(typeLabel)
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.Colors.textSecondary)
+                }
+            }
+            Spacer()
+            Image(systemName: "arrow.up.left")
+                .font(.caption)
+                .foregroundStyle(AppTheme.Colors.textTertiary)
+        }
+    }
+
+    // MARK: - Helpers
+
+    /// Capitalizes the catalog type ("tuber" → "Tuber") and drops empty/unknown.
+    private func displayType(_ type: String?) -> String? {
+        guard let raw = type?.trimmingCharacters(in: .whitespaces), !raw.isEmpty else { return nil }
+        return raw.prefix(1).uppercased() + raw.dropFirst()
+    }
+
     // MARK: - Actions
 
     private func runSearch() {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
+        debounceTask?.cancel()
+        gardenVM.clearSuggestions()
         Task {
             await gardenVM.searchAsync(query: trimmed, zone: usdaZone, state: stateCode)
+        }
+    }
+
+    private func debounceSuggestions(for text: String) {
+        debounceTask?.cancel()
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.count >= 2 else {
+            gardenVM.clearSuggestions()
+            return
+        }
+        debounceTask = Task {
+            try? await Task.sleep(for: .milliseconds(300))
+            guard !Task.isCancelled else { return }
+            await gardenVM.updateSuggestions(query: trimmed)
         }
     }
 
