@@ -50,7 +50,6 @@ struct PlantDetailView: View {
                     ctaButtons
                     descriptionBlock
                     statsRow
-                    viewCareButton
                     plantingCardsRow
 
                     Spacer(minLength: 40)
@@ -100,8 +99,10 @@ struct PlantDetailView: View {
 
             Spacer()
 
-            Button {} label: {
-                Image(systemName: "ellipsis")
+            Button {
+                withAnimation(.snappy) { gardenVM.toggleBookmark(plant) }
+            } label: {
+                Image(systemName: gardenVM.isBookmarked(plant) ? "bookmark.fill" : "bookmark")
                     .circularIconButton()
             }
             .buttonStyle(.plain)
@@ -161,8 +162,8 @@ struct PlantDetailView: View {
                 Button {
                     showRemoveConfirmation = true
                 } label: {
-                    Label("Added", systemImage: "checkmark")
-                        .pillButton(style: .primary)
+                    Label("In Garden", systemImage: "checkmark")
+                        .pillButton(style: .secondary)
                 }
                 .buttonStyle(.plain)
                 .confirmationDialog(
@@ -184,13 +185,15 @@ struct PlantDetailView: View {
                 .buttonStyle(.plain)
             }
 
-            Button {
-                withAnimation(.snappy) { gardenVM.toggleBookmark(plant) }
-            } label: {
-                Label(gardenVM.isBookmarked(plant) ? "Saved" : "Save for Later", systemImage: gardenVM.isBookmarked(plant) ? "bookmark.fill" : "bookmark")
-                    .pillButton(style: .secondary)
+            if plant.carePlan != nil {
+                NavigationLink {
+                    CareDetailView(plant: plant, taskVM: taskVM)
+                } label: {
+                    Label("View Care", systemImage: "eye")
+                        .pillButton(style: .secondary)
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
         }
         .padding(.horizontal, AppTheme.Spacing.md)
     }
@@ -236,16 +239,16 @@ struct PlantDetailView: View {
             guard !trimmed.isEmpty else { return }
             out.append(.init(icon: icon, label: label, value: trimmed, color: color))
         }
-        add("house.fill", "Setting", plant.indoorOutdoor?.capitalized, AppTheme.Colors.secondaryGreen)
         add("sun.max.fill", "Sunlight", plant.sunRequirements, AppTheme.Colors.sunYellow)
-        add("drop.fill", "Water", plant.requirements?.water, AppTheme.Colors.skyBlue)
-        add("calendar", "Season", plant.seasonality, AppTheme.Colors.secondaryGreen)
-        add("mountain.2.fill", "Soil", plant.requirements?.soil, AppTheme.Colors.earthBrown)
-        add("thermometer.medium", "Temperature", plant.requirements?.temperature, AppTheme.Colors.accentPink)
-        add("humidity.fill", "Humidity", plant.requirements?.humidity, AppTheme.Colors.skyBlue)
-        add("leaf.fill", "Fertilizer", plant.requirements?.fertilizer, AppTheme.Colors.secondaryGreen)
-        add("clock.fill", "Days to Harvest", plant.typeSpecific?.daysToHarvest, AppTheme.Colors.accentPink)
+        add("mountain.2.fill", "Soil pH", plant.requirements?.soil, AppTheme.Colors.earthBrown)
+        add("leaf.fill", "Soil Type", plant.soilType, AppTheme.Colors.earthBrown)
+        add("house.fill", "Setting", plant.indoorOutdoor?.capitalized, AppTheme.Colors.secondaryGreen)
+        add("arrow.triangle.2.circlepath", "Lifecycle", plant.lifecycle, AppTheme.Colors.secondaryGreen)
+        add("arrow.up.and.down", "Height", plant.matureHeight, AppTheme.Colors.accentPink)
+        add("arrow.left.and.right", "Spread", plant.matureSpread, AppTheme.Colors.accentPink)
+        add("clock.fill", "Harvest", plant.typeSpecific?.daysToHarvest, AppTheme.Colors.accentPink)
         add("basket.fill", "Yield", plant.typeSpecific?.yield, AppTheme.Colors.secondaryGreen)
+        add("calendar", "Season", plant.seasonality, AppTheme.Colors.secondaryGreen)
         return out
     }
 
@@ -279,22 +282,6 @@ struct PlantDetailView: View {
                 .foregroundStyle(AppTheme.Colors.textPrimary)
                 .lineLimit(1)
                 .fixedSize(horizontal: true, vertical: false)
-        }
-    }
-
-    // MARK: - View Care Button
-
-    @ViewBuilder
-    private var viewCareButton: some View {
-        if plant.carePlan != nil {
-            NavigationLink {
-                CareDetailView(plant: plant, taskVM: taskVM)
-            } label: {
-                Label("View Care", systemImage: "eye")
-                    .pillButton(style: .secondary)
-            }
-            .buttonStyle(.plain)
-            .padding(.horizontal, AppTheme.Spacing.md)
         }
     }
 
@@ -353,11 +340,4 @@ struct PlantDetailView: View {
         }
     }
 
-}
-
-#Preview {
-    NavigationStack {
-        PlantDetailView(plant: MockData.plants[0], gardenVM: GardenViewModel(), taskVM: TaskViewModel())
-    }
-    .preferredColorScheme(.dark)
 }

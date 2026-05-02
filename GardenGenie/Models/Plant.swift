@@ -21,6 +21,14 @@ struct Plant: Identifiable, Hashable, Codable {
     var seasonality: String?
     /// Indoor / Outdoor classification.
     var indoorOutdoor: String?
+    /// Annual / biennial / perennial — sourced from the catalog (display-only).
+    var lifecycle: String? = nil
+    /// Soil texture / category, e.g. "Loam", "Sandy" — display-only.
+    var soilType: String? = nil
+    /// Pre-formatted mature height for the stats row, e.g. "24 in".
+    var matureHeight: String? = nil
+    /// Pre-formatted mature spread for the stats row, e.g. "18 in".
+    var matureSpread: String? = nil
 
     // JSONB blobs
     var requirements: PlantRequirements?
@@ -40,6 +48,10 @@ struct Plant: Identifiable, Hashable, Codable {
         case zoneSuitability = "zone_suitability"
         case seasonality
         case indoorOutdoor = "indoor_outdoor"
+        case lifecycle
+        case soilType = "soil_type"
+        case matureHeight = "mature_height"
+        case matureSpread = "mature_spread"
         case requirements
         case seedStarting = "seed_starting"
         case planting

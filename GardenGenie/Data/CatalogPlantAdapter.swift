@@ -21,10 +21,14 @@ enum CatalogPlantAdapter {
             description: catalog.description,
             type: catalog.type,
             zone: variant?.usdaZone,
-            sunRequirements: catalog.sunRequirements,
+            sunRequirements: catalog.sunCategory,
             zoneSuitability: nil,
             seasonality: nil,
             indoorOutdoor: catalog.indoorOutdoor,
+            lifecycle: capitalize(catalog.lifecycle),
+            soilType: capitalize(catalog.soilRequirements?.type),
+            matureHeight: formatInches(catalog.matureSize?.heightInches),
+            matureSpread: formatInches(catalog.matureSize?.spreadInches),
             requirements: PlantRequirements(
                 soil: formatSoil(catalog.soilRequirements),
                 water: catalog.waterGeneral,
@@ -49,21 +53,34 @@ enum CatalogPlantAdapter {
 
     private static func formatSoil(_ s: CatalogSoilRequirements?) -> String? {
         guard let s else { return nil }
-        var parts: [String] = []
-        parts.append(String(format: "pH %.1f–%.1f", s.phMin, s.phMax))
-        parts.append(s.type.replacingOccurrences(of: "-", with: " "))
-        if !s.drainage.isEmpty { parts.append("\(s.drainage) drainage") }
-        return parts.joined(separator: ", ")
+        return String(format: "pH %.1f–%.1f", s.phMin, s.phMax)
     }
 
     private static func formatTemperature(_ t: CatalogTemperatureRange?) -> String? {
         guard let t else { return nil }
-        return "\(t.idealMin)–\(t.idealMax)°F (ideal); \(t.minF)–\(t.maxF)°F overall"
+        return "\(t.idealMin)–\(t.idealMax)°F"
     }
 
     private static func formatDaysToHarvest(_ d: CatalogDaysToHarvest?) -> String? {
         guard let d else { return nil }
         return "\(d.min)–\(d.max) days"
+    }
+
+    /// "loam" → "Loam"; nil/empty stays nil so the chip is hidden.
+    private static func capitalize(_ s: String?) -> String? {
+        guard let raw = s?.trimmingCharacters(in: .whitespaces), !raw.isEmpty else { return nil }
+        return raw.prefix(1).uppercased() + raw.dropFirst()
+    }
+
+    /// 8 → "8 in", 36 → "3 ft", 30 → "2.5 ft". Hidden when nil or zero.
+    private static func formatInches(_ inches: Int?) -> String? {
+        guard let inches, inches > 0 else { return nil }
+        if inches < 24 { return "\(inches) in" }
+        let feet = Double(inches) / 12.0
+        // Drop trailing .0 for whole feet.
+        return feet.truncatingRemainder(dividingBy: 1) == 0
+            ? "\(Int(feet)) ft"
+            : String(format: "%.1f ft", feet)
     }
 
     private static func chooseVarieties(catalog: CatalogPlant, variant: PlantRegionalVariant?) -> [String]? {

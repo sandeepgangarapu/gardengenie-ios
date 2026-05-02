@@ -25,6 +25,7 @@ struct CatalogPlant: Identifiable, Hashable, Codable {
     let description: String?
 
     // MARK: - Biological needs (region-agnostic)
+    let sunCategory: String?        // "Full Sun"|"Partial Sun"|"Partial Shade"|"Full Shade"
     let sunRequirements: String?
     let soilRequirements: CatalogSoilRequirements?
     let temperatureRange: CatalogTemperatureRange?
@@ -79,6 +80,7 @@ struct CatalogPlant: Identifiable, Hashable, Codable {
         case type, lifecycle
         case indoorOutdoor = "indoor_outdoor"
         case description
+        case sunCategory = "sun_category"
         case sunRequirements = "sun_requirements"
         case soilRequirements = "soil_requirements"
         case temperatureRange = "temperature_range"
