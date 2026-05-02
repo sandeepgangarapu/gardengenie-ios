@@ -190,23 +190,6 @@ struct SettingsView: View {
                         .font(.subheadline)
                         .foregroundStyle(AppTheme.Colors.textSecondary)
                 }
-
-                dividerRow
-
-                NavigationLink {
-                    IconDebugView()
-                } label: {
-                    settingsRow(
-                        icon: "ladybug",
-                        iconColor: AppTheme.Colors.accentPink,
-                        title: "Icon Debug"
-                    ) {
-                        Image(systemName: "chevron.right")
-                            .font(.caption)
-                            .foregroundStyle(AppTheme.Colors.textTertiary)
-                    }
-                }
-                .buttonStyle(.plain)
             }
             .background(
                 RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous)

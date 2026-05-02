@@ -51,7 +51,6 @@
 		C568250CFA44A580DA16E1DC /* CatalogPlant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220971A13C516858C29CD150 /* CatalogPlant.swift */; };
 		CF88C73D2874A4292F095620 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = D417A902A6ADFF22B0A6F1EC /* AppTheme.swift */; };
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* Image+Symbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2E1D0C9B8A7F6E5D4C3B2A1 /* Image+Symbol.swift */; };
-		B3C4D5E6F7A8B9C0D1E2F3A4 /* IconDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5E6F7A8B9C0D1E2F3A4B5 /* IconDebugView.swift */; };
 		D170D4E082338A782103E664 /* CatalogPlantAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A161FFB4CAF3B4F8DC56059 /* CatalogPlantAdapter.swift */; };
 		D8F7E9189F21E5E8934383DA /* AddTaskSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E257F16410F743A1F948AF3 /* AddTaskSheet.swift */; };
 		EA0766A6AEBFA2EA2B166586 /* MonthDateParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41B35F7A1BF77EF084A2E28C /* MonthDateParser.swift */; };
@@ -102,7 +101,6 @@
 		C914D04A216FEC118401C874 /* TaskRecurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRecurrence.swift; sourceTree = "<group>"; };
 		D417A902A6ADFF22B0A6F1EC /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		F2E1D0C9B8A7F6E5D4C3B2A1 /* Image+Symbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Symbol.swift"; sourceTree = "<group>"; };
-		C4D5E6F7A8B9C0D1E2F3A4B5 /* IconDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconDebugView.swift; sourceTree = "<group>"; };
 		D79379145143BA2DE3375BFB /* PlantingCompactCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantingCompactCard.swift; sourceTree = "<group>"; };
 		D89CF77604B20B9D7551EADF /* PlantCatalogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantCatalogService.swift; sourceTree = "<group>"; };
 		D8EBF596B00267E2B5F4FA44 /* ScheduleTaskSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTaskSheet.swift; sourceTree = "<group>"; };
@@ -131,7 +129,6 @@
 			children = (
 				B905F84493EB9EB95DA4BD19 /* MainTabView.swift */,
 				D8BD7424A04CC20A40C975DF /* Components */,
-				D5E6F7A8B9C0D1E2F3A4B5C6 /* Debug */,
 				425B9B5E76C35DCE68E90C88 /* Explore */,
 				1F7D2D16F648FDB1FC80A529 /* Garden */,
 				26C89A67AB70CF57724C90EC /* Onboarding */,
@@ -140,14 +137,6 @@
 				BDFE2E3DAD087DB836E798AE /* Tasks */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		D5E6F7A8B9C0D1E2F3A4B5C6 /* Debug */ = {
-			isa = PBXGroup;
-			children = (
-				C4D5E6F7A8B9C0D1E2F3A4B5 /* IconDebugView.swift */,
-			);
-			path = Debug;
 			sourceTree = "<group>";
 		};
 		1F69939F958AB44AB2A3FBE9 = {
@@ -411,7 +400,6 @@
 				9188D108526ECE074E42D512 /* AgendaDayHeader.swift in Sources */,
 				CF88C73D2874A4292F095620 /* AppTheme.swift in Sources */,
 				A1B2C3D4E5F6A7B8C9D0E1F2 /* Image+Symbol.swift in Sources */,
-				B3C4D5E6F7A8B9C0D1E2F3A4 /* IconDebugView.swift in Sources */,
 				36DC89D5C9F30C773C028C93 /* CareDetailView.swift in Sources */,
 				C568250CFA44A580DA16E1DC /* CatalogPlant.swift in Sources */,
 				D170D4E082338A782103E664 /* CatalogPlantAdapter.swift in Sources */,
