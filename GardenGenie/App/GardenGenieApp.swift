@@ -4,7 +4,7 @@ import SwiftUI
 struct GardenGenieApp: App {
     @AppStorage("has_completed_onboarding") private var hasCompletedOnboarding = false
     @State private var gardenVM = GardenViewModel()
-    @State private var taskVM = TaskViewModel(tasks: MockData.tasks)
+    @State private var taskVM = TaskViewModel()
 
     var body: some Scene {
         WindowGroup {

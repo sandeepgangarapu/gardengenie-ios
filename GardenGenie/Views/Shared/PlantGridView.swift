@@ -86,14 +86,3 @@ private struct GridPlantCard: View {
         )
     }
 }
-
-#Preview {
-    NavigationStack {
-        PlantGridView(destination: PlantGridDestination(
-            title: "Herbs",
-            subtitle: "By type",
-            plants: MockData.plants
-        ))
-    }
-    .preferredColorScheme(.dark)
-}

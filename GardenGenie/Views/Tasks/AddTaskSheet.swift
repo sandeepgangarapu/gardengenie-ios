@@ -21,8 +21,15 @@ struct AddTaskSheet: View {
     @State private var dueDate: Date = Date()
     @State private var selectedPlantID: UUID?
 
+    /// Plants the user can attach a task to. Prefers the legacy in-memory
+    /// garden (still used by older flows) and falls back to the saved catalog
+    /// garden, adapted into the legacy `Plant` shape so the picker code stays
+    /// uniform. Variant is `nil` because we only need name/id here.
     private var availablePlants: [Plant] {
-        gardenVM.plants.isEmpty ? gardenVM.allPlants : gardenVM.plants
+        if !gardenVM.plants.isEmpty { return gardenVM.plants }
+        return gardenVM.myGarden.plants.values.map {
+            CatalogPlantAdapter.adapt($0, variant: nil)
+        }
     }
 
     private var selectedPlant: Plant? {

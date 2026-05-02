@@ -270,11 +270,3 @@ struct TasksView: View {
         }
     }
 }
-
-#Preview {
-    TasksView(
-        taskVM: TaskViewModel(tasks: MockData.tasks),
-        gardenVM: GardenViewModel()
-    )
-    .preferredColorScheme(.dark)
-}

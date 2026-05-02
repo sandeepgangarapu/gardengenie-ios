@@ -73,16 +73,3 @@ extension Color {
         self.init(red: r, green: g, blue: b)
     }
 }
-
-#Preview {
-    ScrollView(.horizontal) {
-        HStack {
-            ForEach(MockData.plants) { plant in
-                HeroPlantCard(plant: plant)
-            }
-        }
-        .padding()
-    }
-    .background(Color.black)
-    .preferredColorScheme(.dark)
-}

@@ -28,10 +28,20 @@ final class GardenViewModel {
     /// Last error to surface to the UI; cleared on next successful search.
     private(set) var lastSearchError: PlantCatalogServiceError?
 
-    // MARK: - Legacy (in-memory, MockData-backed) — kept for Tasks compat
+    // MARK: - Catalog: Explore listing (zone-filtered)
 
-    /// Full catalog of every known plant (legacy MockData).
-    let allPlants: [Plant] = MockData.plants
+    /// Cached plants available in the user's current `(zone, state)`. Populated
+    /// by `loadExplorePlants`. Empty until that runs (or if the catalog has no
+    /// regional variants for this region yet).
+    private(set) var explorePlants: [CatalogPlant] = []
+
+    /// True while `loadExplorePlants` is in flight.
+    private(set) var isLoadingExplore: Bool = false
+
+    /// Last error from `loadExplorePlants`; cleared on the next successful load.
+    private(set) var exploreError: PlantCatalogServiceError?
+
+    // MARK: - Legacy (in-memory) — kept for Tasks compat
 
     /// Plants the user added to their legacy garden. Empty by default; the
     /// new catalog flow uses `myGarden` instead.
@@ -42,17 +52,30 @@ final class GardenViewModel {
         didSet { saveBookmarks() }
     }
 
-    var searchText: String = ""
-
-    /// Search results drawn from the legacy MockData catalog.
-    var filteredPlants: [Plant] {
-        guard !searchText.isEmpty else { return allPlants }
-        return allPlants.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
-    }
-
     init(plants: [Plant] = []) {
         self.plants = plants
         self.bookmarkedPlantIDs = Self.loadBookmarks()
+    }
+
+    // MARK: - Catalog: Explore loader
+
+    /// Fetch the list of cached plants for the user's region. Skips the call
+    /// if a load is already in flight, and clears `exploreError` on success.
+    /// Safe to call repeatedly (e.g. on tab switch / pull-to-refresh).
+    func loadExplorePlants(zone: String, state: String) async {
+        guard !isLoadingExplore else { return }
+        isLoadingExplore = true
+        defer { isLoadingExplore = false }
+
+        do {
+            let plants = try await PlantCatalogService.listForZone(zone: zone, state: state)
+            explorePlants = plants
+            exploreError = nil
+        } catch let error as PlantCatalogServiceError {
+            exploreError = error
+        } catch {
+            exploreError = .networkFailure(error)
+        }
     }
 
     // MARK: - Catalog: search
@@ -87,6 +110,30 @@ final class GardenViewModel {
         searchResults.removeAll()
         searchVariants.removeAll()
         lastSearchError = nil
+    }
+
+    // MARK: - Catalog: autocomplete
+
+    /// Live autocomplete suggestions from cached plants (no LLM).
+    private(set) var suggestions: [PlantCatalogService.SearchSuggestion] = []
+
+    /// Fetch autocomplete suggestions. Call on debounced text changes.
+    func updateSuggestions(query: String) async {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.count >= 2 else {
+            suggestions = []
+            return
+        }
+        do {
+            suggestions = try await PlantCatalogService.searchCached(query: trimmed)
+        } catch {
+            // Silently degrade — autocomplete is best-effort.
+            suggestions = []
+        }
+    }
+
+    func clearSuggestions() {
+        suggestions = []
     }
 
     // MARK: - Catalog: garden

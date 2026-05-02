@@ -274,29 +274,3 @@ struct PlantingDetailView: View {
 extension TaskKind: Identifiable {
     var id: String { rawValue }
 }
-
-#Preview("Both Sections") {
-    NavigationStack {
-        PlantingDetailView(
-            seedStarting: MockData.plants[0].seedStarting,
-            planting: MockData.plants[0].planting,
-            plantName: "Tomato",
-            plant: MockData.plants[0],
-            taskVM: TaskViewModel()
-        )
-    }
-    .preferredColorScheme(.dark)
-}
-
-#Preview("Planting Only") {
-    NavigationStack {
-        PlantingDetailView(
-            seedStarting: nil,
-            planting: MockData.plants[1].planting,
-            plantName: "Potato",
-            plant: MockData.plants[1],
-            taskVM: TaskViewModel()
-        )
-    }
-    .preferredColorScheme(.dark)
-}

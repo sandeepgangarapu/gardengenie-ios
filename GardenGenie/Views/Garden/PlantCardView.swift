@@ -33,10 +33,3 @@ struct PlantCardView: View {
         .gardenCard()
     }
 }
-
-#Preview {
-    PlantCardView(plant: MockData.plants[0])
-        .padding()
-        .background(Color.black)
-        .preferredColorScheme(.dark)
-}

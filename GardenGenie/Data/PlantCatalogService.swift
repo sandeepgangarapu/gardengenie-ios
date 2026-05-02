@@ -109,6 +109,97 @@ enum PlantCatalogService {
         }
     }
 
+    // MARK: - Catalog listing by zone (cached plants only, no LLM)
+
+    /// List every cached plant that has a regional variant for the user's
+    /// `(zone, state)`. Read-only Supabase lookup on the server — no LLM cost.
+    ///
+    /// Returns an empty array when the catalog has nothing for this region yet
+    /// (the catalog grows lazily as users search for plants). Surfaces the same
+    /// `PlantCatalogServiceError` cases as `fetch` so the UI can render loading
+    /// / error / empty states uniformly.
+    static func listForZone(zone: String, state: String) async throws -> [CatalogPlant] {
+        guard !zone.isEmpty, !state.isEmpty else { throw PlantCatalogServiceError.missingRegion }
+
+        var components = URLComponents(url: baseURL.appendingPathComponent("catalog"), resolvingAgainstBaseURL: false)!
+        components.queryItems = [
+            URLQueryItem(name: "zone", value: zone),
+            URLQueryItem(name: "state", value: state.uppercased()),
+        ]
+
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.timeoutInterval = 8
+
+        let (data, response): (Data, URLResponse)
+        do {
+            (data, response) = try await URLSession.shared.data(for: request)
+        } catch {
+            throw PlantCatalogServiceError.networkFailure(error)
+        }
+
+        guard let http = response as? HTTPURLResponse else {
+            throw PlantCatalogServiceError.networkFailure(URLError(.badServerResponse))
+        }
+
+        switch http.statusCode {
+        case 200:
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601WithFractional
+            do {
+                return try decoder.decode([CatalogPlant].self, from: data)
+            } catch {
+                throw PlantCatalogServiceError.decodeFailure(error)
+            }
+        case 429:
+            throw PlantCatalogServiceError.rateLimited
+        default:
+            throw PlantCatalogServiceError.networkFailure(
+                URLError(.badServerResponse, userInfo: [NSLocalizedDescriptionKey: "HTTP \(http.statusCode)"])
+            )
+        }
+    }
+
+    // MARK: - Autocomplete search (cached plants only, no LLM)
+
+    /// Lightweight search result from `GET /search`.
+    struct SearchSuggestion: Codable, Identifiable, Hashable {
+        let id: UUID
+        let commonName: String
+        let scientificName: String?
+        let type: String?
+        let iconName: String?
+
+        enum CodingKeys: String, CodingKey {
+            case id
+            case commonName = "common_name"
+            case scientificName = "scientific_name"
+            case type
+            case iconName = "icon_name"
+        }
+    }
+
+    /// Search cached plants by name. Returns instantly — no LLM generation.
+    static func searchCached(query: String) async throws -> [SearchSuggestion] {
+        guard query.count >= 2 else { return [] }
+
+        var components = URLComponents(url: baseURL.appendingPathComponent("search"), resolvingAgainstBaseURL: false)!
+        components.queryItems = [URLQueryItem(name: "q", value: query)]
+
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.timeoutInterval = 5
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
+            return [] // degrade gracefully — autocomplete is best-effort
+        }
+        return (try? JSONDecoder().decode([SearchSuggestion].self, from: data)) ?? []
+    }
+
     private struct ErrorBody: Codable {
         let error: String
         let detail: String?

@@ -5,10 +5,17 @@ struct TaskDestinationView: View {
     let task: GardenTask
     @Bindable var gardenVM: GardenViewModel
     @Bindable var taskVM: TaskViewModel
+    @AppStorage("usda_zone") private var usdaZone = ""
+    @AppStorage("state_code") private var stateCode = ""
 
+    /// Resolve from legacy in-memory garden, then the catalog store (adapted).
     private var resolvedPlant: Plant? {
-        gardenVM.plant(for: task.plantID)
-            ?? gardenVM.allPlants.first { $0.id == task.plantID }
+        if let p = gardenVM.plant(for: task.plantID) { return p }
+        if let catalog = gardenVM.myGarden.plants[task.plantID] {
+            let variant = gardenVM.variant(for: catalog, zone: usdaZone, state: stateCode)
+            return CatalogPlantAdapter.adapt(catalog, variant: variant)
+        }
+        return nil
     }
 
     var body: some View {
