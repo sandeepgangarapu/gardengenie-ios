@@ -169,6 +169,7 @@ struct OnboardingZoneResultView: View {
         OnboardingZoneResultView(
             zoneInfo: USDAZoneLookup.ZoneInfo(
                 zone: "6a",
+                state: "MA",
                 temperatureRange: "-10 to -5",
                 firstFrostDate: "October 17-31",
                 lastFrostDate: "April 1-21",

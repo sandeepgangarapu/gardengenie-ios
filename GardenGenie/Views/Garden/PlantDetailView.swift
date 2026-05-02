@@ -6,9 +6,31 @@ struct PlantDetailView: View {
     let plant: Plant
     @Bindable var gardenVM: GardenViewModel
     @Bindable var taskVM: TaskViewModel
+
+    /// Optional overrides used by the catalog flow to route Add/Remove through
+    /// `MyGardenStore` instead of the legacy in-memory `gardenVM.plants`.
+    /// All three should be supplied together; if any are nil, the view falls back
+    /// to the legacy garden API.
+    var onAdd: (() -> Void)? = nil
+    var onRemove: (() -> Void)? = nil
+    var isInGardenOverride: (() -> Bool)? = nil
+
     @Environment(\.dismiss) private var dismiss
     @State private var isExpanded = false
     @State private var showRemoveConfirmation = false
+
+    /// Effective in-garden state — uses override if provided, else the legacy check.
+    private var effectiveInGarden: Bool {
+        isInGardenOverride?() ?? gardenVM.isInGarden(plant)
+    }
+
+    private func performAdd() {
+        if let onAdd { onAdd() } else { gardenVM.addToGarden(plant) }
+    }
+
+    private func performRemove() {
+        if let onRemove { onRemove() } else { gardenVM.removeFromGarden(plant) }
+    }
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -135,7 +157,7 @@ struct PlantDetailView: View {
 
     private var ctaButtons: some View {
         HStack(spacing: AppTheme.Spacing.md) {
-            if gardenVM.isInGarden(plant) {
+            if effectiveInGarden {
                 Button {
                     showRemoveConfirmation = true
                 } label: {
@@ -149,12 +171,12 @@ struct PlantDetailView: View {
                     titleVisibility: .visible
                 ) {
                     Button("Remove from Garden", role: .destructive) {
-                        withAnimation(.snappy) { gardenVM.removeFromGarden(plant) }
+                        withAnimation(.snappy) { performRemove() }
                     }
                 }
             } else {
                 Button {
-                    withAnimation(.snappy) { gardenVM.addToGarden(plant) }
+                    withAnimation(.snappy) { performAdd() }
                 } label: {
                     Label("Add to Garden", systemImage: "plus")
                         .pillButton(style: .primary)

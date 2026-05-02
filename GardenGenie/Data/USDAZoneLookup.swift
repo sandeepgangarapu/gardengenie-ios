@@ -9,6 +9,7 @@ enum USDAZoneLookupError: Error {
 struct USDAZoneLookup {
     struct ZoneInfo: Equatable {
         let zone: String
+        let state: String?              // ISO 2-letter US state code, e.g. "CA"
         let temperatureRange: String
         let firstFrostDate: String?
         let lastFrostDate: String?
@@ -18,6 +19,7 @@ struct USDAZoneLookup {
 
     private struct Row: Decodable {
         let zone: String
+        let state: String?
         let temperature_range: String
         let zip_code: String
         let first_frost_date: String?
@@ -45,6 +47,7 @@ struct USDAZoneLookup {
         }
         return ZoneInfo(
             zone: row.zone,
+            state: row.state,
             temperatureRange: row.temperature_range,
             firstFrostDate: row.first_frost_date,
             lastFrostDate: row.last_frost_date,

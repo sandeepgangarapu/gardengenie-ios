@@ -1,10 +1,14 @@
 import SwiftUI
 
-/// The "My Garden" tab: horizontal carousels for all plants and attribute-based categories.
+/// The "My Garden" tab: shows the user's saved catalog plants, persisted in
+/// `MyGardenStore` (UserDefaults). Plants are added from the Search tab.
 struct MyGardenView: View {
     @Bindable var gardenVM: GardenViewModel
     @Bindable var taskVM: TaskViewModel
     @Binding var selectedTab: AppTab
+    @AppStorage("usda_zone") private var usdaZone = ""
+    @AppStorage("state_code") private var stateCode = ""
+
     @State private var showSettings = false
 
     var body: some View {
@@ -13,24 +17,13 @@ struct MyGardenView: View {
                 VStack(alignment: .leading, spacing: AppTheme.Spacing.lg) {
                     topBar
 
-                    if gardenVM.plants.isEmpty {
+                    let saved = gardenVM.myGarden.savedPlants
+                    if saved.isEmpty {
                         emptyStateView
                     } else {
-                        allPlantsSection
-                        ForEach(plantsByType, id: \.0) { groupName, plants in
+                        savedSection(saved)
+                        ForEach(plantsByType(saved), id: \.0) { groupName, plants in
                             carouselSection(title: groupName, subtitle: "By type", plants: plants)
-                        }
-                        ForEach(plantsByLocation, id: \.0) { groupName, plants in
-                            carouselSection(title: groupName, subtitle: "By location", plants: plants)
-                        }
-                        ForEach(plantsBySun, id: \.0) { groupName, plants in
-                            carouselSection(title: groupName, subtitle: "By sunlight", plants: plants)
-                        }
-                        ForEach(plantsByWater, id: \.0) { groupName, plants in
-                            carouselSection(title: groupName, subtitle: "By water needs", plants: plants)
-                        }
-                        ForEach(plantsBySeason, id: \.0) { groupName, plants in
-                            carouselSection(title: groupName, subtitle: "By season", plants: plants)
                         }
                     }
                     Spacer(minLength: 80)
@@ -39,11 +32,17 @@ struct MyGardenView: View {
             }
             .background(AppTheme.Colors.background.ignoresSafeArea())
             .navigationBarHidden(true)
-            .navigationDestination(for: Plant.self) { plant in
-                PlantDetailView(plant: plant, gardenVM: gardenVM, taskVM: taskVM)
-            }
-            .navigationDestination(for: PlantGridDestination.self) { destination in
-                PlantGridView(destination: destination)
+            .navigationDestination(for: CatalogPlantNavigation.self) { dest in
+                let variant = gardenVM.variant(for: dest.plant, zone: usdaZone, state: stateCode)
+                let adapted = CatalogPlantAdapter.adapt(dest.plant, variant: variant)
+                PlantDetailView(
+                    plant: adapted,
+                    gardenVM: gardenVM,
+                    taskVM: taskVM,
+                    onAdd: { gardenVM.addToCatalogGarden(dest.plant) },
+                    onRemove: { gardenVM.removeFromCatalogGarden(dest.plant) },
+                    isInGardenOverride: { gardenVM.isInCatalogGarden(dest.plant) }
+                )
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView(gardenVM: gardenVM, taskVM: taskVM)
@@ -102,49 +101,19 @@ struct MyGardenView: View {
         .buttonStyle(.plain)
     }
 
-    // MARK: - All Plants Section
+    // MARK: - Sections
 
-    private var allPlantsSection: some View {
+    private func savedSection(_ plants: [CatalogPlant]) -> some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            SectionHeader(
+            sectionHeader(
                 title: "All Plants",
-                subtitle: "\(gardenVM.plants.count) plants in your garden",
-                destination: PlantGridDestination(
-                    title: "All Plants",
-                    subtitle: "\(gardenVM.plants.count) plants in your garden",
-                    plants: gardenVM.plants
-                )
+                subtitle: "\(plants.count) plant\(plants.count == 1 ? "" : "s") in your garden"
             )
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: AppTheme.Spacing.md) {
-                    ForEach(gardenVM.plants) { plant in
-                        NavigationLink(value: plant) {
-                            HeroPlantCard(plant: plant)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(.horizontal, AppTheme.Spacing.md)
-            }
-        }
-    }
-
-    // MARK: - Carousel Section
-
-    private func carouselSection(title: String, subtitle: String, plants: [Plant]) -> some View {
-        VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            SectionHeader(
-                title: title,
-                subtitle: subtitle,
-                destination: PlantGridDestination(title: title, subtitle: subtitle, plants: plants)
-            )
-
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: AppTheme.Spacing.md) {
                     ForEach(plants) { plant in
-                        NavigationLink(value: plant) {
-                            PlantCardView(plant: plant)
+                        NavigationLink(value: CatalogPlantNavigation(plant: plant)) {
+                            catalogCard(plant)
                         }
                         .buttonStyle(.plain)
                     }
@@ -154,69 +123,68 @@ struct MyGardenView: View {
         }
     }
 
-    // MARK: - Grouping Computed Properties
-
-    private var plantsByType: [(String, [Plant])] {
-        groupPlants(by: { $0.type?.capitalized ?? "Other" })
-    }
-
-    private var plantsByLocation: [(String, [Plant])] {
-        groupPlants(by: { $0.indoorOutdoor?.capitalized ?? "Unspecified" })
-    }
-
-    private var plantsBySun: [(String, [Plant])] {
-        groupPlants(by: { $0.sunRequirements ?? "Unspecified" })
-    }
-
-    private var plantsByWater: [(String, [Plant])] {
-        groupPlants(by: { $0.requirements?.water ?? "Unspecified" })
-    }
-
-    private var plantsBySeason: [(String, [Plant])] {
-        groupPlants(by: { $0.seasonality ?? "Year-round" })
-    }
-
-    private func groupPlants(by keyPath: (Plant) -> String) -> [(String, [Plant])] {
-        Dictionary(grouping: gardenVM.plants, by: keyPath)
-            .sorted { $0.key < $1.key }
-            .filter { !$0.value.isEmpty }
-    }
-}
-
-// MARK: - Section Header
-
-private struct SectionHeader: View {
-    let title: String
-    let subtitle: String
-    var destination: PlantGridDestination? = nil
-
-    var body: some View {
-        if let destination {
-            NavigationLink(value: destination) {
-                headerContent
+    private func carouselSection(title: String, subtitle: String, plants: [CatalogPlant]) -> some View {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
+            sectionHeader(title: title, subtitle: subtitle)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: AppTheme.Spacing.md) {
+                    ForEach(plants) { plant in
+                        NavigationLink(value: CatalogPlantNavigation(plant: plant)) {
+                            catalogCard(plant)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.horizontal, AppTheme.Spacing.md)
             }
-            .buttonStyle(.plain)
-        } else {
-            headerContent
         }
     }
 
-    private var headerContent: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            HStack(spacing: AppTheme.Spacing.xs) {
-                Text(title)
-                    .font(.title2.bold())
-                    .foregroundStyle(AppTheme.Colors.textPrimary)
-                Image(systemName: "chevron.right")
-                    .font(.caption.weight(.bold))
+    private func catalogCard(_ plant: CatalogPlant) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ZStack {
+                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous)
+                    .fill(plant.accentColor.opacity(0.18))
+                Image(systemName: plant.displayIconName)
+                    .font(.system(size: 36, weight: .semibold))
+                    .foregroundStyle(plant.accentColor)
+            }
+            .frame(width: 160, height: 120)
+
+            Text(plant.commonName)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(AppTheme.Colors.textPrimary)
+                .lineLimit(1)
+
+            if let type = plant.type {
+                Text(type.capitalized)
+                    .font(.caption2)
                     .foregroundStyle(AppTheme.Colors.textTertiary)
             }
+        }
+        .frame(width: 160, alignment: .leading)
+    }
+
+    // MARK: - Grouping
+
+    private func plantsByType(_ plants: [CatalogPlant]) -> [(String, [CatalogPlant])] {
+        Dictionary(grouping: plants, by: { $0.type?.capitalized ?? "Other" })
+            .sorted { $0.key < $1.key }
+            .filter { !$0.value.isEmpty }
+    }
+
+    // MARK: - Header
+
+    private func sectionHeader(title: String, subtitle: String) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title)
+                .font(.title2.bold())
+                .foregroundStyle(AppTheme.Colors.textPrimary)
             Text(subtitle)
                 .font(.caption)
                 .foregroundStyle(AppTheme.Colors.textSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .contentShape(Rectangle())
         .padding(.horizontal, AppTheme.Spacing.md)
     }
 }

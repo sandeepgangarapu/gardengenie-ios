@@ -11,6 +11,9 @@ struct OnboardingCoordinator: View {
     @AppStorage("has_completed_onboarding") private var hasCompletedOnboarding = false
     @AppStorage("zip_code") private var zipCode = ""
     @AppStorage("usda_zone") private var usdaZone = ""
+    /// ISO 2-letter US state code, derived from zip during onboarding.
+    /// Required by the FastAPI plant catalog as part of the regional variant cache key.
+    @AppStorage("state_code") private var stateCode = ""
 
     @State private var currentStep: OnboardingStep = .welcome
     @State private var enteredZipCode = ""
@@ -75,6 +78,7 @@ struct OnboardingCoordinator: View {
                 lookupResult = result
                 zipCode = enteredZipCode
                 usdaZone = result.zone
+                stateCode = result.state ?? ""
                 withAnimation(.snappy) { currentStep = .zoneResult }
             } catch USDAZoneLookupError.notFound {
                 lookupError = "We couldn't find that zip code. Double-check and try again."
