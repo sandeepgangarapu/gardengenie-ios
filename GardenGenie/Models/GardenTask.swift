@@ -1,7 +1,7 @@
 import Foundation
 
 /// A garden task such as watering, pruning, pest-checking, planting, or seed starting.
-struct GardenTask: Identifiable, Hashable {
+struct GardenTask: Identifiable, Hashable, Codable {
     let id: UUID
     var name: String
     var dueDate: Date

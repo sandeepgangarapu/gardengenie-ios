@@ -2,9 +2,16 @@ import Foundation
 import Observation
 
 /// Owns the collection of garden tasks. Exposes sectioned views and a toggle method.
+///
+/// Tasks are persisted to `UserDefaults` as a JSON blob under `taskStore.v1`
+/// (mirrors the `MyGardenStore` pattern). Every mutation triggers a re-snapshot,
+/// so state survives app kills.
 @Observable
 final class TaskViewModel {
-    var tasks: [GardenTask]
+
+    private static let key = "taskStore.v1"
+
+    var tasks: [GardenTask] = []
 
     var pendingTasks: [GardenTask] {
         tasks
@@ -21,8 +28,11 @@ final class TaskViewModel {
     /// Count of completed tasks — used in Settings profile card.
     var completedCount: Int { completedTasks.count }
 
-    init(tasks: [GardenTask] = []) {
-        self.tasks = tasks
+    private let userDefaults: UserDefaults
+
+    init(userDefaults: UserDefaults = .standard) {
+        self.userDefaults = userDefaults
+        load()
     }
 
     // MARK: - Mutations
@@ -51,6 +61,7 @@ final class TaskViewModel {
         } else {
             tasks[index].isCompleted.toggle()
         }
+        persist()
     }
 
     /// Add a new task (e.g. from a care plan "Others" item).
@@ -62,15 +73,18 @@ final class TaskViewModel {
                 && Calendar.current.isDate($0.dueDate, inSameDayAs: task.dueDate)
         }) else { return }
         tasks.append(task)
+        persist()
     }
 
     func reschedule(_ id: UUID, to newDate: Date) {
         guard let index = tasks.firstIndex(where: { $0.id == id }) else { return }
         tasks[index].dueDate = newDate
+        persist()
     }
 
     func dismiss(_ id: UUID) {
         tasks.removeAll { $0.id == id }
+        persist()
     }
 
     // MARK: - Timeline queries
@@ -79,6 +93,7 @@ final class TaskViewModel {
     /// on today or the nearest future occurrence. Skipped occurrences are NOT logged.
     func rollForwardRecurringTasks(now: Date = Date()) {
         let startOfToday = Calendar.current.startOfDay(for: now)
+        var didMutate = false
         for index in tasks.indices {
             guard !tasks[index].isCompleted,
                   tasks[index].recurrence.isRecurring,
@@ -92,7 +107,9 @@ final class TaskViewModel {
                 safety += 1
             }
             tasks[index].dueDate = candidate
+            didMutate = true
         }
+        if didMutate { persist() }
     }
 
     /// Pending, non-completed tasks whose day is strictly before today.
@@ -131,5 +148,27 @@ final class TaskViewModel {
         return buckets
             .map { (day: $0.key, tasks: $0.value.sorted { $0.dueDate < $1.dueDate }) }
             .sorted { $0.day < $1.day }
+    }
+
+    // MARK: - Persistence
+
+    private func load() {
+        guard let data = userDefaults.data(forKey: Self.key) else { return }
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601WithFractional
+        guard let snapshot = try? decoder.decode(StoredSnapshot.self, from: data) else { return }
+        tasks = snapshot.tasks
+    }
+
+    private func persist() {
+        let snapshot = StoredSnapshot(tasks: tasks)
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        guard let data = try? encoder.encode(snapshot) else { return }
+        userDefaults.set(data, forKey: Self.key)
+    }
+
+    private struct StoredSnapshot: Codable {
+        var tasks: [GardenTask]
     }
 }
