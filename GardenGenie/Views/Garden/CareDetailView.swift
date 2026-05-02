@@ -72,7 +72,7 @@ struct CareDetailView: View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
             HStack(spacing: AppTheme.Spacing.sm) {
                 if let iconName = item.iconName {
-                    Image(systemName: iconName)
+                    Image.symbol(iconName)
                         .font(.body.weight(.semibold))
                         .foregroundStyle(AppTheme.Colors.accentPink)
                 } else {
@@ -122,9 +122,4 @@ struct CareDetailView: View {
     private func addToTasks(_ item: CareItem) {
         pendingAdd = item
     }
-}
-
-#Preview {
-    CareDetailView(plant: MockData.plants[0], taskVM: TaskViewModel())
-        .preferredColorScheme(.dark)
 }

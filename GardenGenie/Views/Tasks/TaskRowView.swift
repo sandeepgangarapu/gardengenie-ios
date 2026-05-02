@@ -19,7 +19,7 @@ struct TaskRowView: View {
             }
             .buttonStyle(.plain)
 
-            Image(systemName: task.iconName)
+            Image.symbol(task.iconName)
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(AppTheme.Colors.accentBlue)
                 .frame(width: 28, height: 28)
@@ -56,29 +56,4 @@ struct RecurrenceBadge: View {
         }
         .pillTag(color: AppTheme.Colors.accentBlue)
     }
-}
-
-#Preview {
-    VStack {
-        TaskRowView(task: GardenTask(
-            name: "Water tomato plants",
-            dueDate: Date(),
-            plantID: MockData.tomatoID,
-            plantName: "Tomato",
-            iconName: "drop.fill",
-            kind: .care,
-            recurrence: .weekly
-        )) {}
-        TaskRowView(task: GardenTask(
-            name: "Check for pests",
-            dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date(),
-            plantID: MockData.potatoID,
-            plantName: "Potato",
-            isCompleted: true,
-            iconName: "ladybug.fill"
-        )) {}
-    }
-    .padding()
-    .background(AppTheme.Colors.cardBackground)
-    .preferredColorScheme(.dark)
 }

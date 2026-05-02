@@ -55,7 +55,7 @@ struct ScheduleTaskSheet: View {
         NavigationStack {
             VStack(spacing: 0) {
                 VStack(spacing: AppTheme.Spacing.sm) {
-                    Image(systemName: taskIcon)
+                    Image.symbol(taskIcon)
                         .font(.title2)
                         .foregroundStyle(AppTheme.Colors.accentPink)
                     Text(taskName)
@@ -116,16 +116,4 @@ struct ScheduleTaskSheet: View {
             }
         }
     }
-}
-
-#Preview {
-    ScheduleTaskSheet(
-        plant: MockData.plants[0],
-        kind: .care,
-        defaultDate: Date(),
-        taskVM: TaskViewModel(),
-        prefilledName: "Water deeply",
-        prefilledIcon: "drop.fill"
-    )
-    .preferredColorScheme(.dark)
 }
