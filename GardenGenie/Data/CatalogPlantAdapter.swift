@@ -11,7 +11,8 @@ import Foundation
 ///   - `carePlan.items[].is_critical` is split into `mustDo` (true) / `others` (false);
 ///     frequency is filled in from the regional `careSchedule` matched on title
 ///   - `seedStartingGuide` + variant.indoor_seed_start_window → `SeedStartingInfo`
-///   - `plantingGuide` + variant.transplant_window (or direct_sow_window) → `PlantingInfo`
+///   - `plantingGuide.{transplant|direct_sow}` + matching variant window → `PlantingInfo`
+///     (method label is derived from the slot key, prefer transplant when both apply)
 enum CatalogPlantAdapter {
 
     static func adapt(_ catalog: CatalogPlant, variant: PlantRegionalVariant?) -> Plant {
@@ -37,8 +38,7 @@ enum CatalogPlantAdapter {
                 fertilizer: catalog.fertilizerGeneral
             ),
             seedStarting: adaptSeedStarting(catalog.seedStartingGuide, window: variant?.indoorSeedStartWindow),
-            planting: adaptPlanting(catalog.plantingGuide,
-                                    window: variant?.transplantWindow ?? variant?.directSowWindow),
+            planting: adaptPlanting(catalog.plantingGuide, variant: variant),
             carePlan: adaptCarePlan(catalog.carePlan, schedule: variant?.careSchedule),
             typeSpecific: TypeSpecificInfo(
                 daysToHarvest: formatDaysToHarvest(catalog.daysToHarvest),
@@ -136,18 +136,36 @@ enum CatalogPlantAdapter {
         )
     }
 
+    /// Picks one (method, entry, window) triple so the planting card never shows
+    /// a method label that contradicts its instructions. Prefers transplant when
+    /// both windows exist (matches the prior `transplantWindow ?? directSowWindow`
+    /// behavior). Falls back to whichever method the catalog has if no variant
+    /// window matches, so we still render something useful pre-backfill.
     private static func adaptPlanting(
         _ guide: CatalogPlantingGuide?,
-        window: CatalogPlantingWindow?
+        variant: PlantRegionalVariant?
     ) -> PlantingInfo? {
-        guard guide != nil || window != nil else { return nil }
+        let pick: (label: String, entry: CatalogPlantingGuideEntry, window: CatalogPlantingWindow?)?
+        if let entry = guide?.transplant, let window = variant?.transplantWindow {
+            pick = ("Transplant", entry, window)
+        } else if let entry = guide?.directSow, let window = variant?.directSowWindow {
+            pick = ("Direct sow", entry, window)
+        } else if let entry = guide?.transplant {
+            pick = ("Transplant", entry, nil)
+        } else if let entry = guide?.directSow {
+            pick = ("Direct sow", entry, nil)
+        } else {
+            pick = nil
+        }
+
+        guard let pick else { return nil }
         return PlantingInfo(
-            month: window?.displayRange,
-            instructions: guide?.instructions.isEmpty == false ? guide?.instructions : nil,
-            spacing: guide?.spacing,
-            depth: guide?.depth,
-            method: guide?.method,
-            notes: combineNotes(guide?.notes, window?.notes)
+            month: pick.window?.displayRange,
+            instructions: pick.entry.instructions.isEmpty ? nil : pick.entry.instructions,
+            spacing: pick.entry.spacing,
+            depth: pick.entry.depth,
+            method: pick.label,
+            notes: combineNotes(pick.entry.notes, pick.window?.notes)
         )
     }
 

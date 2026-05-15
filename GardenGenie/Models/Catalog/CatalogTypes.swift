@@ -96,12 +96,68 @@ struct CatalogSeedStartingGuide: Codable, Hashable {
     }
 }
 
-struct CatalogPlantingGuide: Codable, Hashable {
-    let method: String?
+/// Method-specific planting instructions. Same biology applies in any climate;
+/// the regional variant's window choice (transplantWindow vs directSowWindow)
+/// picks which entry the iOS view renders.
+struct CatalogPlantingGuideEntry: Codable, Hashable {
     let depth: String?
     let spacing: String?
     let instructions: [String]
     let notes: String?
+}
+
+/// Plants only carry the methods that biologically apply: carrots have
+/// `directSow` only; brassicas typically have `transplant` only; warm-season
+/// fruiting crops have both so the right one can be picked per zone.
+///
+/// Transitional decoder: reads the legacy flat shape
+/// `{method, depth, spacing, instructions, notes}` and folds it into
+/// `directSow`. This handles `MyGardenStore` cache entries written by older
+/// builds. Drop the fallback once everyone's cache has rolled over.
+struct CatalogPlantingGuide: Codable, Hashable {
+    let directSow: CatalogPlantingGuideEntry?
+    let transplant: CatalogPlantingGuideEntry?
+
+    enum CodingKeys: String, CodingKey {
+        case directSow = "direct_sow"
+        case transplant
+    }
+
+    /// Legacy flat shape — present only in old MyGardenStore cache entries
+    /// written before the method-keyed split.
+    private enum LegacyKeys: String, CodingKey {
+        case method, depth, spacing, instructions, notes
+    }
+
+    init(directSow: CatalogPlantingGuideEntry? = nil, transplant: CatalogPlantingGuideEntry? = nil) {
+        self.directSow = directSow
+        self.transplant = transplant
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        let newDirectSow = try c.decodeIfPresent(CatalogPlantingGuideEntry.self, forKey: .directSow)
+        let newTransplant = try c.decodeIfPresent(CatalogPlantingGuideEntry.self, forKey: .transplant)
+        if newDirectSow != nil || newTransplant != nil {
+            self.directSow = newDirectSow
+            self.transplant = newTransplant
+            return
+        }
+        let legacy = try decoder.container(keyedBy: LegacyKeys.self)
+        let instructions = (try legacy.decodeIfPresent([String].self, forKey: .instructions)) ?? []
+        let depth = try legacy.decodeIfPresent(String.self, forKey: .depth)
+        let spacing = try legacy.decodeIfPresent(String.self, forKey: .spacing)
+        let notes = try legacy.decodeIfPresent(String.self, forKey: .notes)
+        if !instructions.isEmpty || depth != nil || spacing != nil {
+            self.directSow = CatalogPlantingGuideEntry(
+                depth: depth, spacing: spacing, instructions: instructions, notes: notes
+            )
+            self.transplant = nil
+        } else {
+            self.directSow = nil
+            self.transplant = nil
+        }
+    }
 }
 
 // MARK: - Regional sub-structs (stored in plant_regional_variants.* JSONB columns)
