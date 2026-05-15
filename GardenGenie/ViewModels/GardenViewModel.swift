@@ -143,7 +143,27 @@ final class GardenViewModel {
     }
 
     func addToCatalogGarden(_ plant: CatalogPlant) {
+        // Cache the plant first so MyGardenStore.add() doesn't silently no-op
+        // for Explore-flow plants (which have no prior cacheResponse call).
+        myGarden.cachePlant(plant)
         myGarden.add(plantID: plant.id)
+
+        // Background-fetch the regional variant if we don't already have one,
+        // so the planting/seed-starting cards can show months instead of
+        // "See details". Best-effort: failures are silent — the plant is
+        // already added, the user can refresh later.
+        let zone = UserDefaults.standard.string(forKey: "usda_zone") ?? ""
+        let state = UserDefaults.standard.string(forKey: "state_code") ?? ""
+        guard !zone.isEmpty, !state.isEmpty else { return }
+        if myGarden.variant(for: plant.id, zone: zone, state: state) != nil { return }
+        Task { [weak self] in
+            guard let self else { return }
+            if let response = try? await PlantCatalogService.fetch(
+                query: plant.commonName, zone: zone, state: state
+            ) {
+                self.myGarden.cacheVariant(response.variant)
+            }
+        }
     }
 
     func removeFromCatalogGarden(_ plant: CatalogPlant) {

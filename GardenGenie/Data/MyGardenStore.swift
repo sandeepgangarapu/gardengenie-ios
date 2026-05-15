@@ -59,6 +59,25 @@ final class MyGardenStore {
         persist()
     }
 
+    /// Cache a plant without its regional variant. Used by the Explore flow,
+    /// which lists plants from `/catalog` (no variant attached). Without this,
+    /// `add(plantID:)` silently no-ops because of its `plants[id] != nil` guard,
+    /// leaving Explore-added plants invisible after restart.
+    func cachePlant(_ plant: CatalogPlant) {
+        plants[plant.id] = plant
+        persist()
+    }
+
+    /// Cache a fetched variant in isolation (for background variant backfill
+    /// after `addToCatalogGarden`).
+    func cacheVariant(_ variant: PlantRegionalVariant) {
+        let key = variantKey(plantID: variant.plantID,
+                             zone: variant.usdaZone,
+                             state: variant.stateCode)
+        variants[key] = variant
+        persist()
+    }
+
     /// Adds the plant to the user's garden. Cache-side data must already be present
     /// (call `cacheResponse` first).
     func add(plantID: UUID) {
