@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// Root tab navigator. Two main tabs plus a native search tab (iOS 26+).
+/// Root tab navigator: Calendar, My Garden (home), Explore, plus a native
+/// search tab (iOS 26+).
 /// The search tab uses `role: .search` which SwiftUI renders as a floating
 /// magnifying-glass button at the bottom-right of the tab bar.
 struct MainTabView: View {
@@ -11,7 +12,7 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            Tab("Tasks", systemImage: "checklist", value: AppTab.tasks) {
+            Tab("Calendar", systemImage: "calendar", value: AppTab.tasks) {
                 TasksView(taskVM: taskVM, gardenVM: gardenVM)
             }
             Tab("My Garden", systemImage: "leaf.fill", value: AppTab.myGarden) {

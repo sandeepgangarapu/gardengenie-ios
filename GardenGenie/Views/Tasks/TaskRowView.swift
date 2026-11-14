@@ -35,9 +35,10 @@ struct TaskRowView: View {
                 }
             }
 
-            Spacer()
+            Spacer(minLength: AppTheme.Spacing.xs)
 
             Text(task.plantName)
+                .lineLimit(1)
                 .pillTag(color: AppTheme.Colors.accentPink)
         }
         .contentShape(Rectangle())
@@ -54,6 +55,9 @@ struct RecurrenceBadge: View {
                 .font(.caption2.weight(.bold))
             Text(recurrence.displayName)
         }
+        .lineLimit(1)
         .pillTag(color: AppTheme.Colors.accentBlue)
+        // Never wrap "Every 3 days" onto two lines; the task name truncates instead.
+        .fixedSize()
     }
 }

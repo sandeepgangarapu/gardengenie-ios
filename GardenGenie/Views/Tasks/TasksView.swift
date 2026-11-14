@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// The "Tasks" tab: day strip + agenda grouped by day + overdue bucket + completed history.
+/// The "Calendar" tab: day strip + agenda grouped by day + overdue bucket + completed history.
 /// Uses a native SwiftUI List so each row supports iOS swipe-to-delete.
 struct TasksView: View {
     @Bindable var taskVM: TaskViewModel
@@ -62,7 +62,7 @@ struct TasksView: View {
     private var headerSection: some View {
         Section {
             HStack(alignment: .firstTextBaseline) {
-                Text("Tasks")
+                Text("Calendar")
                     .font(.largeTitle.bold())
                     .foregroundStyle(AppTheme.Colors.textPrimary)
                 Spacer()
