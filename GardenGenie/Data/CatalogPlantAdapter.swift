@@ -54,7 +54,7 @@ enum CatalogPlantAdapter {
     }
 
     /// Same planting window choice as `adaptPlanting` (transplant first).
-    private static func seasonWindows(_ variant: PlantRegionalVariant?) -> [SeasonWindow] {
+    static func seasonWindows(_ variant: PlantRegionalVariant?) -> [SeasonWindow] {
         guard let variant else { return [] }
         let pairs: [(SeasonWindow.Kind, CatalogPlantingWindow?)] = [
             (.seedIndoors, variant.indoorSeedStartWindow),
