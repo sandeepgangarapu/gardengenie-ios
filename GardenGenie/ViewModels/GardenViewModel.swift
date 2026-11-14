@@ -16,6 +16,12 @@ final class GardenViewModel {
     /// Persistent store for saved catalog plants. Source of truth for MyGardenView.
     let myGarden: MyGardenStore = MyGardenStore()
 
+    /// What the user has done for each plant (watered, pruned, notes, photos).
+    let careLog = CareLogStore()
+
+    /// The user's own photo of each plant, used as its poster.
+    let photos = PlantPhotoStore()
+
     /// Most-recent search results (in-memory only; cleared on reset).
     private(set) var searchResults: [CatalogPlant] = []
 

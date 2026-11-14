@@ -261,7 +261,8 @@ struct MyGardenView: View {
                         NavigationLink(value: CatalogPlantNavigation(plant: plant)) {
                             GardenPlantCard(
                                 plant: plant,
-                                status: TaskSchedule.status(for: plant.id, in: taskVM.tasks)
+                                status: TaskSchedule.status(for: plant.id, in: taskVM.tasks),
+                                photo: gardenVM.photos.image(for: plant.id)
                             )
                         }
                         .buttonStyle(.plain)
