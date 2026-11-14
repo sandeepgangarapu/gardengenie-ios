@@ -43,6 +43,43 @@ enum Companions {
     }
 }
 
+extension Companions {
+    /// For each candidate, the first garden plant whose guide lists it as a
+    /// companion (e.g. Basil → Roma tomato). Candidates already in the garden
+    /// are skipped.
+    static func pairs(
+        candidates: [(id: UUID, name: String)],
+        garden: [(id: UUID, name: String, companions: [String])]
+    ) -> [(candidateID: UUID, gardenPlantName: String)] {
+        let gardenIDs = Set(garden.map(\.id))
+        return candidates.compactMap { candidate in
+            guard !gardenIDs.contains(candidate.id) else { return nil }
+            let name = candidate.name.lowercased()
+            guard let match = garden.first(where: { plant in
+                plant.companions.contains { gardenContains($0, [name]) }
+            }) else { return nil }
+            return (candidate.id, match.name)
+        }
+    }
+}
+
+enum PlantingCalendar {
+    /// The plant-out window includes `month`.
+    static func isPlantingTime(_ windows: [SeasonWindow], month: Int) -> Bool {
+        windows.contains { $0.kind == .plantOut && $0.contains(month: month) }
+    }
+
+    /// The seeds-indoors window is open now or opens within the next
+    /// `withinMonths` months (counting this one).
+    static func seedStartIsSoon(_ windows: [SeasonWindow], month: Int, withinMonths: Int = 3) -> Bool {
+        guard let seed = windows.first(where: { $0.kind == .seedIndoors }) else { return false }
+        if seed.contains(month: month) { return true }
+        return (0..<withinMonths).contains { offset in
+            (month - 1 + offset) % 12 + 1 == seed.startMonth
+        }
+    }
+}
+
 /// How much work a plant asks for, judged from its care guide.
 enum CareLevel: String {
     case easy = "Easy"

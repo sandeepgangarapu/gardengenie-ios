@@ -8,15 +8,12 @@ struct PlantGridDestination: Hashable {
     let plants: [Plant]
 }
 
-/// Full-screen 2-column grid of plants — the "See all" destination for the
-/// carousel headers in Explore and My Garden.
+/// Full-screen 3-column poster grid — the "See all" destination for the
+/// section headers in Explore.
 struct PlantGridView: View {
     let destination: PlantGridDestination
 
-    private let columns = [
-        GridItem(.flexible(), spacing: AppTheme.Spacing.md),
-        GridItem(.flexible(), spacing: AppTheme.Spacing.md)
-    ]
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 3)
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -31,7 +28,7 @@ struct PlantGridView: View {
                 }
                 .padding(.horizontal, AppTheme.Spacing.md)
 
-                LazyVGrid(columns: columns, spacing: AppTheme.Spacing.md) {
+                LazyVGrid(columns: columns, spacing: 10) {
                     ForEach(destination.plants) { plant in
                         NavigationLink(value: plant) {
                             GridPlantCard(plant: plant)
@@ -50,39 +47,39 @@ struct PlantGridView: View {
     }
 }
 
-/// Vertical-format card tailored for the grid. Larger icon tile on top,
-/// text stack below. Fills its grid column.
+/// Poster tile for the grid: the plant's color and icon, name at the bottom.
 private struct GridPlantCard: View {
     let plant: Plant
 
     var body: some View {
-        VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(plant.accentColor.opacity(0.18))
-                    .aspectRatio(1, contentMode: .fit)
-                Image(systemName: plant.iconName)
-                    .font(.system(size: 36, weight: .semibold))
-                    .foregroundStyle(plant.accentColor)
-            }
-
-            VStack(alignment: .leading, spacing: AppTheme.Spacing.xs) {
-                Text(plant.name)
-                    .font(.headline)
-                    .foregroundStyle(AppTheme.Colors.textPrimary)
-                    .lineLimit(1)
-
-                if let type = plant.type {
-                    Text(type.capitalized)
-                        .pillTag(color: plant.accentColor)
-                }
-            }
+        ZStack(alignment: .bottomLeading) {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(
+                    RadialGradient(
+                        colors: [plant.accentColor.opacity(0.7), plant.accentColor.opacity(0.2), AppTheme.Colors.cardBackground],
+                        center: .topTrailing,
+                        startRadius: 8,
+                        endRadius: 170
+                    )
+                )
+            Image(systemName: plant.iconName)
+                .font(.system(size: 40, weight: .thin))
+                .foregroundStyle(plant.accentColor.opacity(0.65))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .offset(y: -10)
+            LinearGradient(colors: [.clear, .black.opacity(0.75)], startPoint: .center, endPoint: .bottom)
+            Text(plant.name)
+                .font(.caption.weight(.bold))
+                .foregroundStyle(AppTheme.Colors.textPrimary)
+                .lineLimit(2)
+                .padding(9)
         }
-        .padding(AppTheme.Spacing.md)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous)
-                .fill(AppTheme.Colors.cardBackground)
+        .frame(height: 150)
+        .frame(maxWidth: .infinity)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.06), lineWidth: 1)
         )
     }
 }

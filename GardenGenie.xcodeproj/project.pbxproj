@@ -12,6 +12,7 @@
 		0573D6D46D035CCD9052AD54 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 397EED10E6B0FB82BF7E5E27 /* TaskDetailView.swift */; };
 		0FAFA853A5DB243C03390AD0 /* OverdueSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E9779BEA3CDD3B156A9749 /* OverdueSectionView.swift */; };
 		19F65A55CAE298FA6C3194F5 /* CatalogTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1259F528C385140539CAE1 /* CatalogTypes.swift */; };
+		1BDD10D625A0E2CEEFA5D938 /* PlantingCalendarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE9AF175819B24A6ECBB64 /* PlantingCalendarTests.swift */; };
 		1F14AC2A7D778CD47854C820 /* PlantDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C306C747EA4663BC55286DB /* PlantDetailView.swift */; };
 		22A8A18BE26CE0B410433AC4 /* CareLogStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8255FA118EC2EED4307D42AF /* CareLogStore.swift */; };
 		2386509589D3B3A3FDEAD441 /* OnboardingZipCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809CA5478E2EFDA791ED7876 /* OnboardingZipCodeView.swift */; };
@@ -43,6 +44,7 @@
 		82DDDFD5C8169F1AB88034B2 /* QuickAddSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B03EE3D674CE449E2431DB4E /* QuickAddSheet.swift */; };
 		851A9D13DADDB9486B63BD3B /* GardenTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025BDB10BC0ACAB532966CEB /* GardenTask.swift */; };
 		855994FFD0AB515BFAB2137A /* CareFrequencyParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5218CBB17708A1DA8F4385 /* CareFrequencyParsingTests.swift */; };
+		87CA20CCE98D1710688097AE /* ExplorePoster.swift in Sources */ = {isa = PBXBuildFile; fileRef = F207750FE5E67D4C01CD8347 /* ExplorePoster.swift */; };
 		8A77ACEBFCB603373E755847 /* PlantGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B1A6271ABE9BFBD2C568F0 /* PlantGridView.swift */; };
 		8ED6379937719877389C3608 /* TaskDestinationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24332559CDA4FF8E1EB8A49 /* TaskDestinationView.swift */; };
 		90943BE8F1F18461279466CD /* TaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B98515D74BC8A81A012B6DB /* TaskViewModel.swift */; };
@@ -91,6 +93,7 @@
 		0B95741C381666DEBD83479F /* USDAZoneLookup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = USDAZoneLookup.swift; sourceTree = "<group>"; };
 		0B98515D74BC8A81A012B6DB /* TaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskViewModel.swift; sourceTree = "<group>"; };
 		0BDC1D51C1CBBDD27DE251E7 /* GardenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenViewModel.swift; sourceTree = "<group>"; };
+		0DFE9AF175819B24A6ECBB64 /* PlantingCalendarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantingCalendarTests.swift; sourceTree = "<group>"; };
 		0FE461A725D5AFCD6B189C1F /* MyGardenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyGardenStore.swift; sourceTree = "<group>"; };
 		17D901BB48E34278A4810BFE /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
 		1BCD7385E4AD8F96C71FA259 /* PlantInsights.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantInsights.swift; sourceTree = "<group>"; };
@@ -146,6 +149,7 @@
 		D8EBF596B00267E2B5F4FA44 /* ScheduleTaskSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTaskSheet.swift; sourceTree = "<group>"; };
 		E94B35CCBAA1ED4504B5D88A /* HeroPlantCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroPlantCard.swift; sourceTree = "<group>"; };
 		EA4B1EBD6283ECF375EAF186 /* ReminderPlannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPlannerTests.swift; sourceTree = "<group>"; };
+		F207750FE5E67D4C01CD8347 /* ExplorePoster.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorePoster.swift; sourceTree = "<group>"; };
 		F585A4CF0CB29E538848E8D9 /* TaskRecurrence+CareFrequency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaskRecurrence+CareFrequency.swift"; sourceTree = "<group>"; };
 		F78BC3BEE8C7E6322988001A /* GardenGenieApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenGenieApp.swift; sourceTree = "<group>"; };
 		FA6B15379EEF655F7021EC19 /* TasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksView.swift; sourceTree = "<group>"; };
@@ -237,6 +241,7 @@
 		425B9B5E76C35DCE68E90C88 /* Explore */ = {
 			isa = PBXGroup;
 			children = (
+				F207750FE5E67D4C01CD8347 /* ExplorePoster.swift */,
 				7C694D8B8E27A6C595B0DE56 /* ExploreView.swift */,
 			);
 			path = Explore;
@@ -374,6 +379,7 @@
 			children = (
 				4B5218CBB17708A1DA8F4385 /* CareFrequencyParsingTests.swift */,
 				3A43D0F1CA583BFB00F08A6C /* CarePlanBuilderTests.swift */,
+				0DFE9AF175819B24A6ECBB64 /* PlantingCalendarTests.swift */,
 				2C33C8AB8E69DE2BBBCAE6C5 /* PlantInsightsTests.swift */,
 				EA4B1EBD6283ECF375EAF186 /* ReminderPlannerTests.swift */,
 				634EE6189DEB4BE2971D9297 /* TaskScheduleTests.swift */,
@@ -490,6 +496,7 @@
 				C568250CFA44A580DA16E1DC /* CatalogPlant.swift in Sources */,
 				D170D4E082338A782103E664 /* CatalogPlantAdapter.swift in Sources */,
 				19F65A55CAE298FA6C3194F5 /* CatalogTypes.swift in Sources */,
+				87CA20CCE98D1710688097AE /* ExplorePoster.swift in Sources */,
 				31B1912F887D91A3F6B178C8 /* ExploreView.swift in Sources */,
 				50B86E705DD0DC4E04BCA441 /* GardenGenieApp.swift in Sources */,
 				C8813BD22A182E91EE4B677D /* GardenPlantCard.swift in Sources */,
@@ -548,6 +555,7 @@
 				855994FFD0AB515BFAB2137A /* CareFrequencyParsingTests.swift in Sources */,
 				9843A051EE141B7FCA88417A /* CarePlanBuilderTests.swift in Sources */,
 				F66CC396067C218B349EC314 /* PlantInsightsTests.swift in Sources */,
+				1BDD10D625A0E2CEEFA5D938 /* PlantingCalendarTests.swift in Sources */,
 				039FACCCC43B4F48F1221D07 /* ReminderPlannerTests.swift in Sources */,
 				BB5AD480BFC6C5AF698F691E /* TaskScheduleTests.swift in Sources */,
 			);
