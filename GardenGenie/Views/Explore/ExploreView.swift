@@ -8,6 +8,9 @@ struct ExploreView: View {
     @Bindable var taskVM: TaskViewModel
     @AppStorage("usda_zone") private var usdaZone = ""
     @AppStorage("state_code") private var stateCode = ""
+    @AppStorage("haptics_enabled") private var hapticsEnabled = true
+    @State private var carePlanTarget: CatalogPlant?
+    @State private var feedbackTick = 0
 
     var body: some View {
         NavigationStack {
@@ -20,7 +23,16 @@ struct ExploreView: View {
                 .padding(.top, AppTheme.Spacing.md)
             }
             .background(AppTheme.Colors.background.ignoresSafeArea())
+            .refreshable { await loadIfNeeded() }
             .navigationBarHidden(true)
+            .sheet(item: $carePlanTarget) { plant in
+                CarePlanSheet(
+                    plant: CatalogPlantAdapter.adapt(plant, variant: gardenVM.variant(for: plant, zone: usdaZone, state: stateCode)),
+                    taskVM: taskVM,
+                    refreshPlant: { await gardenVM.regionalPlant(for: plant, zone: usdaZone, state: stateCode) }
+                )
+            }
+            .sensoryFeedback(trigger: feedbackTick) { _, _ in hapticsEnabled ? .success : nil }
             .navigationDestination(for: Plant.self) { plant in
                 detailDestination(for: plant)
             }
@@ -103,6 +115,7 @@ struct ExploreView: View {
                             HeroPlantCard(plant: plant)
                         }
                         .buttonStyle(.plain)
+                        .contextMenu { exploreMenu(plant) }
                     }
                 }
                 .padding(.horizontal, AppTheme.Spacing.md)
@@ -125,6 +138,7 @@ struct ExploreView: View {
                             PlantCardView(plant: plant)
                         }
                         .buttonStyle(.plain)
+                        .contextMenu { exploreMenu(plant) }
                     }
                 }
                 .padding(.horizontal, AppTheme.Spacing.md)
@@ -200,6 +214,28 @@ struct ExploreView: View {
                 .padding(.horizontal, AppTheme.Spacing.lg)
         }
         .frame(maxWidth: .infinity)
+    }
+
+    // MARK: - Long-press menu
+
+    @ViewBuilder
+    private func exploreMenu(_ plant: Plant) -> some View {
+        if let catalog = gardenVM.explorePlants.first(where: { $0.id == plant.id }) {
+            if gardenVM.isInCatalogGarden(catalog) {
+                Button("In Your Garden", systemImage: "checkmark") {}
+                    .disabled(true)
+                Button("Set Up Care Plan…", systemImage: "calendar.badge.checkmark") { carePlanTarget = catalog }
+            } else {
+                Button("Add to Garden", systemImage: "plus") {
+                    gardenVM.addToCatalogGarden(catalog)
+                    feedbackTick += 1
+                    carePlanTarget = catalog
+                }
+            }
+        }
+        ShareLink(item: "\(plant.name): \(plant.description ?? "a plant worth growing"). Shared from GardenGenie") {
+            Label("Share", systemImage: "square.and.arrow.up")
+        }
     }
 
     // MARK: - Detail routing

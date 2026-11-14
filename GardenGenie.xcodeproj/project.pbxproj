@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		018A4F722E7595A0C3F86C09 /* OnboardingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BD7B13D467EA02731F0996 /* OnboardingCoordinator.swift */; };
 		039FACCCC43B4F48F1221D07 /* ReminderPlannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA4B1EBD6283ECF375EAF186 /* ReminderPlannerTests.swift */; };
+		0573D6D46D035CCD9052AD54 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 397EED10E6B0FB82BF7E5E27 /* TaskDetailView.swift */; };
 		0FAFA853A5DB243C03390AD0 /* OverdueSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E9779BEA3CDD3B156A9749 /* OverdueSectionView.swift */; };
 		19F65A55CAE298FA6C3194F5 /* CatalogTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D1259F528C385140539CAE1 /* CatalogTypes.swift */; };
 		1F14AC2A7D778CD47854C820 /* PlantDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C306C747EA4663BC55286DB /* PlantDetailView.swift */; };
@@ -100,6 +101,7 @@
 		2D1259F528C385140539CAE1 /* CatalogTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogTypes.swift; sourceTree = "<group>"; };
 		2E257F16410F743A1F948AF3 /* AddTaskSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskSheet.swift; sourceTree = "<group>"; };
 		306BF4A7EB344E4AB8CB4B0D /* OnboardingWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.swift; sourceTree = "<group>"; };
+		397EED10E6B0FB82BF7E5E27 /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
 		3A43D0F1CA583BFB00F08A6C /* CarePlanBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarePlanBuilderTests.swift; sourceTree = "<group>"; };
 		3A5E02F221EB3CCBDC5F63EC /* PlantSearchLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantSearchLoadingView.swift; sourceTree = "<group>"; };
 		3C306C747EA4663BC55286DB /* PlantDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantDetailView.swift; sourceTree = "<group>"; };
@@ -324,6 +326,7 @@
 				D8EBF596B00267E2B5F4FA44 /* ScheduleTaskSheet.swift */,
 				9550F790FA9770B9EAF6E015 /* TaskDateLabel.swift */,
 				C24332559CDA4FF8E1EB8A49 /* TaskDestinationView.swift */,
+				397EED10E6B0FB82BF7E5E27 /* TaskDetailView.swift */,
 				77390E3BF3D2C9E933A273EF /* TaskRowView.swift */,
 				FA6B15379EEF655F7021EC19 /* TasksView.swift */,
 				8ADA335329706044BDA65359 /* WeekStripView.swift */,
@@ -525,6 +528,7 @@
 				6F50D399D3EDDAE8D94AB9AC /* SupabaseClient.swift in Sources */,
 				923B7CC33F1C777C6987235F /* TaskDateLabel.swift in Sources */,
 				8ED6379937719877389C3608 /* TaskDestinationView.swift in Sources */,
+				0573D6D46D035CCD9052AD54 /* TaskDetailView.swift in Sources */,
 				81EAAE7879009C60267963E2 /* TaskKind.swift in Sources */,
 				40AA15E382FAABCF4B47B647 /* TaskRecurrence+CareFrequency.swift in Sources */,
 				7EA3D763C0B1D2E3CDA8DAFB /* TaskRecurrence.swift in Sources */,

@@ -12,11 +12,13 @@ struct SearchSheet: View {
     @AppStorage("zip_code") private var zipCode = ""
 
     @State private var query: String = ""
+    /// Navigation path, so a finished search can open the plant directly.
+    @State private var path: [CatalogPlantNavigation] = []
     @State private var debounceTask: Task<Void, Never>?
     @FocusState private var isSearchFocused: Bool
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             VStack(spacing: 0) {
                 searchBar
                 content
@@ -170,6 +172,14 @@ struct SearchSheet: View {
                     catalogRow(plant)
                 }
                 .listRowBackground(AppTheme.Colors.cardBackground)
+                .contextMenu {
+                    if gardenVM.isInCatalogGarden(plant) {
+                        Button("In Your Garden", systemImage: "checkmark") {}
+                            .disabled(true)
+                    } else {
+                        Button("Add to Garden", systemImage: "plus") { gardenVM.addToCatalogGarden(plant) }
+                    }
+                }
             }
         }
         .listStyle(.plain)
@@ -279,6 +289,11 @@ struct SearchSheet: View {
         gardenVM.clearSuggestions()
         Task {
             await gardenVM.searchAsync(query: trimmed, zone: usdaZone, state: stateCode)
+            // One search returns one plant, so go straight to it rather than
+            // showing a one-row list to tap again. Back returns to the list.
+            if gardenVM.lastSearchError == nil, let found = gardenVM.searchResults.first {
+                path.append(CatalogPlantNavigation(plant: found))
+            }
         }
     }
 

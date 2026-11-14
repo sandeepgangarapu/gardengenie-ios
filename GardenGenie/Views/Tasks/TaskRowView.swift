@@ -5,6 +5,7 @@ import SwiftUI
 struct TaskRowView: View {
     let task: GardenTask
     let onToggle: () -> Void
+    @AppStorage("haptics_enabled") private var hapticsEnabled = true
 
     private var isOverdue: Bool {
         !task.isCompleted && task.dueDate < Calendar.current.startOfDay(for: .now)
@@ -42,6 +43,7 @@ struct TaskRowView: View {
                 .pillTag(color: AppTheme.Colors.accentPink)
         }
         .contentShape(Rectangle())
+        .sensoryFeedback(trigger: task.isCompleted) { _, done in hapticsEnabled && done ? .success : nil }
     }
 }
 
