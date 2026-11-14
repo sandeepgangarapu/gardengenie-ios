@@ -59,8 +59,9 @@ enum PlantCatalogService {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
-        // Generous timeout — cache miss can be 5–15s while LLM runs.
-        request.timeoutInterval = 30
+        // Generous timeout — a cache miss runs two LLM calls; on OpenRouter's free
+        // tier that's typically 15–20s but can spike. Cloudflare cuts off at 100s.
+        request.timeoutInterval = 60
 
         let body: [String: String] = ["query": query, "zone": zone, "state": state.uppercased()]
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
