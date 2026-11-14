@@ -39,8 +39,9 @@ enum PlantCatalogServiceError: LocalizedError {
 /// HTTP client for the GardenGenie iOS backend.
 enum PlantCatalogService {
 
-    /// Production URL. Override only if pointing at a local dev FastAPI.
-    static let baseURL = URL(string: "https://gardengenie-ios-backend.fly.dev")!
+    /// Production URL (FastAPI on the HomePro Mac behind a Cloudflare tunnel;
+    /// replaced the retired Fly.io app). Override only for a local dev FastAPI.
+    static let baseURL = URL(string: "https://gardengenie-api.sandeepgangarapu.com")!
 
     /// Resolve a plant guide for the user's region.
     ///
