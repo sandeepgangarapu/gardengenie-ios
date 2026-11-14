@@ -23,7 +23,11 @@ struct GardenGenieApp: App {
         .onChange(of: scenePhase) { _, phase in
             // Picks up permission changes made in iOS Settings and keeps the
             // next 60 reminders queued as days go by.
-            if phase == .active { ReminderScheduler.shared.sync(taskVM.tasks) }
+            guard phase == .active else { return }
+            // Recurring tasks missed while away land on today (this persists,
+            // which also resyncs reminders when anything moved).
+            taskVM.rollForwardRecurringTasks()
+            ReminderScheduler.shared.sync(taskVM.tasks)
         }
     }
 }
