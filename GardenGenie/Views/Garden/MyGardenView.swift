@@ -1,3 +1,4 @@
+import PhotosUI
 import SwiftUI
 
 /// The "My Garden" tab, and the app's home: what needs doing today, what's
@@ -10,7 +11,18 @@ struct MyGardenView: View {
     @AppStorage("usda_zone") private var usdaZone = ""
     @AppStorage("state_code") private var stateCode = ""
 
+    @AppStorage("haptics_enabled") private var hapticsEnabled = true
     @State private var showSettings = false
+
+    // Long-press actions
+    @State private var rescheduleTarget: GardenTask?
+    @State private var carePlanTarget: CatalogPlant?
+    @State private var photoTarget: CatalogPlant?
+    @State private var photoItem: PhotosPickerItem?
+    @State private var noteTarget: CatalogPlant?
+    @State private var noteText = ""
+    @State private var removeTarget: CatalogPlant?
+    @State private var feedbackTick = 0
 
     /// Group plants by type only once there are enough that grouping helps.
     private let groupByTypeThreshold = 8
@@ -60,11 +72,50 @@ struct MyGardenView: View {
                 )
             }
             .navigationDestination(for: GardenTask.self) { task in
-                TaskDestinationView(task: task, gardenVM: gardenVM, taskVM: taskVM)
+                TaskDetailView(taskID: task.id, gardenVM: gardenVM, taskVM: taskVM)
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView(gardenVM: gardenVM, taskVM: taskVM)
             }
+            .sheet(item: $rescheduleTarget) { task in
+                RescheduleSheet(task: task) { newDate in
+                    taskVM.reschedule(task.id, to: newDate)
+                    rescheduleTarget = nil
+                }
+            }
+            .sheet(item: $carePlanTarget) { plant in
+                CarePlanSheet(
+                    plant: CatalogPlantAdapter.adapt(plant, variant: gardenVM.variant(for: plant, zone: usdaZone, state: stateCode)),
+                    taskVM: taskVM,
+                    refreshPlant: { await gardenVM.regionalPlant(for: plant, zone: usdaZone, state: stateCode) }
+                )
+            }
+            .photosPicker(
+                isPresented: Binding(get: { photoTarget != nil }, set: { if !$0 && photoItem == nil { photoTarget = nil } }),
+                selection: $photoItem,
+                matching: .images
+            )
+            .onChange(of: photoItem) { _, item in
+                guard let item, let plant = photoTarget else { return }
+                Task { await savePhoto(item, for: plant) }
+            }
+            .alert("Add a note", isPresented: Binding(get: { noteTarget != nil }, set: { if !$0 { noteTarget = nil } })) {
+                TextField("What did you notice?", text: $noteText)
+                Button("Save") { saveNote() }
+                Button("Cancel", role: .cancel) { noteText = "" }
+            } message: {
+                Text(noteTarget.map { "Saved to \($0.commonName)'s log." } ?? "")
+            }
+            .confirmationDialog(
+                "Remove \(removeTarget?.commonName ?? "plant") from your garden?",
+                isPresented: Binding(get: { removeTarget != nil }, set: { if !$0 { removeTarget = nil } }),
+                titleVisibility: .visible
+            ) {
+                Button("Remove from Garden", role: .destructive) {
+                    if let plant = removeTarget { withAnimation(.snappy) { gardenVM.removeFromCatalogGarden(plant) } }
+                }
+            }
+            .sensoryFeedback(trigger: feedbackTick) { _, _ in hapticsEnabled ? .success : nil }
         }
         .onAppear { taskVM.rollForwardRecurringTasks() }
     }
@@ -132,6 +183,10 @@ struct MyGardenView: View {
                             .background(isOverdue(task) ? AppTheme.Colors.accentPink.opacity(0.08) : .clear)
                         }
                         .buttonStyle(.plain)
+                        .contextMenu {
+                            TaskQuickActions(task: task, taskVM: taskVM,
+                                             onReschedule: task.isCompleted ? nil : { rescheduleTarget = task })
+                        }
                         if task.id != (due + done).last?.id {
                             AppTheme.Colors.divider.frame(height: 1).padding(.leading, 56)
                         }
@@ -189,6 +244,10 @@ struct MyGardenView: View {
                         ForEach(upcoming) { task in
                             NavigationLink(value: task) { upcomingChip(task) }
                                 .buttonStyle(.plain)
+                                .contextMenu {
+                                    TaskQuickActions(task: task, taskVM: taskVM,
+                                                     onReschedule: { rescheduleTarget = task })
+                                }
                         }
                     }
                     .padding(.horizontal, AppTheme.Spacing.md)
@@ -266,6 +325,7 @@ struct MyGardenView: View {
                             )
                         }
                         .buttonStyle(.plain)
+                        .contextMenu { gardenPlantMenu(plant) }
                     }
                 }
                 .padding(.horizontal, AppTheme.Spacing.md)
@@ -327,6 +387,55 @@ struct MyGardenView: View {
         Dictionary(grouping: plants, by: { $0.type?.capitalized ?? "Other" })
             .sorted { $0.key < $1.key }
             .filter { !$0.value.isEmpty }
+    }
+
+    // MARK: - Long-press actions
+
+    @ViewBuilder
+    private func gardenPlantMenu(_ plant: CatalogPlant) -> some View {
+        let dueToday = TaskSchedule.dueToday(taskVM.tasks).filter { $0.plantID == plant.id }
+        Button("Mark as Watered", systemImage: "drop.fill") { quickLog(.watered, plant) }
+        if !dueToday.isEmpty {
+            Button("Finish Today's Tasks (\(dueToday.count))", systemImage: "checkmark.circle") {
+                withAnimation(.snappy) { dueToday.forEach { taskVM.markDone($0.id) } }
+                feedbackTick += 1
+            }
+        }
+        Button("Set Up Care Plan…", systemImage: "calendar.badge.checkmark") { carePlanTarget = plant }
+        Divider()
+        Button("Add Photo…", systemImage: "camera") { photoTarget = plant }
+        Button("Add Note…", systemImage: "note.text") { noteTarget = plant }
+        Button("Log Harvest", systemImage: "basket.fill") { quickLog(.harvested, plant) }
+        Divider()
+        ShareLink(item: "\(plant.commonName) is growing in my garden. Shared from GardenGenie") {
+            Label("Share", systemImage: "square.and.arrow.up")
+        }
+        Button("Remove from Garden", systemImage: "trash", role: .destructive) { removeTarget = plant }
+    }
+
+    /// Same behavior as the plant page's log bar: record it and check off a
+    /// matching task due today.
+    private func quickLog(_ kind: CareLogKind, _ plant: CatalogPlant) {
+        let task = CareLogStore.matchingTask(for: kind, plantID: plant.id, in: taskVM.tasks)
+        gardenVM.careLog.add(kind, plantID: plant.id)
+        if let task { withAnimation(.snappy) { taskVM.markDone(task.id) } }
+        feedbackTick += 1
+    }
+
+    private func saveNote() {
+        let text = noteText.trimmingCharacters(in: .whitespacesAndNewlines)
+        noteText = ""
+        guard let plant = noteTarget, !text.isEmpty else { return }
+        gardenVM.careLog.add(.note, plantID: plant.id, note: text)
+        feedbackTick += 1
+    }
+
+    private func savePhoto(_ item: PhotosPickerItem, for plant: CatalogPlant) async {
+        defer { photoItem = nil; photoTarget = nil }
+        guard let data = try? await item.loadTransferable(type: Data.self),
+              (try? gardenVM.photos.save(data, for: plant.id)) != nil else { return }
+        gardenVM.careLog.add(.photo, plantID: plant.id)
+        feedbackTick += 1
     }
 
     // MARK: - Section header

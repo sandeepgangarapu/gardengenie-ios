@@ -38,7 +38,7 @@ struct TasksView: View {
                 .background(AppTheme.Colors.background.ignoresSafeArea())
                 .navigationBarHidden(true)
                 .navigationDestination(for: GardenTask.self) { task in
-                    TaskDestinationView(task: task, gardenVM: gardenVM, taskVM: taskVM)
+                    TaskDetailView(taskID: task.id, gardenVM: gardenVM, taskVM: taskVM)
                 }
             }
         }
@@ -122,6 +122,10 @@ struct TasksView: View {
                                               leading: AppTheme.Spacing.md,
                                               bottom: AppTheme.Spacing.sm,
                                               trailing: AppTheme.Spacing.md))
+                    .contextMenu {
+                        TaskQuickActions(task: task, taskVM: taskVM,
+                                         onReschedule: task.isCompleted ? nil : { rescheduleTarget = task })
+                    }
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                         Button(role: .destructive) {
                             withAnimation(.snappy) { taskVM.dismiss(task.id) }
@@ -194,6 +198,10 @@ struct TasksView: View {
                                                   leading: AppTheme.Spacing.md,
                                                   bottom: AppTheme.Spacing.sm,
                                                   trailing: AppTheme.Spacing.md))
+                        .contextMenu {
+                            TaskQuickActions(task: task, taskVM: taskVM,
+                                             onReschedule: task.isCompleted ? nil : { rescheduleTarget = task })
+                        }
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
                                 withAnimation(.snappy) { taskVM.dismiss(task.id) }
@@ -238,6 +246,10 @@ struct TasksView: View {
                                                   leading: AppTheme.Spacing.md,
                                                   bottom: AppTheme.Spacing.sm,
                                                   trailing: AppTheme.Spacing.md))
+                        .contextMenu {
+                            TaskQuickActions(task: task, taskVM: taskVM,
+                                             onReschedule: task.isCompleted ? nil : { rescheduleTarget = task })
+                        }
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
                                 withAnimation(.snappy) { taskVM.dismiss(task.id) }
