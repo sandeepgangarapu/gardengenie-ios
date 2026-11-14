@@ -3,8 +3,10 @@ import SwiftUI
 struct CareDetailView: View {
     let plant: Plant
     @Bindable var taskVM: TaskViewModel
+    var refreshPlant: (() async -> Plant?)? = nil
     @State private var selectedTab: CareTab = .mustDo
     @State private var pendingAdd: CareItem?
+    @State private var showCarePlan = false
     @Environment(\.dismiss) private var dismiss
 
     enum CareTab {
@@ -37,8 +39,22 @@ struct CareDetailView: View {
                 defaultDate: Date(),
                 taskVM: taskVM,
                 prefilledName: item.title,
-                prefilledIcon: item.iconName ?? "checkmark.circle.fill"
+                prefilledIcon: item.iconName ?? "checkmark.circle.fill",
+                prefilledRecurrence: TaskRecurrence(careFrequency: item.frequency)
             )
+        }
+        .sheet(isPresented: $showCarePlan) {
+            CarePlanSheet(plant: plant, taskVM: taskVM, refreshPlant: refreshPlant)
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showCarePlan = true
+                } label: {
+                    Image(systemName: "calendar.badge.checkmark")
+                }
+                .accessibilityLabel("Set up care plan")
+            }
         }
     }
 

@@ -33,7 +33,10 @@ struct SearchSheet: View {
                     taskVM: taskVM,
                     onAdd: { gardenVM.addToCatalogGarden(dest.plant) },
                     onRemove: { gardenVM.removeFromCatalogGarden(dest.plant) },
-                    isInGardenOverride: { gardenVM.isInCatalogGarden(dest.plant) }
+                    isInGardenOverride: { gardenVM.isInCatalogGarden(dest.plant) },
+                    refreshPlant: {
+                        await gardenVM.regionalPlant(for: dest.plant, zone: usdaZone, state: stateCode)
+                    }
                 )
             }
         }

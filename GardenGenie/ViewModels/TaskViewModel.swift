@@ -6,10 +6,20 @@ import Observation
 /// Tasks are persisted to `UserDefaults` as a JSON blob under `taskStore.v1`
 /// (mirrors the `MyGardenStore` pattern). Every mutation triggers a re-snapshot,
 /// so state survives app kills.
+@MainActor
 @Observable
 final class TaskViewModel {
 
     private static let key = "taskStore.v1"
+
+    /// The app's single task list. Shared so notification actions (Done /
+    /// Tomorrow), which can arrive while the app is in the background, edit the
+    /// same instance the UI shows.
+    static let shared = TaskViewModel()
+
+    /// Called after every save. The app uses it to keep reminders in sync.
+    @ObservationIgnored
+    var onPersist: (@MainActor ([GardenTask]) -> Void)?
 
     var tasks: [GardenTask] = []
 
@@ -85,6 +95,19 @@ final class TaskViewModel {
     func dismiss(_ id: UUID) {
         tasks.removeAll { $0.id == id }
         persist()
+    }
+
+    /// "Done" from a reminder. No-op if the task was already completed or deleted.
+    func markDone(_ id: UUID) {
+        guard tasks.contains(where: { $0.id == id && !$0.isCompleted }) else { return }
+        toggleCompletion(for: id)
+    }
+
+    /// "Tomorrow" from a reminder: moves the task to tomorrow.
+    func snoozeToTomorrow(_ id: UUID, now: Date = Date()) {
+        let calendar = Calendar.current
+        guard let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: now)) else { return }
+        reschedule(id, to: tomorrow)
     }
 
     // MARK: - Timeline queries
@@ -166,6 +189,7 @@ final class TaskViewModel {
         encoder.dateEncodingStrategy = .iso8601
         guard let data = try? encoder.encode(snapshot) else { return }
         userDefaults.set(data, forKey: Self.key)
+        onPersist?(tasks)
     }
 
     private struct StoredSnapshot: Codable {

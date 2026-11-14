@@ -68,7 +68,7 @@ struct AddTaskSheet: View {
                                in: Calendar.current.startOfDay(for: .now)...,
                                displayedComponents: .date)
                     Picker("Repeat", selection: $recurrence) {
-                        ForEach(TaskRecurrence.pickerOptions, id: \.self) { option in
+                        ForEach(TaskRecurrence.pickerOptions(including: recurrence), id: \.self) { option in
                             Text(option.displayName).tag(option)
                         }
                     }

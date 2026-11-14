@@ -19,7 +19,8 @@ struct ScheduleTaskSheet: View {
          defaultDate: Date,
          taskVM: TaskViewModel,
          prefilledName: String? = nil,
-         prefilledIcon: String? = nil) {
+         prefilledIcon: String? = nil,
+         prefilledRecurrence: TaskRecurrence? = nil) {
         self.plant = plant
         self.kind = kind
         self.defaultDate = defaultDate
@@ -27,6 +28,7 @@ struct ScheduleTaskSheet: View {
         self.prefilledName = prefilledName
         self.prefilledIcon = prefilledIcon
         _date = State(initialValue: defaultDate)
+        _recurrence = State(initialValue: prefilledRecurrence ?? .none)
     }
 
     private var taskName: String {
@@ -81,7 +83,7 @@ struct ScheduleTaskSheet: View {
                         .foregroundStyle(AppTheme.Colors.textPrimary)
                     Spacer()
                     Picker("Repeat", selection: $recurrence) {
-                        ForEach(TaskRecurrence.pickerOptions, id: \.self) { option in
+                        ForEach(TaskRecurrence.pickerOptions(including: recurrence), id: \.self) { option in
                             Text(option.displayName).tag(option)
                         }
                     }

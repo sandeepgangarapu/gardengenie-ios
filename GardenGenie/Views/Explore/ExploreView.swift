@@ -219,7 +219,10 @@ struct ExploreView: View {
                 taskVM: taskVM,
                 onAdd: { gardenVM.addToCatalogGarden(catalog) },
                 onRemove: { gardenVM.removeFromCatalogGarden(catalog) },
-                isInGardenOverride: { gardenVM.isInCatalogGarden(catalog) }
+                isInGardenOverride: { gardenVM.isInCatalogGarden(catalog) },
+                refreshPlant: {
+                    await gardenVM.regionalPlant(for: catalog, zone: usdaZone, state: stateCode)
+                }
             )
         } else {
             PlantDetailView(plant: plant, gardenVM: gardenVM, taskVM: taskVM)

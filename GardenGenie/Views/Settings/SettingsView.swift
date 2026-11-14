@@ -14,6 +14,8 @@ struct SettingsView: View {
     @AppStorage("state_code") private var stateCode = ""
     @AppStorage("water_reminders") private var waterReminders = true
     @AppStorage("parallax_effects") private var parallaxEffects = true
+    @AppStorage(ReminderSettings.minutesKey) private var reminderMinutes = ReminderSettings.defaultMinutes
+    @State private var showNotificationsDenied = false
 
     var body: some View {
         NavigationStack {
@@ -30,6 +32,31 @@ struct SettingsView: View {
             .background(AppTheme.Colors.background.ignoresSafeArea())
             .navigationBarHidden(true)
         }
+        .onChange(of: taskNotifications) { _, isOn in
+            Task { await notificationsToggled(isOn) }
+        }
+        .onChange(of: reminderMinutes) { _, _ in
+            ReminderScheduler.shared.sync(taskVM.tasks)
+        }
+        .alert("Notifications are off", isPresented: $showNotificationsDenied) {
+            Button("Open Settings") {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Turn on notifications for GardenGenie in iOS Settings to get task reminders.")
+        }
+    }
+
+    /// Ask for permission when reminders are switched on, then reschedule
+    /// (or clear) everything to match.
+    private func notificationsToggled(_ isOn: Bool) async {
+        if isOn, !(await ReminderScheduler.shared.requestAuthorizationIfNeeded()) {
+            showNotificationsDenied = true
+        }
+        ReminderScheduler.shared.sync(taskVM.tasks)
     }
 
     // MARK: - Top Bar
@@ -150,6 +177,17 @@ struct SettingsView: View {
                     Toggle("", isOn: $taskNotifications)
                         .tint(AppTheme.Colors.accentBlue)
                         .labelsHidden()
+                }
+
+                if taskNotifications {
+                    dividerRow
+
+                    settingsRow(icon: "clock", iconColor: AppTheme.Colors.accentBlue, title: "Reminder Time") {
+                        DatePicker("Reminder time",
+                                   selection: ReminderSettings.timeBinding($reminderMinutes),
+                                   displayedComponents: .hourAndMinute)
+                            .labelsHidden()
+                    }
                 }
             }
             .background(
