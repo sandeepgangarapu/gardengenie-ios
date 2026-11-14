@@ -14,10 +14,19 @@ struct PlantDetailView: View {
     var onAdd: (() -> Void)? = nil
     var onRemove: (() -> Void)? = nil
     var isInGardenOverride: (() -> Bool)? = nil
+    /// Re-fetches the plant with its regional variant (care frequencies,
+    /// planting windows). Passed through to the care-plan sheet.
+    var refreshPlant: (() async -> Plant?)? = nil
 
     @Environment(\.dismiss) private var dismiss
     @State private var isExpanded = false
     @State private var showRemoveConfirmation = false
+    @State private var showCarePlan = false
+
+    /// Whether there's anything for the care-plan sheet to offer.
+    private var hasCareContent: Bool {
+        plant.carePlan != nil || plant.seedStarting != nil || plant.planting != nil
+    }
 
     /// Effective in-garden state — uses override if provided, else the legacy check.
     private var effectiveInGarden: Bool {
@@ -63,6 +72,9 @@ struct PlantDetailView: View {
         .background(AppTheme.Colors.background.ignoresSafeArea())
         .navigationBarHidden(true)
         .ignoresSafeArea(edges: .top)
+        .sheet(isPresented: $showCarePlan) {
+            CarePlanSheet(plant: plant, taskVM: taskVM, refreshPlant: refreshPlant)
+        }
     }
 
     // MARK: - Blurred Backdrop
@@ -178,6 +190,9 @@ struct PlantDetailView: View {
             } else {
                 Button {
                     withAnimation(.snappy) { performAdd() }
+                    // Offer the care plan straight away, while the user is
+                    // thinking about this plant.
+                    if hasCareContent { showCarePlan = true }
                 } label: {
                     Label("Add to Garden", systemImage: "plus")
                         .pillButton(style: .primary)
@@ -187,7 +202,7 @@ struct PlantDetailView: View {
 
             if plant.carePlan != nil {
                 NavigationLink {
-                    CareDetailView(plant: plant, taskVM: taskVM)
+                    CareDetailView(plant: plant, taskVM: taskVM, refreshPlant: refreshPlant)
                 } label: {
                     Label("View Care", systemImage: "eye")
                         .pillButton(style: .secondary)

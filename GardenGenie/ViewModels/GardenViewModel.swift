@@ -154,16 +154,40 @@ final class GardenViewModel {
         // already added, the user can refresh later.
         let zone = UserDefaults.standard.string(forKey: "usda_zone") ?? ""
         let state = UserDefaults.standard.string(forKey: "state_code") ?? ""
-        guard !zone.isEmpty, !state.isEmpty else { return }
-        if myGarden.variant(for: plant.id, zone: zone, state: state) != nil { return }
         Task { [weak self] in
-            guard let self else { return }
-            if let response = try? await PlantCatalogService.fetch(
-                query: plant.commonName, zone: zone, state: state
-            ) {
-                self.myGarden.cacheVariant(response.variant)
-            }
+            _ = await self?.ensureVariant(for: plant, zone: zone, state: state)
         }
+    }
+
+    /// In-flight variant fetches, so the background backfill above and the
+    /// care-plan sheet opening at the same moment share one request.
+    @ObservationIgnored
+    private var variantFetches: [UUID: Task<PlantRegionalVariant?, Never>] = [:]
+
+    /// The plant's regional variant from cache, or fetched and cached. `nil`
+    /// when the region isn't set or the request fails.
+    func ensureVariant(for plant: CatalogPlant, zone: String, state: String) async -> PlantRegionalVariant? {
+        guard !zone.isEmpty, !state.isEmpty else { return nil }
+        if let cached = variant(for: plant, zone: zone, state: state) { return cached }
+        if let inFlight = variantFetches[plant.id] { return await inFlight.value }
+
+        let fetch = Task { () -> PlantRegionalVariant? in
+            guard let response = try? await PlantCatalogService.fetch(
+                query: plant.commonName, zone: zone, state: state
+            ) else { return nil }
+            self.myGarden.cacheVariant(response.variant)
+            return response.variant
+        }
+        variantFetches[plant.id] = fetch
+        defer { variantFetches[plant.id] = nil }
+        return await fetch.value
+    }
+
+    /// The plant adapted with its regional variant (fetching it if needed),
+    /// so care frequencies and planting windows are filled in.
+    func regionalPlant(for plant: CatalogPlant, zone: String, state: String) async -> Plant? {
+        guard let variant = await ensureVariant(for: plant, zone: zone, state: state) else { return nil }
+        return CatalogPlantAdapter.adapt(plant, variant: variant)
     }
 
     func removeFromCatalogGarden(_ plant: CatalogPlant) {
