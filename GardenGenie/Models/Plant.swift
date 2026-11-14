@@ -37,6 +37,15 @@ struct Plant: Identifiable, Hashable, Codable {
     var carePlan: CarePlan?
     var typeSpecific: TypeSpecificInfo?
 
+    // Catalog extras. Client-side only: not in `CodingKeys`, so the legacy
+    // JSON shape is unchanged. Filled in by `CatalogPlantAdapter`.
+
+    /// Seed / plant-out / harvest months for the user's region.
+    var seasonWindows: [SeasonWindow] = []
+    /// Plants that shouldn't be grown next to this one.
+    var avoidPlantingWith: [String] = []
+    var toxicToPets: Bool? = nil
+
     // MARK: - CodingKeys
 
     enum CodingKeys: String, CodingKey {

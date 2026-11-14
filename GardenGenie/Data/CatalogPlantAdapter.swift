@@ -16,7 +16,7 @@ import Foundation
 enum CatalogPlantAdapter {
 
     static func adapt(_ catalog: CatalogPlant, variant: PlantRegionalVariant?) -> Plant {
-        Plant(
+        var plant = Plant(
             id: catalog.id,
             name: catalog.commonName,
             description: catalog.description,
@@ -47,6 +47,24 @@ enum CatalogPlantAdapter {
                 varieties: chooseVarieties(catalog: catalog, variant: variant)
             )
         )
+        plant.seasonWindows = seasonWindows(variant)
+        plant.avoidPlantingWith = catalog.avoidPlantingWith
+        plant.toxicToPets = catalog.toxicToPets
+        return plant
+    }
+
+    /// Same planting window choice as `adaptPlanting` (transplant first).
+    private static func seasonWindows(_ variant: PlantRegionalVariant?) -> [SeasonWindow] {
+        guard let variant else { return [] }
+        let pairs: [(SeasonWindow.Kind, CatalogPlantingWindow?)] = [
+            (.seedIndoors, variant.indoorSeedStartWindow),
+            (.plantOut, variant.transplantWindow ?? variant.directSowWindow),
+            (.harvest, variant.harvestWindow),
+        ]
+        return pairs.compactMap { kind, window in
+            guard let window, (1...12).contains(window.startMonth), (1...12).contains(window.endMonth) else { return nil }
+            return SeasonWindow(kind: kind, startMonth: window.startMonth, endMonth: window.endMonth)
+        }
     }
 
     // MARK: - Field formatters
