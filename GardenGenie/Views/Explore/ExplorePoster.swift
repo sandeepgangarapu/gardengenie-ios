@@ -1,12 +1,11 @@
 import SwiftUI
 
-/// Poster card for a catalog plant in Explore: the plant's cut-out on a gradient
-/// in its color (or the user's own photo when they have one).
+/// Poster card for a catalog plant in Explore: the plant's photo (the user's own
+/// when they have one), or a gradient in its color with its icon.
 struct ExplorePoster: View {
     let plant: CatalogPlant
     var badge: String? = nil
     var photo: UIImage? = nil
-    var cutout: UIImage? = nil
     var width: CGFloat? = nil
     let height: CGFloat
 
@@ -17,10 +16,9 @@ struct ExplorePoster: View {
             PlantArtworkView(
                 accent: plant.accentColor,
                 symbol: plant.displayIconName,
-                content: .resolve(art: plant.art, userPhoto: photo, userCutout: cutout),
+                content: .resolve(art: plant.art, userPhoto: photo),
                 symbolSize: isLarge ? 72 : 40,
-                endRadius: isLarge ? 280 : 170,
-                labelInset: isLarge ? 0.3 : 0.26
+                endRadius: isLarge ? 280 : 170
             )
 
             LinearGradient(colors: [.clear, .black.opacity(0.75)], startPoint: .center, endPoint: .bottom)

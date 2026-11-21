@@ -230,7 +230,6 @@ struct ExploreView: View {
         let inGarden = gardenVM.isInCatalogGarden(plant)
         return NavigationLink(value: CatalogPlantAdapter.adapt(plant, variant: nil)) {
             ExplorePoster(plant: plant, badge: badge, photo: gardenVM.photos.image(for: plant.id),
-                          cutout: gardenVM.photos.cutout(for: plant.id),
                           width: width, height: height)
         }
         .buttonStyle(.plain)

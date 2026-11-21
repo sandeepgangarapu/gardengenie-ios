@@ -58,7 +58,6 @@
 		A18854385606D3BF5E66EEC0 /* Plant.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B452E7A30B9D1847482194 /* Plant.swift */; };
 		A1E3A0DDCB44075C0232C1E6 /* OnboardingFeaturesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CD54BD4104F3EC9CC36941 /* OnboardingFeaturesView.swift */; };
 		A201E116C0A3E277D7B0172F /* PlantCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C5B6B5E0AB5E6E0B9329370 /* PlantCardView.swift */; };
-		A5FEF45C3F16F7BABC699F1E /* SubjectLifter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C296597F11C45ED9768C6312 /* SubjectLifter.swift */; };
 		A9194B2EC0425305C5D01C5C /* CarePlanDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CF4BEB4894E5289C51537A /* CarePlanDraft.swift */; };
 		B51192DD1DE2C112030CB045 /* TasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B15379EEF655F7021EC19 /* TasksView.swift */; };
 		B56718162FA3BB5BB7201AF3 /* PlantCatalogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CF77604B20B9D7551EADF /* PlantCatalogService.swift */; };
@@ -148,7 +147,6 @@
 		C1040F505A9D748C2711B1B6 /* CareDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CareDetailView.swift; sourceTree = "<group>"; };
 		C1B452E7A30B9D1847482194 /* Plant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plant.swift; sourceTree = "<group>"; };
 		C24332559CDA4FF8E1EB8A49 /* TaskDestinationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDestinationView.swift; sourceTree = "<group>"; };
-		C296597F11C45ED9768C6312 /* SubjectLifter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubjectLifter.swift; sourceTree = "<group>"; };
 		C2D570E873F63045F7FD9B1E /* Image+Symbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Symbol.swift"; sourceTree = "<group>"; };
 		C46CE194D294902A413F5210 /* ReminderScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderScheduler.swift; sourceTree = "<group>"; };
 		C914D04A216FEC118401C874 /* TaskRecurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRecurrence.swift; sourceTree = "<group>"; };
@@ -302,7 +300,6 @@
 				D89CF77604B20B9D7551EADF /* PlantCatalogService.swift */,
 				C46CE194D294902A413F5210 /* ReminderScheduler.swift */,
 				6A8B367641944737D2DF412C /* RemoteImageCache.swift */,
-				C296597F11C45ED9768C6312 /* SubjectLifter.swift */,
 				17D901BB48E34278A4810BFE /* SupabaseClient.swift */,
 				0B95741C381666DEBD83479F /* USDAZoneLookup.swift */,
 			);
@@ -550,7 +547,6 @@
 				7977CC21A1B5E032D9F996E1 /* SearchSheet.swift in Sources */,
 				CBDBFAF2A5BF29F32346B093 /* SeasonTimelineView.swift in Sources */,
 				9481512F0D0A9BBC831E168E /* SettingsView.swift in Sources */,
-				A5FEF45C3F16F7BABC699F1E /* SubjectLifter.swift in Sources */,
 				6F50D399D3EDDAE8D94AB9AC /* SupabaseClient.swift in Sources */,
 				923B7CC33F1C777C6987235F /* TaskDateLabel.swift in Sources */,
 				8ED6379937719877389C3608 /* TaskDestinationView.swift in Sources */,

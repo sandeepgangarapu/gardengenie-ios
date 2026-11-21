@@ -5,16 +5,15 @@ import SwiftUI
 struct GardenPlantCard: View {
     let plant: CatalogPlant
     let status: PlantCareStatus
-    /// The user's own photo, and its cut-out; both beat catalog art.
+    /// The user's own photo; beats the catalog photo.
     var photo: UIImage? = nil
-    var cutout: UIImage? = nil
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             PlantArtworkView(
                 accent: plant.accentColor,
                 symbol: plant.displayIconName,
-                content: .resolve(art: plant.art, userPhoto: photo, userCutout: cutout),
+                content: .resolve(art: plant.art, userPhoto: photo),
                 symbolSize: 64,
                 endRadius: 260
             )

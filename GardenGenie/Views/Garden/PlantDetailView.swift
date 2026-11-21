@@ -48,7 +48,7 @@ struct PlantDetailView: View {
     private var photo: UIImage? { gardenVM.photos.image(for: plant.id) }
 
     private var artContent: PlantArtContent {
-        .resolve(art: plant.art, userPhoto: photo, userCutout: gardenVM.photos.cutout(for: plant.id))
+        .resolve(art: plant.art, userPhoto: photo)
     }
 
     private var careItems: [(item: CareItem, isMustDo: Bool)] {
@@ -137,7 +137,7 @@ struct PlantDetailView: View {
         ZStack {
             if let photo {
                 blurredBackdrop(Image(uiImage: photo))
-            } else if let url = plant.art.photoURL ?? plant.art.cutoutURL {
+            } else if let url = plant.art.photoURL {
                 RemoteImage(url: url) { image in
                     blurredBackdrop(Image(uiImage: image))
                 } placeholder: {
@@ -176,9 +176,7 @@ struct PlantDetailView: View {
             symbol: plant.iconName,
             content: artContent,
             symbolSize: 64,
-            endRadius: 200,
-            labelInset: 0.1,
-            topInset: 0.1
+            endRadius: 200
         )
         .frame(width: 140, height: 200)
         .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous))

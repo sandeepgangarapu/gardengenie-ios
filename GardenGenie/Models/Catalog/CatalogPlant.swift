@@ -58,9 +58,9 @@ struct CatalogPlant: Identifiable, Hashable, Codable {
 
     // MARK: - Presentation
     let iconName: String?           // SF Symbol from the closed server enum
-    /// Transparent cut-out of the plant, drawn on the type-accent gradient.
+    /// Unused (was a cut-out of the plant).
     let imageURL: String?
-    /// The openly licensed photo the cut-out came from, and its attribution.
+    /// The plant's Unsplash photo and its attribution.
     let photoURL: String?
     let photoCredit: String?
     let photoLicense: String?
@@ -122,10 +122,9 @@ struct CatalogPlant: Identifiable, Hashable, Codable {
 
     // MARK: - Client-only display helpers
 
-    /// Catalog artwork for posters (see `PlantArtworkView`).
+    /// Catalog photo for posters (see `PlantArtworkView`).
     var art: PlantArt {
         PlantArt(
-            cutoutURL: imageURL.flatMap(URL.init(string:)),
             photoURL: photoURL.flatMap(URL.init(string:)),
             credit: photoCredit,
             license: photoLicense,

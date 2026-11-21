@@ -1,52 +1,44 @@
 import Foundation
 import UIKit
 
-/// A plant's catalog artwork: a transparent cut-out of the plant (drawn on the
-/// type-accent gradient) plus the openly licensed photo it was made from.
-/// Filled by the backend (`backend-ios/app/plant_art.py`).
+/// A plant's catalog photo (from Unsplash, chosen by the backend) and the
+/// attribution it needs.
 struct PlantArt: Hashable, Sendable {
-    var cutoutURL: URL? = nil
     var photoURL: URL? = nil
-    /// Attribution required by the license, e.g. "(c) Jane Doe, some rights reserved (CC BY)".
+    /// Photographer's name (or another attribution line).
     var credit: String? = nil
-    /// "CC0", "CC BY", "CC BY-SA 4.0", "Public domain".
+    /// "Unsplash", or a license label such as "CC BY".
     var license: String? = nil
-    /// Page to link for attribution (iNaturalist observation / Commons file page).
+    /// Where the credit links: the photographer's Unsplash profile.
     var sourceURL: URL? = nil
 
-    /// "Photo: Jane Doe · CC BY" — nil when there's nothing to credit.
+    /// "Photo by Jane Doe on Unsplash" — nil when there's nothing to credit.
     var creditLine: String? {
         guard let credit, !credit.isEmpty else { return nil }
-        // iNaturalist attributions already end with "(CC BY)"; don't repeat it.
-        if let license, !license.isEmpty, !credit.localizedCaseInsensitiveContains(license) {
-            return "Photo: \(credit) · \(license)"
+        guard let license, !license.isEmpty else { return "Photo: \(credit)" }
+        if license.caseInsensitiveCompare("Unsplash") == .orderedSame {
+            return "Photo by \(credit) on Unsplash"
         }
-        return "Photo: \(credit)"
+        return credit.localizedCaseInsensitiveContains(license) ? "Photo: \(credit)" : "Photo: \(credit) · \(license)"
     }
 }
 
-/// What a poster shows, best first. The user's own photo beats catalog art, and
-/// a cut-out beats a full-bleed photo because it sits on the app's own gradient.
+/// What a poster shows: the user's own photo, else the catalog photo, else the
+/// type-accent gradient with the plant's SF Symbol.
 enum PlantArtContent: Equatable {
-    case userCutout(UIImage)
     case userPhoto(UIImage)
-    case catalogCutout(URL)
     case catalogPhoto(URL)
     case symbol
 
-    static func resolve(art: PlantArt, userPhoto: UIImage?, userCutout: UIImage?) -> PlantArtContent {
-        if let userCutout { return .userCutout(userCutout) }
+    static func resolve(art: PlantArt, userPhoto: UIImage?) -> PlantArtContent {
         if let userPhoto { return .userPhoto(userPhoto) }
-        if let url = art.cutoutURL { return .catalogCutout(url) }
         if let url = art.photoURL { return .catalogPhoto(url) }
         return .symbol
     }
 
-    /// True when the poster shows catalog art, which needs a photo credit.
+    /// Catalog photos need a credit; the user's own photo doesn't.
     var needsCredit: Bool {
-        switch self {
-        case .catalogCutout, .catalogPhoto: return true
-        default: return false
-        }
+        if case .catalogPhoto = self { return true }
+        return false
     }
 }

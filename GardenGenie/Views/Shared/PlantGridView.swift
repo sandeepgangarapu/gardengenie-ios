@@ -47,7 +47,7 @@ struct PlantGridView: View {
     }
 }
 
-/// Poster tile for the grid: the plant's cut-out on its color, name at the bottom.
+/// Poster tile for the grid: the plant's photo (or its color and icon), name at the bottom.
 private struct GridPlantCard: View {
     let plant: Plant
 
@@ -56,11 +56,9 @@ private struct GridPlantCard: View {
             PlantArtworkView(
                 accent: plant.accentColor,
                 symbol: plant.iconName,
-                content: .resolve(art: plant.art, userPhoto: nil, userCutout: nil),
+                content: .resolve(art: plant.art, userPhoto: nil),
                 symbolSize: 40,
-                endRadius: 170,
-                labelInset: 0.26,
-                topInset: 0.1
+                endRadius: 170
             )
             LinearGradient(colors: [.clear, .black.opacity(0.75)], startPoint: .center, endPoint: .bottom)
             Text(plant.name)
