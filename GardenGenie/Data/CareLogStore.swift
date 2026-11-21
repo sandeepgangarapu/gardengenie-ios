@@ -123,7 +123,8 @@ final class CareLogStore {
 }
 
 /// The user's own photo of each plant, stored as a JPEG in Application Support
-/// and used as the plant's poster.
+/// and used as the plant's poster. Each photo also gets an on-device cut-out of
+/// the plant (`SubjectLifter`), shown on the gradient like catalog art.
 @MainActor
 @Observable
 final class PlantPhotoStore {
@@ -132,6 +133,9 @@ final class PlantPhotoStore {
 
     @ObservationIgnored private var cache: [UUID: UIImage] = [:]
     @ObservationIgnored private var missing: Set<UUID> = []
+    @ObservationIgnored private var cutoutCache: [UUID: UIImage] = [:]
+    @ObservationIgnored private var cutoutMissing: Set<UUID> = []
+    @ObservationIgnored private var lifting: Set<UUID> = []
     private let directory: URL
 
     init(directory: URL? = nil) {
@@ -152,6 +156,25 @@ final class PlantPhotoStore {
         return image
     }
 
+    /// The cut-out of the user's photo, or nil (no photo, still lifting, or no
+    /// clear subject — then posters show the photo itself). Photos saved before
+    /// cut-outs existed are lifted the first time they're asked for.
+    func cutout(for plantID: UUID) -> UIImage? {
+        _ = version
+        if let cached = cutoutCache[plantID] { return cached }
+        if cutoutMissing.contains(plantID) { return nil }
+        if let image = UIImage(contentsOfFile: cutoutURL(for: plantID).path) {
+            cutoutCache[plantID] = image
+            return image
+        }
+        if FileManager.default.fileExists(atPath: noCutoutURL(for: plantID).path) {
+            cutoutMissing.insert(plantID)
+            return nil
+        }
+        if let photo = image(for: plantID) { lift(photo, for: plantID) }
+        return nil
+    }
+
     /// Saves a picked photo, downscaled so the long edge is at most 1600 px.
     func save(_ data: Data, for plantID: UUID) throws {
         guard let original = UIImage(data: data) else { throw CocoaError(.fileReadCorruptFile) }
@@ -161,18 +184,57 @@ final class PlantPhotoStore {
         try jpeg.write(to: url(for: plantID), options: .atomic)
         cache[plantID] = image
         missing.remove(plantID)
+        clearCutout(for: plantID)
         version += 1
+        lift(image, for: plantID)
     }
 
     func remove(for plantID: UUID) {
         try? FileManager.default.removeItem(at: url(for: plantID))
         cache[plantID] = nil
         missing.insert(plantID)
+        clearCutout(for: plantID)
+        cutoutMissing.insert(plantID)
         version += 1
+    }
+
+    private func lift(_ photo: UIImage, for plantID: UUID) {
+        guard !lifting.contains(plantID) else { return }
+        lifting.insert(plantID)
+        Task {
+            let cutout = await SubjectLifter.cutout(from: photo)
+            lifting.remove(plantID)
+            // The photo may have been replaced or removed while we were lifting.
+            guard cache[plantID] === photo || image(for: plantID) === photo else { return }
+            if let cutout, let png = cutout.pngData() {
+                try? png.write(to: cutoutURL(for: plantID), options: .atomic)
+                cutoutCache[plantID] = cutout
+            } else {
+                FileManager.default.createFile(atPath: noCutoutURL(for: plantID).path, contents: nil)
+                cutoutMissing.insert(plantID)
+            }
+            version += 1
+        }
+    }
+
+    private func clearCutout(for plantID: UUID) {
+        try? FileManager.default.removeItem(at: cutoutURL(for: plantID))
+        try? FileManager.default.removeItem(at: noCutoutURL(for: plantID))
+        cutoutCache[plantID] = nil
+        cutoutMissing.remove(plantID)
     }
 
     private func url(for plantID: UUID) -> URL {
         directory.appendingPathComponent("\(plantID.uuidString).jpg")
+    }
+
+    private func cutoutURL(for plantID: UUID) -> URL {
+        directory.appendingPathComponent("\(plantID.uuidString)-cutout.png")
+    }
+
+    /// Marker: this photo has no clean cut-out, so don't lift it again.
+    private func noCutoutURL(for plantID: UUID) -> URL {
+        directory.appendingPathComponent("\(plantID.uuidString)-cutout.none")
     }
 
     private static func downscaled(_ image: UIImage, maxDimension: CGFloat) -> UIImage {

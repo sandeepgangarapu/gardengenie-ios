@@ -1,11 +1,12 @@
 import SwiftUI
 
-/// Poster card for a catalog plant in Explore. Uses the user's photo when they
-/// have one, otherwise a gradient in the plant's color with its icon.
+/// Poster card for a catalog plant in Explore: the plant's cut-out on a gradient
+/// in its color (or the user's own photo when they have one).
 struct ExplorePoster: View {
     let plant: CatalogPlant
     var badge: String? = nil
     var photo: UIImage? = nil
+    var cutout: UIImage? = nil
     var width: CGFloat? = nil
     let height: CGFloat
 
@@ -13,29 +14,14 @@ struct ExplorePoster: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            if let photo {
-                Image(uiImage: photo)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: width, height: height)
-                    .frame(maxWidth: width == nil ? .infinity : nil)
-                    .clipped()
-            } else {
-                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous)
-                    .fill(
-                        RadialGradient(
-                            colors: [plant.accentColor.opacity(0.7), plant.accentColor.opacity(0.2), AppTheme.Colors.cardBackground],
-                            center: .topTrailing,
-                            startRadius: 8,
-                            endRadius: isLarge ? 280 : 170
-                        )
-                    )
-                Image(systemName: plant.displayIconName)
-                    .font(.system(size: isLarge ? 72 : 40, weight: .thin))
-                    .foregroundStyle(plant.accentColor.opacity(0.65))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .offset(y: isLarge ? -16 : -10)
-            }
+            PlantArtworkView(
+                accent: plant.accentColor,
+                symbol: plant.displayIconName,
+                content: .resolve(art: plant.art, userPhoto: photo, userCutout: cutout),
+                symbolSize: isLarge ? 72 : 40,
+                endRadius: isLarge ? 280 : 170,
+                labelInset: isLarge ? 0.3 : 0.26
+            )
 
             LinearGradient(colors: [.clear, .black.opacity(0.75)], startPoint: .center, endPoint: .bottom)
 

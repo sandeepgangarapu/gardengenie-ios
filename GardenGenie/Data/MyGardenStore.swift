@@ -68,6 +68,20 @@ final class MyGardenStore {
         persist()
     }
 
+    /// Replace cached copies with fresh `/catalog` rows, so saved plants pick up
+    /// server-side changes (new artwork, regenerated guides). Only touches
+    /// plants that are already cached; returns how many changed.
+    @discardableResult
+    func refreshCachedPlants(_ fresh: [CatalogPlant]) -> Int {
+        var changed = 0
+        for plant in fresh where plants[plant.id] != nil && plants[plant.id] != plant {
+            plants[plant.id] = plant
+            changed += 1
+        }
+        if changed > 0 { persist() }
+        return changed
+    }
+
     /// Cache a fetched variant in isolation (for background variant backfill
     /// after `addToCatalogGarden`).
     func cacheVariant(_ variant: PlantRegionalVariant) {

@@ -47,6 +47,10 @@ struct PlantDetailView: View {
 
     private var photo: UIImage? { gardenVM.photos.image(for: plant.id) }
 
+    private var artContent: PlantArtContent {
+        .resolve(art: plant.art, userPhoto: photo, userCutout: gardenVM.photos.cutout(for: plant.id))
+    }
+
     private var careItems: [(item: CareItem, isMustDo: Bool)] {
         (plant.carePlan?.mustDo ?? []).map { ($0, true) } + (plant.carePlan?.others ?? []).map { ($0, false) }
     }
@@ -81,6 +85,7 @@ struct PlantDetailView: View {
                 plantingCardsRow
                 companionsSection
                 logSection
+                photoCredit
                 Spacer(minLength: effectiveInGarden ? 96 : 40)
             }
         }
@@ -131,14 +136,15 @@ struct PlantDetailView: View {
     private var backdrop: some View {
         ZStack {
             if let photo {
-                Image(uiImage: photo)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 340)
-                    .blur(radius: 30)
-                    .opacity(0.55)
-                    .clipped()
+                blurredBackdrop(Image(uiImage: photo))
+            } else if let url = plant.art.photoURL ?? plant.art.cutoutURL {
+                RemoteImage(url: url) { image in
+                    blurredBackdrop(Image(uiImage: image))
+                } placeholder: {
+                    Color.clear
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 340)
             } else {
                 Image(systemName: plant.iconName)
                     .font(.system(size: 200, weight: .ultraLight))
@@ -153,27 +159,27 @@ struct PlantDetailView: View {
         .frame(height: 340)
     }
 
+    private func blurredBackdrop(_ image: Image) -> some View {
+        image
+            .resizable()
+            .scaledToFill()
+            .frame(maxWidth: .infinity)
+            .frame(height: 340)
+            .blur(radius: 30)
+            .opacity(0.55)
+            .clipped()
+    }
+
     private var posterCard: some View {
-        ZStack {
-            if let photo {
-                Image(uiImage: photo)
-                    .resizable()
-                    .scaledToFill()
-            } else {
-                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous)
-                    .fill(
-                        RadialGradient(
-                            colors: [plant.accentColor.opacity(0.5), plant.accentColor.opacity(0.15), AppTheme.Colors.cardBackground],
-                            center: .topTrailing,
-                            startRadius: 10,
-                            endRadius: 200
-                        )
-                    )
-                Image(systemName: plant.iconName)
-                    .font(.system(size: 64, weight: .thin))
-                    .foregroundStyle(plant.accentColor.opacity(0.7))
-            }
-        }
+        PlantArtworkView(
+            accent: plant.accentColor,
+            symbol: plant.iconName,
+            content: artContent,
+            symbolSize: 64,
+            endRadius: 200,
+            labelInset: 0.1,
+            topInset: 0.1
+        )
         .frame(width: 140, height: 200)
         .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous))
         .overlay(
@@ -197,6 +203,30 @@ struct PlantDetailView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, AppTheme.Spacing.md)
+    }
+
+    /// Attribution the photo's license requires (CC BY / BY-SA), linked to its source.
+    @ViewBuilder
+    private var photoCredit: some View {
+        if artContent.needsCredit, let line = plant.art.creditLine {
+            Group {
+                if let source = plant.art.sourceURL {
+                    Link(destination: source) {
+                        Label(line, systemImage: "camera")
+                    }
+                } else {
+                    Label(line, systemImage: "camera")
+                }
+            }
+            .font(.caption2)
+            .foregroundStyle(AppTheme.Colors.textTertiary)
+            .labelStyle(.titleAndIcon)
+            .multilineTextAlignment(.center)
+            .lineLimit(2)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, AppTheme.Spacing.lg)
+            .accessibilityLabel(line)
+        }
     }
 
     // MARK: - Primary actions
