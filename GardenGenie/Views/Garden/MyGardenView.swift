@@ -327,8 +327,7 @@ struct MyGardenView: View {
                             GardenPlantCard(
                                 plant: plant,
                                 status: TaskSchedule.status(for: plant.id, in: taskVM.tasks),
-                                photo: gardenVM.photos.image(for: plant.id),
-                                cutout: gardenVM.photos.cutout(for: plant.id)
+                                photo: gardenVM.photos.image(for: plant.id)
                             )
                         }
                         .buttonStyle(.plain)
@@ -370,13 +369,9 @@ struct MyGardenView: View {
             PlantArtworkView(
                 accent: plant.accentColor,
                 symbol: plant.displayIconName,
-                content: .resolve(art: plant.art,
-                                  userPhoto: gardenVM.photos.image(for: plant.id),
-                                  userCutout: gardenVM.photos.cutout(for: plant.id)),
+                content: .resolve(art: plant.art, userPhoto: gardenVM.photos.image(for: plant.id)),
                 symbolSize: 36,
-                endRadius: 170,
-                labelInset: 0.1,
-                topInset: 0.1
+                endRadius: 170
             )
             .frame(width: 160, height: 120)
             .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous))

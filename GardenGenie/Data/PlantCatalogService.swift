@@ -40,8 +40,17 @@ enum PlantCatalogServiceError: LocalizedError {
 enum PlantCatalogService {
 
     /// Production URL (FastAPI on the HomePro Mac behind a Cloudflare tunnel;
-    /// replaced the retired Fly.io app). Override only for a local dev FastAPI.
-    static let baseURL = URL(string: "https://gardengenie-api.sandeepgangarapu.com")!
+    /// replaced the retired Fly.io app). Debug builds can point at a local dev
+    /// FastAPI with the `GG_API_BASE_URL` launch environment variable.
+    static let baseURL: URL = {
+        #if DEBUG
+        if let override = ProcessInfo.processInfo.environment["GG_API_BASE_URL"],
+           let url = URL(string: override) {
+            return url
+        }
+        #endif
+        return URL(string: "https://gardengenie-api.sandeepgangarapu.com")!
+    }()
 
     /// Resolve a plant guide for the user's region.
     ///

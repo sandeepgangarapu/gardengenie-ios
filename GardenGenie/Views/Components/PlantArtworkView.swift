@@ -1,8 +1,7 @@
 import SwiftUI
 
-/// The art area of every plant poster: the type-accent radial gradient with the
-/// plant's cut-out floating on it. Falls back to a full-bleed photo when there's
-/// no clean cut-out, and to the SF Symbol when there's no image at all.
+/// The art area of every plant poster: the plant's photo full-bleed, or — while
+/// it loads, or when there's no photo — the type-accent gradient with its SF Symbol.
 ///
 /// Fills whatever frame the caller gives it; callers own the size, corner
 /// radius, label and overlays.
@@ -13,26 +12,14 @@ struct PlantArtworkView: View {
     var symbolSize: CGFloat = 64
     /// Radius of the gradient, matching each poster's previous look.
     var endRadius: CGFloat = 260
-    /// Share of the height kept clear at the bottom for the poster's label.
-    var labelInset: CGFloat = 0.28
-    /// Share of the height kept clear at the top (status chip, + button).
-    var topInset: CGFloat = 0.17
 
     var body: some View {
         GeometryReader { geo in
             ZStack {
                 gradient
                 switch content {
-                case .userCutout(let image):
-                    FloatingCutout(image: image, size: geo.size, topInset: topInset, labelInset: labelInset)
                 case .userPhoto(let image):
                     fullBleed(image, size: geo.size)
-                case .catalogCutout(let url):
-                    RemoteImage(url: url) { image in
-                        FloatingCutout(image: image, size: geo.size, topInset: topInset, labelInset: labelInset)
-                    } placeholder: {
-                        symbolView(size: geo.size).opacity(0.35)
-                    }
                 case .catalogPhoto(let url):
                     RemoteImage(url: url) { image in
                         fullBleed(image, size: geo.size)
@@ -70,48 +57,6 @@ struct PlantArtworkView: View {
             .scaledToFill()
             .frame(width: size.width, height: size.height)
             .clipped()
-    }
-}
-
-/// A cut-out centred in the space above the label, with a soft contact shadow
-/// so it sits on the card instead of floating in the void.
-private struct FloatingCutout: View {
-    let image: UIImage
-    let size: CGSize
-    let topInset: CGFloat
-    let labelInset: CGFloat
-
-    var body: some View {
-        let frame = fittedFrame
-        ZStack(alignment: .topLeading) {
-            Ellipse()
-                .fill(.black.opacity(0.5))
-                .frame(width: frame.width * 0.62, height: max(6, frame.height * 0.07))
-                .blur(radius: 7)
-                .position(x: frame.midX, y: frame.maxY - 2)
-            Image(uiImage: image)
-                .resizable()
-                .interpolation(.high)
-                .frame(width: frame.width, height: frame.height)
-                .shadow(color: .black.opacity(0.45), radius: 10, y: 8)
-                .position(x: frame.midX, y: frame.midY)
-        }
-        .frame(width: size.width, height: size.height)
-    }
-
-    /// Aspect-fit between the top chip area and the label, with side margins
-    /// so the plant never touches the card edge.
-    private var fittedFrame: CGRect {
-        let box = CGRect(
-            x: size.width * 0.13,
-            y: size.height * topInset,
-            width: size.width * 0.74,
-            height: max(1, size.height * (1 - topInset - labelInset))
-        )
-        let aspect = image.size.width / max(1, image.size.height)
-        var w = box.width, h = box.width / aspect
-        if h > box.height { h = box.height; w = box.height * aspect }
-        return CGRect(x: box.midX - w / 2, y: box.midY - h / 2, width: w, height: h)
     }
 }
 
