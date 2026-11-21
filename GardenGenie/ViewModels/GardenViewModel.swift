@@ -77,6 +77,7 @@ final class GardenViewModel {
             let plants = try await PlantCatalogService.listForZone(zone: zone, state: state)
             explorePlants = plants
             exploreError = nil
+            myGarden.refreshCachedPlants(plants)
         } catch let error as PlantCatalogServiceError {
             exploreError = error
         } catch {

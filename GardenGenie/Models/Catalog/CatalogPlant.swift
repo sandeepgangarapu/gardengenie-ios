@@ -58,7 +58,13 @@ struct CatalogPlant: Identifiable, Hashable, Codable {
 
     // MARK: - Presentation
     let iconName: String?           // SF Symbol from the closed server enum
+    /// Transparent cut-out of the plant, drawn on the type-accent gradient.
     let imageURL: String?
+    /// The openly licensed photo the cut-out came from, and its attribution.
+    let photoURL: String?
+    let photoCredit: String?
+    let photoLicense: String?
+    let photoSourceURL: String?
 
     // MARK: - Provenance
     let source: String              // llm|seed|verified
@@ -102,6 +108,10 @@ struct CatalogPlant: Identifiable, Hashable, Codable {
         case toxicToHumans = "toxic_to_humans"
         case iconName = "icon_name"
         case imageURL = "image_url"
+        case photoURL = "photo_url"
+        case photoCredit = "photo_credit"
+        case photoLicense = "photo_license"
+        case photoSourceURL = "photo_source_url"
         case source
         case llmModel = "llm_model"
         case promptVersion = "prompt_version"
@@ -111,6 +121,17 @@ struct CatalogPlant: Identifiable, Hashable, Codable {
     }
 
     // MARK: - Client-only display helpers
+
+    /// Catalog artwork for posters (see `PlantArtworkView`).
+    var art: PlantArt {
+        PlantArt(
+            cutoutURL: imageURL.flatMap(URL.init(string:)),
+            photoURL: photoURL.flatMap(URL.init(string:)),
+            credit: photoCredit,
+            license: photoLicense,
+            sourceURL: photoSourceURL.flatMap(URL.init(string:))
+        )
+    }
 
     /// Falls back to a type-based icon if the server didn't supply one.
     var displayIconName: String {

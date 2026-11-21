@@ -45,6 +45,8 @@ struct Plant: Identifiable, Hashable, Codable {
     /// Plants that shouldn't be grown next to this one.
     var avoidPlantingWith: [String] = []
     var toxicToPets: Bool? = nil
+    /// Catalog artwork (cut-out + licensed source photo).
+    var art = PlantArt()
 
     // MARK: - CodingKeys
 

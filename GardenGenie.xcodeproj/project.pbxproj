@@ -32,6 +32,7 @@
 		50B86E705DD0DC4E04BCA441 /* GardenGenieApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78BC3BEE8C7E6322988001A /* GardenGenieApp.swift */; };
 		57ACEB1CC8DEEB004DA899FB /* MyGardenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FE461A725D5AFCD6B189C1F /* MyGardenStore.swift */; };
 		58523245AB374F599BEE422A /* PlantingCompactCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D79379145143BA2DE3375BFB /* PlantingCompactCard.swift */; };
+		681DF7DFCF716EA7E962C1EC /* PlantArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A83A4EDBD4584B9FEC4E111 /* PlantArt.swift */; };
 		6F50D399D3EDDAE8D94AB9AC /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D901BB48E34278A4810BFE /* SupabaseClient.swift */; };
 		71245B635D98B55A671DBB8A /* OnboardingZoneResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C3C4B826387FCE1A891A570 /* OnboardingZoneResultView.swift */; };
 		725C52E402C8F65D8CC86931 /* PlantInsights.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCD7385E4AD8F96C71FA259 /* PlantInsights.swift */; };
@@ -45,6 +46,7 @@
 		851A9D13DADDB9486B63BD3B /* GardenTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025BDB10BC0ACAB532966CEB /* GardenTask.swift */; };
 		855994FFD0AB515BFAB2137A /* CareFrequencyParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5218CBB17708A1DA8F4385 /* CareFrequencyParsingTests.swift */; };
 		87CA20CCE98D1710688097AE /* ExplorePoster.swift in Sources */ = {isa = PBXBuildFile; fileRef = F207750FE5E67D4C01CD8347 /* ExplorePoster.swift */; };
+		87F0D3C310073883B575C671 /* PlantArtTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D439C04411AFBAAE3EB96434 /* PlantArtTests.swift */; };
 		8A77ACEBFCB603373E755847 /* PlantGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B1A6271ABE9BFBD2C568F0 /* PlantGridView.swift */; };
 		8ED6379937719877389C3608 /* TaskDestinationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24332559CDA4FF8E1EB8A49 /* TaskDestinationView.swift */; };
 		90943BE8F1F18461279466CD /* TaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B98515D74BC8A81A012B6DB /* TaskViewModel.swift */; };
@@ -56,6 +58,7 @@
 		A18854385606D3BF5E66EEC0 /* Plant.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B452E7A30B9D1847482194 /* Plant.swift */; };
 		A1E3A0DDCB44075C0232C1E6 /* OnboardingFeaturesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CD54BD4104F3EC9CC36941 /* OnboardingFeaturesView.swift */; };
 		A201E116C0A3E277D7B0172F /* PlantCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C5B6B5E0AB5E6E0B9329370 /* PlantCardView.swift */; };
+		A5FEF45C3F16F7BABC699F1E /* SubjectLifter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C296597F11C45ED9768C6312 /* SubjectLifter.swift */; };
 		A9194B2EC0425305C5D01C5C /* CarePlanDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75CF4BEB4894E5289C51537A /* CarePlanDraft.swift */; };
 		B51192DD1DE2C112030CB045 /* TasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6B15379EEF655F7021EC19 /* TasksView.swift */; };
 		B56718162FA3BB5BB7201AF3 /* PlantCatalogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CF77604B20B9D7551EADF /* PlantCatalogService.swift */; };
@@ -67,8 +70,10 @@
 		CBDBFAF2A5BF29F32346B093 /* SeasonTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278C6F4A6E7A6312DBFD1CCF /* SeasonTimelineView.swift */; };
 		CF88C73D2874A4292F095620 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = D417A902A6ADFF22B0A6F1EC /* AppTheme.swift */; };
 		D170D4E082338A782103E664 /* CatalogPlantAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A161FFB4CAF3B4F8DC56059 /* CatalogPlantAdapter.swift */; };
+		D4B32F364B36FE5CB93A21F0 /* RemoteImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8B367641944737D2DF412C /* RemoteImageCache.swift */; };
 		D8F7E9189F21E5E8934383DA /* AddTaskSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E257F16410F743A1F948AF3 /* AddTaskSheet.swift */; };
 		D990E7590A945525D88CB4D4 /* TaskSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799D030E57B1BCCC782C3D0B /* TaskSchedule.swift */; };
+		D9CFC0D489A485524213500D /* PlantArtworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3C971BC5A12262E632147D9 /* PlantArtworkView.swift */; };
 		EA0766A6AEBFA2EA2B166586 /* MonthDateParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41B35F7A1BF77EF084A2E28C /* MonthDateParser.swift */; };
 		EB6EA988E0D4B4CEEC1ED39C /* HeroPlantCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94B35CCBAA1ED4504B5D88A /* HeroPlantCard.swift */; };
 		F0E41A527EC900695568E1A5 /* OnboardingPageIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4AC0E3097CB0D8858E5F73 /* OnboardingPageIndicator.swift */; };
@@ -113,7 +118,9 @@
 		4C4AC0E3097CB0D8858E5F73 /* OnboardingPageIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageIndicator.swift; sourceTree = "<group>"; };
 		4C5B6B5E0AB5E6E0B9329370 /* PlantCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantCardView.swift; sourceTree = "<group>"; };
 		4FB8EF21A77CF91CA0433107 /* GardenGenieTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GardenGenieTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5A83A4EDBD4584B9FEC4E111 /* PlantArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantArt.swift; sourceTree = "<group>"; };
 		634EE6189DEB4BE2971D9297 /* TaskScheduleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskScheduleTests.swift; sourceTree = "<group>"; };
+		6A8B367641944737D2DF412C /* RemoteImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImageCache.swift; sourceTree = "<group>"; };
 		6C3C4B826387FCE1A891A570 /* OnboardingZoneResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingZoneResultView.swift; sourceTree = "<group>"; };
 		75CF4BEB4894E5289C51537A /* CarePlanDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarePlanDraft.swift; sourceTree = "<group>"; };
 		77390E3BF3D2C9E933A273EF /* TaskRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRowView.swift; sourceTree = "<group>"; };
@@ -131,6 +138,7 @@
 		99EBE558FB4EB0C47DE0B191 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9C0A46C8FD1EE5CBEE159F74 /* MyGardenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyGardenView.swift; sourceTree = "<group>"; };
 		A12F3ACDBDB9CD2A8020C65C /* AgendaDayHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgendaDayHeader.swift; sourceTree = "<group>"; };
+		A3C971BC5A12262E632147D9 /* PlantArtworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantArtworkView.swift; sourceTree = "<group>"; };
 		A7CD54BD4104F3EC9CC36941 /* OnboardingFeaturesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFeaturesView.swift; sourceTree = "<group>"; };
 		ACE290D3BA454BBFA7164165 /* GardenGenie.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GardenGenie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B03EE3D674CE449E2431DB4E /* QuickAddSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddSheet.swift; sourceTree = "<group>"; };
@@ -140,10 +148,12 @@
 		C1040F505A9D748C2711B1B6 /* CareDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CareDetailView.swift; sourceTree = "<group>"; };
 		C1B452E7A30B9D1847482194 /* Plant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Plant.swift; sourceTree = "<group>"; };
 		C24332559CDA4FF8E1EB8A49 /* TaskDestinationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDestinationView.swift; sourceTree = "<group>"; };
+		C296597F11C45ED9768C6312 /* SubjectLifter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubjectLifter.swift; sourceTree = "<group>"; };
 		C2D570E873F63045F7FD9B1E /* Image+Symbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Symbol.swift"; sourceTree = "<group>"; };
 		C46CE194D294902A413F5210 /* ReminderScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderScheduler.swift; sourceTree = "<group>"; };
 		C914D04A216FEC118401C874 /* TaskRecurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskRecurrence.swift; sourceTree = "<group>"; };
 		D417A902A6ADFF22B0A6F1EC /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		D439C04411AFBAAE3EB96434 /* PlantArtTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantArtTests.swift; sourceTree = "<group>"; };
 		D79379145143BA2DE3375BFB /* PlantingCompactCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantingCompactCard.swift; sourceTree = "<group>"; };
 		D89CF77604B20B9D7551EADF /* PlantCatalogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantCatalogService.swift; sourceTree = "<group>"; };
 		D8EBF596B00267E2B5F4FA44 /* ScheduleTaskSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleTaskSheet.swift; sourceTree = "<group>"; };
@@ -291,6 +301,8 @@
 				0FE461A725D5AFCD6B189C1F /* MyGardenStore.swift */,
 				D89CF77604B20B9D7551EADF /* PlantCatalogService.swift */,
 				C46CE194D294902A413F5210 /* ReminderScheduler.swift */,
+				6A8B367641944737D2DF412C /* RemoteImageCache.swift */,
+				C296597F11C45ED9768C6312 /* SubjectLifter.swift */,
 				17D901BB48E34278A4810BFE /* SupabaseClient.swift */,
 				0B95741C381666DEBD83479F /* USDAZoneLookup.swift */,
 			);
@@ -304,6 +316,7 @@
 				025BDB10BC0ACAB532966CEB /* GardenTask.swift */,
 				C1B452E7A30B9D1847482194 /* Plant.swift */,
 				98BF44D05EFC6E88D6CE1790 /* Plant+JSONB.swift */,
+				5A83A4EDBD4584B9FEC4E111 /* PlantArt.swift */,
 				1BCD7385E4AD8F96C71FA259 /* PlantInsights.swift */,
 				BB7B6C980DF3216552C58C4A /* TaskKind.swift */,
 				C914D04A216FEC118401C874 /* TaskRecurrence.swift */,
@@ -359,6 +372,7 @@
 		D8BD7424A04CC20A40C975DF /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				A3C971BC5A12262E632147D9 /* PlantArtworkView.swift */,
 				3A5E02F221EB3CCBDC5F63EC /* PlantSearchLoadingView.swift */,
 				B03EE3D674CE449E2431DB4E /* QuickAddSheet.swift */,
 				FE0A8C6E74F3AD055B2FBD13 /* SearchSheet.swift */,
@@ -379,6 +393,7 @@
 			children = (
 				4B5218CBB17708A1DA8F4385 /* CareFrequencyParsingTests.swift */,
 				3A43D0F1CA583BFB00F08A6C /* CarePlanBuilderTests.swift */,
+				D439C04411AFBAAE3EB96434 /* PlantArtTests.swift */,
 				0DFE9AF175819B24A6ECBB64 /* PlantingCalendarTests.swift */,
 				2C33C8AB8E69DE2BBBCAE6C5 /* PlantInsightsTests.swift */,
 				EA4B1EBD6283ECF375EAF186 /* ReminderPlannerTests.swift */,
@@ -517,6 +532,8 @@
 				0FAFA853A5DB243C03390AD0 /* OverdueSectionView.swift in Sources */,
 				F45ED16A97B276335282DC23 /* Plant+JSONB.swift in Sources */,
 				A18854385606D3BF5E66EEC0 /* Plant.swift in Sources */,
+				681DF7DFCF716EA7E962C1EC /* PlantArt.swift in Sources */,
+				D9CFC0D489A485524213500D /* PlantArtworkView.swift in Sources */,
 				A201E116C0A3E277D7B0172F /* PlantCardView.swift in Sources */,
 				B56718162FA3BB5BB7201AF3 /* PlantCatalogService.swift in Sources */,
 				1F14AC2A7D778CD47854C820 /* PlantDetailView.swift in Sources */,
@@ -528,10 +545,12 @@
 				3CD004476E8279EE92D28224 /* PlantingDetailView.swift in Sources */,
 				82DDDFD5C8169F1AB88034B2 /* QuickAddSheet.swift in Sources */,
 				BC0DFBB0B69127EF0BFD5568 /* ReminderScheduler.swift in Sources */,
+				D4B32F364B36FE5CB93A21F0 /* RemoteImageCache.swift in Sources */,
 				799A40012DE86C885BBB6FF2 /* ScheduleTaskSheet.swift in Sources */,
 				7977CC21A1B5E032D9F996E1 /* SearchSheet.swift in Sources */,
 				CBDBFAF2A5BF29F32346B093 /* SeasonTimelineView.swift in Sources */,
 				9481512F0D0A9BBC831E168E /* SettingsView.swift in Sources */,
+				A5FEF45C3F16F7BABC699F1E /* SubjectLifter.swift in Sources */,
 				6F50D399D3EDDAE8D94AB9AC /* SupabaseClient.swift in Sources */,
 				923B7CC33F1C777C6987235F /* TaskDateLabel.swift in Sources */,
 				8ED6379937719877389C3608 /* TaskDestinationView.swift in Sources */,
@@ -554,6 +573,7 @@
 			files = (
 				855994FFD0AB515BFAB2137A /* CareFrequencyParsingTests.swift in Sources */,
 				9843A051EE141B7FCA88417A /* CarePlanBuilderTests.swift in Sources */,
+				87F0D3C310073883B575C671 /* PlantArtTests.swift in Sources */,
 				F66CC396067C218B349EC314 /* PlantInsightsTests.swift in Sources */,
 				1BDD10D625A0E2CEEFA5D938 /* PlantingCalendarTests.swift in Sources */,
 				039FACCCC43B4F48F1221D07 /* ReminderPlannerTests.swift in Sources */,

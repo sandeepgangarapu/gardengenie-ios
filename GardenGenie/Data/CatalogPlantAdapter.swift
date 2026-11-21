@@ -50,6 +50,7 @@ enum CatalogPlantAdapter {
         plant.seasonWindows = seasonWindows(variant)
         plant.avoidPlantingWith = catalog.avoidPlantingWith
         plant.toxicToPets = catalog.toxicToPets
+        plant.art = catalog.art
         return plant
     }
 

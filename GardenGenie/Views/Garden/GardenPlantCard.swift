@@ -5,34 +5,19 @@ import SwiftUI
 struct GardenPlantCard: View {
     let plant: CatalogPlant
     let status: PlantCareStatus
-    /// The user's own photo; replaces the gradient + icon when present.
+    /// The user's own photo, and its cut-out; both beat catalog art.
     var photo: UIImage? = nil
+    var cutout: UIImage? = nil
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            if let photo {
-                Image(uiImage: photo)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 160, height: 210)
-                    .clipped()
-            } else {
-                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous)
-                    .fill(
-                        RadialGradient(
-                            colors: [plant.accentColor.opacity(0.65), plant.accentColor.opacity(0.18), AppTheme.Colors.cardBackground],
-                            center: .topTrailing,
-                            startRadius: 10,
-                            endRadius: 260
-                        )
-                    )
-
-                Image(systemName: plant.displayIconName)
-                    .font(.system(size: 64, weight: .thin))
-                    .foregroundStyle(plant.accentColor.opacity(0.6))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .offset(y: -12)
-            }
+            PlantArtworkView(
+                accent: plant.accentColor,
+                symbol: plant.displayIconName,
+                content: .resolve(art: plant.art, userPhoto: photo, userCutout: cutout),
+                symbolSize: 64,
+                endRadius: 260
+            )
 
             LinearGradient(colors: [.clear, .black.opacity(0.7)], startPoint: .center, endPoint: .bottom)
 

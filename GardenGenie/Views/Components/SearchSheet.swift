@@ -188,14 +188,17 @@ struct SearchSheet: View {
 
     private func catalogRow(_ plant: CatalogPlant) -> some View {
         HStack(spacing: AppTheme.Spacing.md) {
-            Image(systemName: plant.displayIconName)
-                .font(.system(size: 22, weight: .semibold))
-                .foregroundStyle(plant.accentColor)
-                .frame(width: 48, height: 48)
-                .background(
-                    plant.accentColor.opacity(0.18),
-                    in: RoundedRectangle(cornerRadius: 14, style: .continuous)
-                )
+            PlantArtworkView(
+                accent: plant.accentColor,
+                symbol: plant.displayIconName,
+                content: .resolve(art: plant.art, userPhoto: nil, userCutout: nil),
+                symbolSize: 22,
+                endRadius: 60,
+                labelInset: 0.02,
+                topInset: 0.02
+            )
+            .frame(width: 48, height: 48)
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(plant.commonName)

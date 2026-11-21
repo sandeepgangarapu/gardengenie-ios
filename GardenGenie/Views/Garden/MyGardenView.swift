@@ -56,6 +56,12 @@ struct MyGardenView: View {
             }
             .background(AppTheme.Colors.background.ignoresSafeArea())
             .navigationBarHidden(true)
+            // Load the zone's catalog once so saved plants pick up server-side
+            // updates (e.g. new artwork) without visiting Explore first.
+            .task(id: "\(usdaZone)-\(stateCode)") {
+                guard !usdaZone.isEmpty, !stateCode.isEmpty, gardenVM.explorePlants.isEmpty else { return }
+                await gardenVM.loadExplorePlants(zone: usdaZone, state: stateCode)
+            }
             .navigationDestination(for: CatalogPlantNavigation.self) { dest in
                 let variant = gardenVM.variant(for: dest.plant, zone: usdaZone, state: stateCode)
                 let adapted = CatalogPlantAdapter.adapt(dest.plant, variant: variant)
@@ -321,7 +327,8 @@ struct MyGardenView: View {
                             GardenPlantCard(
                                 plant: plant,
                                 status: TaskSchedule.status(for: plant.id, in: taskVM.tasks),
-                                photo: gardenVM.photos.image(for: plant.id)
+                                photo: gardenVM.photos.image(for: plant.id),
+                                cutout: gardenVM.photos.cutout(for: plant.id)
                             )
                         }
                         .buttonStyle(.plain)
@@ -360,14 +367,19 @@ struct MyGardenView: View {
 
     private func catalogCard(_ plant: CatalogPlant) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            ZStack {
-                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous)
-                    .fill(plant.accentColor.opacity(0.18))
-                Image(systemName: plant.displayIconName)
-                    .font(.system(size: 36, weight: .semibold))
-                    .foregroundStyle(plant.accentColor)
-            }
+            PlantArtworkView(
+                accent: plant.accentColor,
+                symbol: plant.displayIconName,
+                content: .resolve(art: plant.art,
+                                  userPhoto: gardenVM.photos.image(for: plant.id),
+                                  userCutout: gardenVM.photos.cutout(for: plant.id)),
+                symbolSize: 36,
+                endRadius: 170,
+                labelInset: 0.1,
+                topInset: 0.1
+            )
             .frame(width: 160, height: 120)
+            .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card, style: .continuous))
 
             Text(plant.commonName)
                 .font(.subheadline.weight(.semibold))

@@ -47,26 +47,21 @@ struct PlantGridView: View {
     }
 }
 
-/// Poster tile for the grid: the plant's color and icon, name at the bottom.
+/// Poster tile for the grid: the plant's cut-out on its color, name at the bottom.
 private struct GridPlantCard: View {
     let plant: Plant
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(
-                    RadialGradient(
-                        colors: [plant.accentColor.opacity(0.7), plant.accentColor.opacity(0.2), AppTheme.Colors.cardBackground],
-                        center: .topTrailing,
-                        startRadius: 8,
-                        endRadius: 170
-                    )
-                )
-            Image(systemName: plant.iconName)
-                .font(.system(size: 40, weight: .thin))
-                .foregroundStyle(plant.accentColor.opacity(0.65))
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .offset(y: -10)
+            PlantArtworkView(
+                accent: plant.accentColor,
+                symbol: plant.iconName,
+                content: .resolve(art: plant.art, userPhoto: nil, userCutout: nil),
+                symbolSize: 40,
+                endRadius: 170,
+                labelInset: 0.26,
+                topInset: 0.1
+            )
             LinearGradient(colors: [.clear, .black.opacity(0.75)], startPoint: .center, endPoint: .bottom)
             Text(plant.name)
                 .font(.caption.weight(.bold))
